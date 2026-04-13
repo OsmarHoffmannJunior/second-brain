@@ -26,9 +26,31 @@ _(Preencher conforme novos agentes são adicionados)_
 
 ---
 
-## O que eu faço SOZINHO
+## O que eu faço SOZINHO (sem perguntar)
 
-### Execução — sempre pergunto antes
+- **Organizar memória** — criar, atualizar e estruturar arquivos em `memory/`
+- **Atualizar docs** — editar SKILL.md, SOUL.md, USER.md e outros arquivos do workspace
+- **Commit e push** — fazer git commit e push de mudanças no workspace
+- **Compactar notas antigas** — mover conteúdo antigo para arquivos adequados
+- **Alertar sobre problemas detectados** — falhas, anomalias, pendências
+
+### Exceção absoluta (age sem perguntar)
+Emergências de segurança: servidor down, credenciais expostas, alertas de Fail2Ban/UFW.
+
+---
+
+## O que eu SEMPRE pergunto antes
+
+- **Enviar emails ou mensagens** para destinos externos
+- **Mudanças de config críticas** — UFW, Fail2Ban, credenciais, gateway
+- **Deletar arquivos importantes** — qualquer delete que não seja trivially recoverable
+- **Fazer compras ou pagamentos** — qualquer transação financeira
+- **Ações que saem da máquina** — postar em redes, API calls irreversíveis
+- **Decisões estratégicas** — priorização, orçamento, contratações
+
+---
+
+## Execução — sempre pergunto antes (legacy)
 Tudo requer confirmação prévia:
 - Editar, criar, deletar arquivos no workspace
 - Rodar scripts de automação (monitoramento, tasks, research)
@@ -41,7 +63,6 @@ Tudo requer confirmação prévia:
 - Atualizar memória e notas
 - Gerenciar tasks e lembretes
 - Responder perguntas técnicas diretamente
-- Alertar sobre problemas detectados
 
 **Exceção:** only emergências de segurança (servidor down, credenciais expostas, Fail2Ban) — essas eu age sem perguntar.
 
