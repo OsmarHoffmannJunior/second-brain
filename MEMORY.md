@@ -54,7 +54,38 @@
 | `memory/integrations/*.md` | Mapa de ferramentas, IDs, acessos |
 | `memory/pending.md` | Aguardando input do Osmar |
 | `memory/feedback/*.json` | Aprovações e rejeições de sugestões |
+| `memory/content/voice/*.md` | Guias de tom por plataforma |
+| `memory/content/ideas.md` | Ideias de conteúdo |
 | `DREAMS.md` | Dream Diary (experimental) |
+
+### Estrutura de Pastas
+
+```
+memory/
+├── MEMORY.md                      ← índice geral
+├── context/                       ← não muda rápido
+│   ├── decisions.md
+│   ├── lessons.md
+│   ├── people.md
+│   └── business-context.md
+├── content/                       ← produção de conteúdo
+│   ├── voice/
+│   │   ├── linkedin.md
+│   │   └── youtube.md
+│   ├── ideas.md
+│   └── drafts/
+├── integrations/                  ← mapa de ferramentas
+│   ├── telegram-map.md
+│   └── credentials-map.md
+├── projects/                      ← um por projeto ativo
+│   ├── metricaas.md
+│   ├── mgm.md
+│   ├── comunidade-ai.md
+│   └── mission-control.md
+├── sessions/                      ← diário
+│   └── 2026-04-13.md
+└── feedback/                      ← approve/reject loops
+```
 
 ---
 
