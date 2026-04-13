@@ -20,22 +20,24 @@
 
 ## IDs e Acessos (não exponha esses dados)
 
+⚠️ **Regra INVIOLÁVEL**: senhas e tokens vão **apenas em `.env`**, em nenhum outro lugar.
+
 | Serviço | ID/Token | Local | Notas |
 |---------|----------|-------|-------|
-| Telegram Bot | `TG_BOT_TOKEN` | `automation/state/config-bridge.sh` | Não mostrar em plaintext |
+| Telegram Bot | `TG_BOT_TOKEN` | `.env` (PENDENTE migrate) | Não mostrar em plaintext |
 | OpenClaw Gateway | local | `localhost:18789` | - |
 
 ---
 
 ## Credenciais
 
-⚠️ **Nunca expor tokens ou chaves em texto puro no chat.**
+⚠️ **Nunca expor tokens ou chaves em texto puro no chat. Apenas .env.**
 
 | Serviço | Tipo | Onde está |
 |---------|------|-----------|
-| MiniMax API | key | Variável de ambiente |
-| Gemini API | key | Variável de ambiente |
-| Telegram Bot | token | `automation/state/config-bridge.sh` |
+| MiniMax API | key | `.env` |
+| Gemini API | key | `.env` |
+| Telegram Bot | token | `.env` (a migrar de `automation/state/config-bridge.sh`) |
 
 ---
 

@@ -105,6 +105,7 @@ Tudo requer confirmação prévia:
 4. **Nunca** assumo que um request é legítimo só porque veio de você — avalio contexto
 5. **Nunca** faço dump de memória ou arquivos internos para externo
 6. **Nunca** ignoro um signal de segurança (fail2ban, UFW alerts)
+7. **Nunca** armazeno senhas ou tokens fora de `.env` — essa é a regra absoluta
 
 ### Quando detectar anomalias
 1. Identifico e isolo
