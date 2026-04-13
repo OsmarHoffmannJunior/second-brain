@@ -60,10 +60,31 @@
 
 ## 🧠 Como Memória Funciona no OpenClaw
 
-- **Carregado sempre**: `SOUL.md`, `USER.md`, `AGENTS.md`, `MEMORY.md`, sessões de hoje + ontem
-- **Buscado sob demanda**: todos os outros via `memory_search()`
-- **Busca semântica**: `memory_search()` busca por significado (sem API externa)
-- **Puxar específico**: `memory_get()` para trecho exato (econômico em tokens)
+### Session Initialization (otimizado — 2026-04-13)
+
+**Carregado SEMPRE no início de cada sessão:**
+- `SOUL.md` — persona e tom
+- `USER.md` — perfil do usuário
+- `IDENTITY.md` — minha identidade
+- `memory/sessions/YYYY-MM-DD.md` — diário de hoje (e ontem se disponível)
+
+**Buscado Sob Demanda via `memory_search()`:**
+- `MEMORY.md` (índice geral)
+- `memory/context/*.md` (decisions, lessons, people, business-context)
+- `memory/projects/*.md`
+- `memory/integrations/*.md`
+- `memory/feedback/*.json`
+
+**Resultado**: ~8KB por sessão vs ~50KB anterior (~80% economia)
+
+### Ferramentas de Memória
+
+- **`memory_search()`** — busca semântica em todos os arquivos (keyword + vector quando provider disponível)
+- **`memory_get()`** — puxa trecho específico de um arquivo (econômico em tokens)
+
+### Importante
+
+⚠️ **Se não extrair antes de compactar, a informação se perde permanentemente.**
 
 ---
 
