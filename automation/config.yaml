@@ -1,0 +1,51 @@
+# Automation Config — Osmar
+
+channel: telegram
+timezone: BRT
+
+# Keywords para filtrar conteúdo relevante (SEO, marketing, negócios)
+keywords:
+  - SEO
+  - "link building"
+  - "content marketing"
+  - "google updates"
+  - "core web vitals"
+  - ORM
+  - "reputação online"
+  - "buscadores"
+  - "tráfego orgânico"
+  - "miniMax"
+  - "openclaw"
+
+# RSS feeds para monitorar
+rss_feeds:
+  - https://www.seroundtable.com/feed
+  - https://searchengineland.com/feed
+  - https://ahrefs.com/blog/feed/
+  - https://backlinko.com/blog/feed
+
+# Subreddits relevantes
+subreddits:
+  - seo
+  - bigseo
+  - content_marketing
+
+# Produtos/serviços para monitorar preço (placeholder)
+price_monitor:
+  - name: "Exemplo Produto 1"
+    url: ""
+    target_price: 0
+
+# Horários preferidos para envio de digest
+digest_times:
+  - "09:00"  # Manhã
+  - "18:00"  # Fim de expediente
+
+# Tom das mensagens
+tone: direct  # Sem fluff, objetivo
+
+# Pastas a organizar (placeholder)
+folders_to_organize: []
+
+# Agentes sob gerência (placeholder para quando criar)
+managed_agents: []
