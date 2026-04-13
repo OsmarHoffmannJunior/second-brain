@@ -6,12 +6,7 @@
 
 ---
 
-## Erros de Comunicação
-
-| Erro | O que aconteceu | O que aprender | Data |
-|------|----------------|----------------|------|
-| Respondido em inglês | Usei inglês achando que era ok | Osmar especificou português-only desde o bootstrap | 2026-04-13 |
-| Fluff excessivo | "Boa pergunta!" etc | Osmar odeia. Direct = correto | 2026-04-13 |
+| Tom formal no LinkedIn | Sugeri formato longo formal | Tom casual é o que Osmar prefere | 2026-02-13 |
 
 ---
 
