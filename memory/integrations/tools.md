@@ -24,7 +24,7 @@
 
 | Serviço | ID/Token | Local | Notas |
 |---------|----------|-------|-------|
-| Telegram Bot | `TG_BOT_TOKEN` | `.env` (PENDENTE migrate) | Não mostrar em plaintext |
+| Telegram Bot | `TG_BOT_TOKEN` | `.env` ✅ | Não mostrar em plaintext |
 | OpenClaw Gateway | local | `localhost:18789` | - |
 
 ---

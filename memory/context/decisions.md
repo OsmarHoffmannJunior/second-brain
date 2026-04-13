@@ -21,7 +21,7 @@
 | UFW + Fail2Ban configurados | 2026-04-13 | Server hardening |
 | Backups antes de mudanças destructivas | 2026-04-13 | Regra AGENTS.md |
 | `trash` > `rm` | 2026-04-13 | Recuperável > gone forever |
-| **Senhas: .env apenas** | 2026-04-13 | NUNCA armazenar senhas em outro lugar além de .env |
+| **Senhas: .env apenas** | 2026-04-13 | NUNCA armazenar senhas em outro lugar além de .env ✅ Migrado |
 
 ---
 
