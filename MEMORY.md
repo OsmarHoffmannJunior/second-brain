@@ -8,12 +8,13 @@
 
 - **Português apenas** — todas as respostas para Osmar em PT-BR
 - **Sem fluff** — nada de "Boa pergunta!", "Ficarei feliz em ajudar!"
-- **Compactação**: ANTES de compactar, rodar checklist de extração:
+- **Compactação SEMPRE extrai primeiro** — regra INVIOLÁVEL: antes de toda compactação, SEM EXCEÇÃO:
   1. Extrair decisões → `memory/context/decisions.md`
   2. Extrair lições → `memory/context/lessons.md`
   3. Extrair pessoas → `memory/context/people.md`
   4. Extrair projetos → `memory/projects/*.md`
   5. Extrair pendências → `memory/pending.md`
+  ⚠️ **Se não extrair, a informação se perde permanentemente. É como formatar o HD sem backup.**
 - **Feedback loop**: antes de sugerir algo novamente, consultar `memory/feedback/`
 
 ---

@@ -4,9 +4,22 @@
 
 # Auto-compactação de contexto
 
-**Regra INVIOLÁVEL**: Ao atingir ~90% da janela de contexto (~180k tokens), OU antes de qualquer compactação triggered pelo sistema:
+## Configuração (via Osmar — 2026-04-13)
 
-## Checklist de Extração (SEMPRE executar antes de compactar)
+| Parâmetro | Valor |
+|-----------|-------|
+| `contextTokens` | 160,000 |
+| `reserveTokensFloor` | 30,000 |
+| Limiar de trigger | ~90% (~144k tokens) |
+| Modo | `default` |
+
+---
+
+## Regra INVIOLÁVEL
+
+Ao atingir ~90% da janela de contexto (~144k tokens), ANTES de qualquer compactação triggered pelo sistema:
+
+### Checklist de Extração (SEMPRE executar antes de compactar)
 
 1. [ ] **Decisões novas** → `memory/context/decisions.md`
 2. [ ] **Lições novas** → `memory/context/lessons.md`
@@ -15,7 +28,7 @@
 5. [ ] **Pendências** → `memory/pending.md`
 6. [ ] **Feedback do turno** → `memory/feedback/YYYY-MM-DD.json`
 
-⚠️ **NUNCA compactar sem extrair primeiro.**
+⚠️ **NUNCA compactar sem extrair primeiro. Se não extrair, perde 80% do valor — é como formatar o HD sem backup.**
 
 ---
 
@@ -23,4 +36,3 @@
 
 - Verificar `memory/pending.md` por pendências antigas
 - Atualizar `memory/sessions/YYYY-MM-DD.md` com eventos do dia
-

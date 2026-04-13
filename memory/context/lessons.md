@@ -2,6 +2,8 @@
 
 **Regra**: tudo que deu errado vai aqui. Não pode se repetir.
 
+**Importante**: memória sem extração antes de compactação = perdida para sempre. 80% do valor se perde.
+
 ---
 
 ## Erros de Comunicação
