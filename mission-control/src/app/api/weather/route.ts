@@ -1,47 +1,45 @@
 /**
- * Weather API - Madrid
+ * Weather API - Itapema, SC, Brasil
  * GET /api/weather
  * Uses Open-Meteo (free, no API key)
  */
 import { NextResponse } from 'next/server';
 
-// Cache weather data for 10 minutes
 let cache: { data: unknown; ts: number } | null = null;
 const CACHE_DURATION = 10 * 60 * 1000;
 
 const WMO_CODES: Record<number, { label: string; emoji: string }> = {
-  0: { label: "Clear sky", emoji: "☀️" },
-  1: { label: "Mainly clear", emoji: "🌤️" },
-  2: { label: "Partly cloudy", emoji: "⛅" },
-  3: { label: "Overcast", emoji: "☁️" },
-  45: { label: "Foggy", emoji: "🌫️" },
-  48: { label: "Icy fog", emoji: "🌫️" },
-  51: { label: "Light drizzle", emoji: "🌦️" },
-  53: { label: "Drizzle", emoji: "🌦️" },
-  55: { label: "Heavy drizzle", emoji: "🌧️" },
-  61: { label: "Light rain", emoji: "🌧️" },
-  63: { label: "Rain", emoji: "🌧️" },
-  65: { label: "Heavy rain", emoji: "🌧️" },
-  71: { label: "Light snow", emoji: "🌨️" },
-  73: { label: "Snow", emoji: "❄️" },
-  75: { label: "Heavy snow", emoji: "❄️" },
-  80: { label: "Light showers", emoji: "🌦️" },
-  81: { label: "Showers", emoji: "🌧️" },
-  82: { label: "Heavy showers", emoji: "⛈️" },
-  95: { label: "Thunderstorm", emoji: "⛈️" },
-  96: { label: "Thunderstorm with hail", emoji: "⛈️" },
-  99: { label: "Thunderstorm with heavy hail", emoji: "⛈️" },
+  0: { label: "Céu limpo", emoji: "☀️" },
+  1: { label: "Predominantemente limpo", emoji: "🌤️" },
+  2: { label: "Parcialmente nublado", emoji: "⛅" },
+  3: { label: "Nublado", emoji: "☁️" },
+  45: { label: "Neblina", emoji: "🌫️" },
+  48: { label: "Neblina gelada", emoji: "🌫️" },
+  51: { label: "Garoa leve", emoji: "🌦️" },
+  53: { label: "Garoa", emoji: "🌦️" },
+  55: { label: "Garoa forte", emoji: "🌧️" },
+  61: { label: "Chuva leve", emoji: "🌧️" },
+  63: { label: "Chuva", emoji: "🌧️" },
+  65: { label: "Chuva forte", emoji: "🌧️" },
+  71: { label: "Neve leve", emoji: "🌨️" },
+  73: { label: "Neve", emoji: "❄️" },
+  75: { label: "Neve forte", emoji: "❄️" },
+  80: { label: "Pancadas leves", emoji: "🌦️" },
+  81: { label: "Pancadas", emoji: "🌧️" },
+  82: { label: "Pancadas fortes", emoji: "⛈️" },
+  95: { label: "Tempestade", emoji: "⛈️" },
+  96: { label: "Tempestade com granizo", emoji: "⛈️" },
+  99: { label: "Tempestade com granizo forte", emoji: "⛈️" },
 };
 
 export async function GET() {
-  // Return cache if valid
   if (cache && Date.now() - cache.ts < CACHE_DURATION) {
     return NextResponse.json(cache.data);
   }
 
   try {
-    // Madrid coordinates: 40.4168° N, 3.7038° W
-    const url = 'https://api.open-meteo.com/v1/forecast?latitude=40.4168&longitude=-3.7038&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m,precipitation&daily=temperature_2m_max,temperature_2m_min,weather_code&timezone=Europe%2FMadrid&forecast_days=3';
+    // Itapema, SC: -27.0916° S, 48.6156° W
+    const url = 'https://api.open-meteo.com/v1/forecast?latitude=-27.0916&longitude=-48.6156&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m,precipitation&daily=temperature_2m_max,temperature_2m_min,weather_code&timezone=America%2FSao_Paulo&forecast_days=3';
 
     const res = await fetch(url, { next: { revalidate: 600 } });
     const json = await res.json();
@@ -49,10 +47,10 @@ export async function GET() {
     const current = json.current;
     const daily = json.daily;
 
-    const wmo = WMO_CODES[current.weather_code] || { label: "Unknown", emoji: "🌡️" };
+    const wmo = WMO_CODES[current.weather_code] || { label: "Desconhecido", emoji: "🌡️" };
 
     const data = {
-      city: "Madrid",
+      city: "Itapema, SC",
       temp: Math.round(current.temperature_2m),
       feels_like: Math.round(current.apparent_temperature),
       humidity: current.relative_humidity_2m,
@@ -73,6 +71,6 @@ export async function GET() {
     return NextResponse.json(data);
   } catch (error) {
     console.error('[weather] Error:', error);
-    return NextResponse.json({ error: 'Failed to fetch weather' }, { status: 500 });
+    return NextResponse.json({ error: 'Falha ao buscar clima' }, { status: 500 });
   }
 }
