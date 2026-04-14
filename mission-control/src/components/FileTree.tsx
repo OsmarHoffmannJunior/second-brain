@@ -107,7 +107,7 @@ function TreeNode({
               : "#60A5FA",
           }}
         />
-        <span className="truncate">{node.name}</span>
+        <span className="truncate">{(node as any).label || node.name}</span>
       </button>
 
       {isFolder && isExpanded && node.children && (
