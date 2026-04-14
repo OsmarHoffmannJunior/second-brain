@@ -24,3 +24,7 @@ status: "pending_setup"
 created: "2026-04-14"
 lastRun: null
 nextRun: "2026-04-14 09:00 BRT"
+
+# ⚠️ NOTIFICAÇÃO
+# systemEvent NÃO envia notificação pro usuário.
+# Usar agentTurn + Telegram API para avisar.
