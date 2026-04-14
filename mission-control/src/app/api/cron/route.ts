@@ -1,60 +1,26 @@
 import { NextRequest, NextResponse } from "next/server";
-import { execSync } from "child_process";
+import { readFileSync, writeFileSync, existsSync } from "fs";
+import { join } from "path";
 
-function getGatewayConfig() {
+const CRON_DIR = (process.env.OPENCLAW_DIR || "/root/.openclaw") + "/cron";
+const JOBS_FILE = join(CRON_DIR, "jobs.json");
+
+interface CronJobData {
+  version: number;
+  jobs: Record<string, unknown>[];
+}
+
+function readJobsFile(): CronJobData {
   try {
-    const configRaw = require("fs").readFileSync((process.env.OPENCLAW_DIR || "/root/.openclaw") + "/openclaw.json", "utf-8");
-    const config = JSON.parse(configRaw);
-    return {
-      token: config.gateway?.auth?.token || "",
-      port: config.gateway?.port || 18789,
-    };
+    if (!existsSync(JOBS_FILE)) return { version: 1, jobs: [] };
+    return JSON.parse(readFileSync(JOBS_FILE, "utf-8")) as CronJobData;
   } catch {
-    return { token: "", port: 18789 };
+    return { version: 1, jobs: [] };
   }
 }
 
-// GET: List all cron jobs from the OpenClaw gateway
-export async function GET() {
-  try {
-    const output = execSync("openclaw cron list --json --all 2>/dev/null", {
-      timeout: 10000,
-      encoding: "utf-8",
-    });
-
-    const data = JSON.parse(output);
-    const jobs = (data.jobs || []).map((job: Record<string, unknown>) => ({
-      id: job.id,
-      agentId: job.agentId || "main",
-      name: job.name || "Unnamed",
-      enabled: job.enabled ?? true,
-      createdAtMs: job.createdAtMs,
-      updatedAtMs: job.updatedAtMs,
-      schedule: job.schedule,
-      sessionTarget: job.sessionTarget,
-      payload: job.payload,
-      delivery: job.delivery,
-      state: job.state,
-      // Derived fields for the UI
-      description: formatDescription(job),
-      scheduleDisplay: formatSchedule(job.schedule as Record<string, unknown>),
-      timezone: (job.schedule as Record<string, string>)?.tz || "UTC",
-      nextRun: (job.state as Record<string, unknown>)?.nextRunAtMs
-        ? new Date((job.state as Record<string, number>).nextRunAtMs).toISOString()
-        : null,
-      lastRun: (job.state as Record<string, unknown>)?.lastRunAtMs
-        ? new Date((job.state as Record<string, number>).lastRunAtMs).toISOString()
-        : null,
-    }));
-
-    return NextResponse.json(jobs);
-  } catch (error) {
-    console.error("Error fetching cron jobs from gateway:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch cron jobs from OpenClaw gateway" },
-      { status: 500 }
-    );
-  }
+function writeJobsFile(data: CronJobData): void {
+  writeFileSync(JOBS_FILE, JSON.stringify(data, null, 2), "utf-8");
 }
 
 function formatDescription(job: Record<string, unknown>): string {
@@ -71,7 +37,7 @@ function formatDescription(job: Record<string, unknown>): string {
   return "";
 }
 
-function formatSchedule(schedule: Record<string, unknown>): string {
+function formatSchedule(schedule: Record<string, unknown> | null): string {
   if (!schedule) return "Unknown";
   switch (schedule.kind) {
     case "cron":
@@ -88,6 +54,43 @@ function formatSchedule(schedule: Record<string, unknown>): string {
   }
 }
 
+// GET: List all cron jobs from local file (fast, no CLI)
+export async function GET() {
+  try {
+    const data = readJobsFile();
+    const jobs = (data.jobs || []).map((job: Record<string, unknown>) => ({
+      id: job.id,
+      agentId: job.agentId || "main",
+      name: job.name || "Unnamed",
+      enabled: job.enabled ?? true,
+      createdAtMs: job.createdAtMs,
+      updatedAtMs: job.updatedAtMs,
+      schedule: job.schedule,
+      sessionTarget: job.sessionTarget,
+      payload: job.payload,
+      delivery: job.delivery,
+      state: job.state,
+      description: formatDescription(job),
+      scheduleDisplay: formatSchedule(job.schedule as Record<string, unknown> | null),
+      timezone: (job.schedule as Record<string, string>)?.tz || "UTC",
+      nextRun: (job.state as Record<string, unknown>)?.nextRunAtMs
+        ? new Date((job.state as Record<string, number>).nextRunAtMs).toISOString()
+        : null,
+      lastRun: (job.state as Record<string, unknown>)?.lastRunAtMs
+        ? new Date((job.state as Record<string, number>).lastRunAtMs).toISOString()
+        : null,
+    }));
+
+    return NextResponse.json(jobs);
+  } catch (error) {
+    console.error("Error reading cron jobs:", error);
+    return NextResponse.json(
+      { error: "Failed to read cron jobs" },
+      { status: 500 }
+    );
+  }
+}
+
 // PUT: Toggle enable/disable a cron job
 export async function PUT(request: NextRequest) {
   try {
@@ -98,13 +101,22 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: "Job ID is required" }, { status: 400 });
     }
 
-    const action = enabled ? "enable" : "disable";
-    // Use openclaw CLI to update the job
-    const output = execSync(
-      `openclaw cron ${action} ${id} --json 2>/dev/null || openclaw cron update ${id} --enabled=${enabled} --json 2>/dev/null`,
-      { timeout: 10000, encoding: "utf-8" }
+    const data = readJobsFile();
+    const jobIndex = (data.jobs as Record<string, unknown>[]).findIndex(
+      (j) => j.id === id
     );
 
+    if (jobIndex === -1) {
+      return NextResponse.json({ error: "Job not found" }, { status: 404 });
+    }
+
+    (data.jobs as Record<string, unknown>[])[jobIndex] = {
+      ...(data.jobs as Record<string, unknown>[])[jobIndex],
+      enabled,
+      updatedAtMs: Date.now(),
+    };
+
+    writeJobsFile(data);
     return NextResponse.json({ success: true, id, enabled });
   } catch (error) {
     console.error("Error updating cron job:", error);
@@ -125,11 +137,15 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: "Job ID is required" }, { status: 400 });
     }
 
-    execSync(`openclaw cron remove ${id} 2>/dev/null`, {
-      timeout: 10000,
-      encoding: "utf-8",
-    });
+    const data = readJobsFile();
+    const originalLength = (data.jobs as Record<string, unknown>[]).length;
+    data.jobs = (data.jobs as Record<string, unknown>[]).filter((j) => j.id !== id);
 
+    if ((data.jobs as Record<string, unknown>[]).length === originalLength) {
+      return NextResponse.json({ error: "Job not found" }, { status: 404 });
+    }
+
+    writeJobsFile(data);
     return NextResponse.json({ success: true, deleted: id });
   } catch (error) {
     console.error("Error deleting cron job:", error);

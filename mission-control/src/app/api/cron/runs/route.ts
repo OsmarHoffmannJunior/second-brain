@@ -1,7 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
-import { execSync } from "child_process";
+import { readFileSync, existsSync } from "fs";
+import { join } from "path";
 
-// GET: Fetch run history for a cron job
+const CRON_RUNS_DIR = (process.env.OPENCLAW_DIR || "/root/.openclaw") + "/cron/runs";
+
+interface RunEntry {
+  id: string;
+  jobId: string;
+  startedAt: string | null;
+  completedAt: string | null;
+  status: string;
+  durationMs: number | null;
+  error: string | null;
+}
+
+// GET: Fetch run history for a cron job from local JSONL file
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
@@ -15,59 +28,50 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Invalid job ID" }, { status: 400 });
     }
 
-    let runs: RunEntry[] = [];
+    const runsFile = join(CRON_RUNS_DIR, `${id}.jsonl`);
+    const runs: RunEntry[] = [];
 
-    try {
-      const output = execSync(`openclaw cron runs ${id} --json 2>/dev/null`, {
-        timeout: 10000,
-        encoding: "utf-8",
-      });
+    if (existsSync(runsFile)) {
+      const content = readFileSync(runsFile, "utf-8");
+      const lines = content.trim().split("\n").filter(Boolean);
 
-      const data = JSON.parse(output);
-      const rawRuns: RawRun[] = data.runs || data || [];
-
-      runs = rawRuns.map((r: RawRun) => ({
-        id: r.id || `${id}-${r.startedAt}`,
-        jobId: id,
-        startedAt: r.startedAt || r.createdAt || null,
-        completedAt: r.completedAt || r.finishedAt || null,
-        status: r.status || "unknown",
-        durationMs:
-          r.durationMs ||
-          (r.startedAt && r.completedAt
-            ? new Date(r.completedAt).getTime() - new Date(r.startedAt).getTime()
-            : null),
-        error: r.error || null,
-      }));
-    } catch {
-      // Command might not support runs yet or no history — return empty
-      runs = [];
+      for (const line of lines) {
+        try {
+          const r = JSON.parse(line);
+          runs.push({
+            id: r.id || `${id}-${r.ts}`,
+            jobId: r.jobId || id,
+            startedAt: r.startedAt
+              ? new Date(r.startedAt).toISOString()
+              : r.ts
+              ? new Date(r.ts).toISOString()
+              : null,
+            completedAt: r.completedAt
+              ? new Date(r.completedAt).toISOString()
+              : null,
+            status: r.status || "unknown",
+            durationMs: r.durationMs || null,
+            error: r.error || null,
+          });
+        } catch {
+          // Skip malformed lines
+        }
+      }
     }
+
+    // Sort by startedAt descending (most recent first)
+    runs.sort(
+      (a, b) =>
+        new Date(b.startedAt || 0).getTime() -
+        new Date(a.startedAt || 0).getTime()
+    );
 
     return NextResponse.json({ runs, total: runs.length });
   } catch (error) {
     console.error("Error fetching run history:", error);
-    return NextResponse.json({ error: "Failed to fetch run history" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to fetch run history" },
+      { status: 500 }
+    );
   }
-}
-
-interface RawRun {
-  id?: string;
-  startedAt?: string;
-  createdAt?: string;
-  completedAt?: string;
-  finishedAt?: string;
-  status?: string;
-  durationMs?: number;
-  error?: string;
-}
-
-interface RunEntry {
-  id: string;
-  jobId: string;
-  startedAt: string | null;
-  completedAt: string | null;
-  status: string;
-  durationMs: number | null;
-  error: string | null;
 }
