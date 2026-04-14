@@ -2,85 +2,32 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Nova aba `/chat` no Mission Control para conversar com agentes via interface WhatsApp-style. Integração via gateway OpenClaw (OpenAI-compatible HTTP endpoint).
+**Goal:** Nova aba `/chat` no Mission Control para conversar com agentes via interface WhatsApp-style. Integração via `openclaw sessions send` (CLI) — zero config nova no gateway.
 
-**Architecture:** Browser → Next.js API Route → Gateway OpenAI HTTP endpoint (`POST /v1/chat/completions`). Streaming via SSE. Sessions persistidas por agente em `localStorage`.
+**Architecture:** Browser → Next.js API Route → `execSync` → `openclaw sessions send` CLI → resposta JSON. Sem streaming SSE. Sessions persistidas por agente em `localStorage`.
 
-**Tech Stack:** Next.js App Router, SSE (Server-Sent Events), `fetch` API, CSS Modules ou inline styles (siga padrão existente do MC).
+**Tech Stack:** Next.js App Router, `execSync` (CLI), `localStorage`, CSS inline (padrão existente do MC).
 
 ---
 
 ## Configuração do Sistema
 
-### Task 1: Habilitar OpenAI HTTP endpoint no gateway
+### Task 1: Nenhuma mudança necessária no gateway
 
-**Arquivo:**
-- Modify: `/root/.openclaw/openclaw.json`
+**Status:** SKIP — o gateway já tem tudo que precisa (`sessions send` via CLI). Nenhuma config nova requerida.
 
-- [ ] **Step 1: Editar openclaw.json para adicionar config do OpenAI endpoint**
-
-O gateway precisa expor `POST /v1/chat/completions`. Adicionar em `gateway.http.endpoints`:
-
-```json
-"gateway": {
-  "http": {
-    "endpoints": {
-      "chatCompletions": {
-        "enabled": true
-      }
-    }
-  }
-}
-```
-
-O merge deve preservar todas as configs existentes (specialmente `channels.telegram`).
+- [ ] **Step 1: Confirmar que sessions send funciona**
 
 ```bash
-# Verificar config atual antes de editar
-cat /root/.openclaw/openclaw.json | python3 -c "import sys,json; d=json.load(sys.stdin); print(json.dumps({**d, 'gateway':{**d.get('gateway',{}), 'http':{'endpoints':{'chatCompletions':{'enabled':True}}}}}, indent=2))" > /tmp/test_config.json && echo "JSON válido"
+openclaw sessions send --help 2>&1 | head -15
 ```
 
-- [ ] **Step 2: Aplicar mudança real**
+Verificar se o comando existe e mostra ajuda.
+
+- [ ] **Step 2: Commit (no-op marker)**
 
 ```bash
-python3 -c "
-import json
-with open('/root/.openclaw/openclaw.json') as f:
-    d = json.load(f)
-d.setdefault('gateway', {})
-d['gateway'].setdefault('http', {})
-d['gateway']['http'].setdefault('endpoints', {})
-d['gateway']['http']['endpoints']['chatCompletions'] = {'enabled': True}
-with open('/root/.openclaw/openclaw.json', 'w') as f:
-    json.dump(d, f, indent=2)
-print('Config atualizada')
-"
-```
-
-- [ ] **Step 3: Reiniciar gateway**
-
-```bash
-systemctl restart openclaw-gateway && sleep 2 && systemctl status openclaw-gateway --no-pager
-```
-
-Esperado: `active (running)`
-
-- [ ] **Step 4: Testar endpoint**
-
-```bash
-curl -s -X POST http://localhost:18789/v1/chat/completions \
-  -H "Authorization: Bearer e05f77d029aa4b05d7138adc52ad26abb6848bcfcdba7248" \
-  -H "Content-Type: application/json" \
-  -d '{"model":"minimax-portal/MiniMax-M2.7","messages":[{"role":"user","content":"OI"}],"max_tokens":50}' \
-  | head -5
-```
-
-Esperado: JSON response (não 404)
-
-- [ ] **Step 5: Commit**
-
-```bash
-cd /root/.openclaw/workspace && git add openclaw.json && git commit -m "feat(gateway): enable OpenAI /v1/chat/completions endpoint"
+cd /root/.openclaw/workspace && git add docs/superpowers/plans/ && git commit -m "chore(chat): Task 1 skip — gateway sessions CLI sufficient"
 ```
 
 ---
@@ -92,11 +39,11 @@ cd /root/.openclaw/workspace && git add openclaw.json && git commit -m "feat(gat
 **Arquivo:**
 - Create: `src/app/api/chat/send/route.ts`
 
-- [ ] **Step 1: Criar o arquivo com SSE streaming**
+- [ ] **Step 1: Criar o arquivo**
 
 ```typescript
 import { NextRequest, NextResponse } from 'next/server';
-import { readFileSync } from 'fs';
+import { execSync } from 'child_process';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -109,97 +56,51 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Message is required' }, { status: 400 });
     }
 
-    // Ler token do gateway
-    const configPath = (process.env.OPENCLAW_DIR || '/root/.openclaw') + '/openclaw.json';
-    const config = JSON.parse(readFileSync(configPath, 'utf-8'));
-    const gatewayToken = config.gateway?.auth?.token;
+    // Determinar session: usa provided sessionId ou cria novo
+    // Se não tem sessionId, usa 'main' como default
+    const targetSession = sessionId || 'main';
 
-    if (!gatewayToken) {
-      return NextResponse.json({ error: 'Gateway token not configured' }, { status: 500 });
+    // Montar prompt do sistema baseado no agentId
+    const systemInstruction = agentId && agentId !== 'main'
+      ? `You are the agent named '${agentId}'. Respond as that agent in Portuguese. Be concise and direct.`
+      : 'You are Clara, the operations manager. Be direct, concise, and helpful in Portuguese.';
+
+    // Montar mensagem completa com contexto do agente
+    const fullMessage = `${systemInstruction}\n\nUser: ${message}`;
+
+    // Chamar sessions send via CLI
+    // --json output para facilitar parsing
+    const result = execSync(
+      `openclaw sessions send --session ${targetSession} --message ${JSON.stringify(fullMessage)} --json 2>/dev/null`,
+      {
+        encoding: 'utf-8',
+        timeout: 120000, // 2min timeout
+        maxBuffer: 10 * 1024 * 1024, // 10MB buffer
+      }
+    );
+
+    let responseText = result.trim();
+
+    // Tentar extrair texto do JSON de resposta
+    try {
+      const parsed = JSON.parse(result);
+      // O sessions send pode retornar {text: "...", content: "..."} ou só texto
+      responseText = parsed.text || parsed.content || parsed.message?.content || result;
+    } catch {
+      // Se não é JSON, usa o result como texto direto
     }
 
-    // Montar prompt do sistema
-    const systemPrompt = agentId && agentId !== 'main'
-      ? `You are the agent named '${agentId}'. Respond as that agent.`
-      : 'You are Clara, the operations manager. Be direct, concise, and helpful.';
-
-    // Chamar gateway OpenAI endpoint
-    const gatewayRes = await fetch('http://localhost:18789/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${gatewayToken}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'minimax-portal/MiniMax-M2.7',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: message },
-        ],
-        max_tokens: 4096,
-        stream: true,
-      }),
-      signal: AbortSignal.timeout(120000), // 2min timeout
-    });
-
-    if (!gatewayRes.ok) {
-      const error = await gatewayRes.text();
-      return NextResponse.json({ error: `Gateway error: ${gatewayRes.status}` }, { status: 502 });
-    }
-
-    // Stream SSE do gateway para o browser
-    const encoder = new TextEncoder();
-    const stream = new ReadableStream({
-      async start(controller) {
-        const reader = gatewayRes.body?.getReader();
-        if (!reader) {
-          controller.close();
-          return;
-        }
-
-        try {
-          while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
-
-            const chunk = new TextDecoder().decode(value);
-            
-            // Parse SSE lines: "data: {...}" ou "data: [DONE]"
-            for (const line of chunk.split('\n')) {
-              if (!line.startsWith('data: ')) continue;
-              const data = line.slice(6).trim();
-              if (data === '[DONE]') {
-                controller.enqueue(encoder.encode('event: done\ndata: {}\n\n'));
-                break;
-              }
-              try {
-                const parsed = JSON.parse(data);
-                // Extrair texto do chunk
-                const text = parsed.choices?.[0]?.delta?.content || '';
-                if (text) {
-                  controller.enqueue(encoder.encode(`event: message\ndata: ${JSON.stringify({ content: text })}\n\n`));
-                }
-              } catch {}
-            }
-          }
-        } finally {
-          try {
-            await reader.cancel();
-          } catch {}
-          controller.close();
-        }
-      },
-    });
-
-    return new Response(stream, {
-      headers: {
-        'Content-Type': 'text/event-stream',
-        'Cache-Control': 'no-cache',
-        'Connection': 'keep-alive',
-      },
+    return NextResponse.json({
+      success: true,
+      content: responseText,
+      sessionId: targetSession,
     });
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error('[chat/send] Error:', error.message);
+    return NextResponse.json(
+      { error: error.message || 'Failed to send message' },
+      { status: 500 }
+    );
   }
 }
 ```
@@ -207,7 +108,7 @@ export async function POST(request: NextRequest) {
 - [ ] **Step 2: Commit**
 
 ```bash
-cd /root/.openclaw/workspace/mission-control && git add src/app/api/chat/ && git commit -m "feat(chat): add SSE streaming chat send endpoint"
+cd /root/.openclaw/workspace/mission-control && git add src/app/api/chat/send/route.ts && git commit -m "feat(chat): add sessions send API route"
 ```
 
 ---
@@ -232,11 +133,11 @@ export async function GET() {
     const primaryModel = config.agents?.defaults?.model?.primary || 'minimax-portal/MiniMax-M2.7';
     
     return NextResponse.json({ 
-      models: [primaryModel],
-      current: primaryModel 
+      model: primaryModel,
+      agent: 'main',
     });
   } catch {
-    return NextResponse.json({ models: ['minimax-portal/MiniMax-M2.7'], current: 'minimax-portal/MiniMax-M2.7' });
+    return NextResponse.json({ model: 'minimax-portal/MiniMax-M2.7', agent: 'main' });
   }
 }
 ```
@@ -249,16 +150,16 @@ cd /root/.openclaw/workspace/mission-control && git add src/app/api/chat/models/
 
 ---
 
-## UI — Página de Chat
+## Navegação
 
 ### Task 4: Adicionar link no Dock
 
 **Arquivo:**
-- Modify: `src/components/TenacitOS/Dock.tsx` (adicionar item de navegação)
+- Modify: `src/components/TenacitOS/Dock.tsx`
 
 - [ ] **Step 1: Adicionar item Chat no Dock**
 
-Localizar o array de `items` no Dock e adicionar:
+Encontrar o array de `items` no Dock e adicionar:
 
 ```typescript
 { href: "/chat", label: "Chat", icon: MessageCircle },
@@ -274,7 +175,9 @@ cd /root/.openclaw/workspace/mission-control && git add src/components/TenacitOS
 
 ---
 
-### Task 5: Criar página de Chat
+## UI — Página de Chat
+
+### Task 5: Criar página e componentes de Chat
 
 **Arquivos:**
 - Create: `src/app/(dashboard)/chat/page.tsx`
@@ -290,19 +193,19 @@ cd /root/.openclaw/workspace/mission-control && git add src/components/TenacitOS
 ```typescript
 'use client';
 
-import { useState, useRef, KeyboardEvent } from 'react';
+import { useState, KeyboardEvent } from 'react';
 
 interface ChatInputProps {
   onSend: (message: string) => void;
   disabled?: boolean;
-  streaming?: boolean;
+  loading?: boolean;
 }
 
-export default function ChatInput({ onSend, disabled, streaming }: ChatInputProps) {
+export default function ChatInput({ onSend, disabled, loading }: ChatInputProps) {
   const [text, setText] = useState('');
 
   const handleSend = () => {
-    if (!text.trim() || disabled) return;
+    if (!text.trim() || disabled || loading) return;
     onSend(text.trim());
     setText('');
   };
@@ -326,8 +229,8 @@ export default function ChatInput({ onSend, disabled, streaming }: ChatInputProp
         value={text}
         onChange={e => setText(e.target.value)}
         onKeyDown={handleKey}
-        placeholder={streaming ? 'Aguardando resposta...' : 'Digite sua mensagem...'}
-        disabled={disabled}
+        placeholder={loading ? 'Aguardando resposta...' : 'Digite sua mensagem...'}
+        disabled={disabled || loading}
         rows={1}
         style={{
           flex: 1,
@@ -346,19 +249,19 @@ export default function ChatInput({ onSend, disabled, streaming }: ChatInputProp
       />
       <button
         onClick={handleSend}
-        disabled={disabled || !text.trim()}
+        disabled={disabled || loading || !text.trim()}
         style={{
           padding: '8px 16px',
           borderRadius: '20px',
           border: 'none',
-          background: disabled ? 'var(--border)' : 'var(--accent)',
-          color: disabled ? 'var(--text-muted)' : '#fff',
-          cursor: disabled ? 'not-allowed' : 'pointer',
+          background: disabled || loading ? 'var(--border)' : 'var(--accent)',
+          color: '#fff',
+          cursor: (disabled || loading || !text.trim()) ? 'not-allowed' : 'pointer',
           fontWeight: 600,
           fontSize: '14px',
         }}
       >
-        {streaming ? '...' : 'Enviar'}
+        {loading ? '...' : 'Enviar'}
       </button>
     </div>
   );
@@ -533,8 +436,8 @@ interface ChatTabProps {
 
 export default function ChatTab({ agentId, sessionId, onSessionIdChange }: ChatTabProps) {
   const [messages, setMessages] = useState<Message[]>([]);
-  const [streaming, setStreaming] = useState(false);
-  const [streamingContent, setStreamingContent] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -560,7 +463,7 @@ export default function ChatTab({ agentId, sessionId, onSessionIdChange }: ChatT
   useEffect(() => {
     // Auto-scroll ao fundo
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, streamingContent]);
+  }, [messages]);
 
   const handleSend = async (text: string) => {
     const userMsg: Message = {
@@ -570,8 +473,8 @@ export default function ChatTab({ agentId, sessionId, onSessionIdChange }: ChatT
       timestamp: new Date(),
     };
     setMessages(prev => [...prev, userMsg]);
-    setStreaming(true);
-    setStreamingContent('');
+    setLoading(true);
+    setError(null);
 
     try {
       const response = await fetch('/api/chat/send', {
@@ -581,69 +484,42 @@ export default function ChatTab({ agentId, sessionId, onSessionIdChange }: ChatT
       });
 
       if (!response.ok) {
-        throw new Error('Failed to send message');
+        const err = await response.json();
+        throw new Error(err.error || 'Failed to send message');
       }
 
-      const reader = response.body?.getReader();
-      if (!reader) throw new Error('No response body');
-
-      let assistantContent = '';
-      const assistantMsgId = (Date.now() + 1).toString();
-
-      try {
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-
-          const chunk = new TextDecoder().decode(value);
-          const lines = chunk.split('\n');
-
-          for (const line of lines) {
-            if (!line.startsWith('event: message\ndata: ')) continue;
-            const data = line.replace('event: message\ndata: ', '');
-            try {
-              const parsed = JSON.parse(data);
-              assistantContent += parsed.content;
-              setStreamingContent(assistantContent);
-            } catch {}
-          }
-        }
-      } finally {
-        reader.cancel();
-      }
-
-      if (assistantContent) {
-        const assistantMsg: Message = {
-          id: assistantMsgId,
-          role: 'assistant',
-          content: assistantContent,
-          timestamp: new Date(),
-        };
-        setMessages(prev => [...prev, assistantMsg]);
-      }
+      const data = await response.json();
+      
+      const assistantMsg: Message = {
+        id: (Date.now() + 1).toString(),
+        role: 'assistant',
+        content: data.content || 'Resposta vazia',
+        timestamp: new Date(),
+      };
+      setMessages(prev => [...prev, assistantMsg]);
 
       // Gerar sessionId fake para persistência (não usado atualmente)
-      if (!sessionId) {
-        onSessionIdChange(`session_${Date.now()}`);
+      if (!sessionId && data.sessionId) {
+        onSessionIdChange(data.sessionId);
       }
-    } catch (error: any) {
+    } catch (err: any) {
+      setError(err.message);
       const errorMsg: Message = {
         id: (Date.now() + 2).toString(),
         role: 'assistant',
-        content: `Erro: ${error.message}`,
+        content: `Erro: ${err.message}`,
         timestamp: new Date(),
       };
       setMessages(prev => [...prev, errorMsg]);
     } finally {
-      setStreaming(false);
-      setStreamingContent('');
+      setLoading(false);
     }
   };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       <div style={{ flex: 1, overflowY: 'auto', padding: '16px', display: 'flex', flexDirection: 'column' }}>
-        {messages.length === 0 && (
+        {messages.length === 0 && !loading && (
           <div style={{
             textAlign: 'center',
             color: 'var(--text-muted)',
@@ -661,19 +537,17 @@ export default function ChatTab({ agentId, sessionId, onSessionIdChange }: ChatT
             timestamp={msg.timestamp}
           />
         ))}
-        {streaming && streamingContent && (
-          <ChatBubble
-            role="assistant"
-            content={streamingContent}
-            timestamp={new Date()}
-          />
+        {loading && (
+          <div style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '13px', padding: '8px' }}>
+            Clara está digitando...
+          </div>
         )}
         <div ref={bottomRef} />
       </div>
       <ChatInput
         onSend={handleSend}
-        disabled={streaming}
-        streaming={streaming}
+        disabled={false}
+        loading={loading}
       />
     </div>
   );
@@ -740,7 +614,7 @@ cd /root/.openclaw/workspace/mission-control && git add src/app/\(dashboard\)/ch
 - [ ] **Step 1: Rebuild e deploy**
 
 ```bash
-cd /root/.openclaw/workspace/mission-control && npm run build 2>&1 | tail -20
+cd ~/.worktrees/chat-feature/mission-control && npm run build 2>&1 | tail -20
 ```
 
 Esperado: build succeed, sem erros
@@ -756,7 +630,7 @@ pm2 restart mission-control && sleep 3 && pm2 status mission-control
 1. Abrir `http://100.64.39.113:3000/chat`
 2. Verificar Dock mostra "Chat"
 3. Digitar mensagem e enviar
-4. Verificar resposta streaming
+4. Verificar resposta aparece (sem streaming — texto completo)
 5. Recarregar página — mensagens persistem
 
 ---
@@ -767,12 +641,12 @@ pm2 restart mission-control && sleep 3 && pm2 status mission-control
 - [ ] Placeholder scan: nenhum TBD/TODO no código
 - [ ] Type consistency: interfaces consistentes entre componentes
 - [ ] Commits granulares: cada task tem seu próprio commit
+- [ ] Nenhuma config nova de gateway (usamos sessions send CLI)
 
 ---
 
 ## Notas de Deploy
 
-- Gateway restart: `systemctl restart openclaw-gateway`
 - PM2 restart: `pm2 restart mission-control`
 - Logs: `pm2 logs mission-control --lines 50`
-- Gateway logs: `journalctl -u openclaw-gateway -n 50`
+- Gateway NÃO precisa de restart (não houve mudança)
