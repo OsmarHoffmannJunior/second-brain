@@ -1,7 +1,7 @@
 #!/bin/bash
 # ============================================================
 # Dispatch Task Agent subagent for a specific task
-# Uses Python WebSocket to call OpenClaw gateway RPC sessions.spawn
+# Uses OpenClaw gateway WebSocket RPC to spawn subagent
 # ============================================================
 
 set -euo pipefail
@@ -15,8 +15,10 @@ DUE="${6:-}"
 TRACK="${7:-on_track}"
 
 AUTH_COOKIE="mc_auth=vpwpAfpLG2plBgk9MD+sUsSU+KXAlJl2Ut7TDoUmKw4="
-SPAWN_SCRIPT="/tmp/spawn-subagent.py"
+GW_URL="ws://127.0.0.1:18789"
+GW_TOKEN="e05f77d029aa4b05d7138adc52ad26abb6848bcfcdba7248"
 PROMPT_FILE="/tmp/task-prompt-${ID}.txt"
+SPAWN_SCRIPT="/tmp/spawn-subagent.py"
 
 log() { echo "[$(date '+%Y-%m-%d %H:%M:%S')] [dispatcher] $1"; }
 
@@ -30,90 +32,101 @@ import sys, os, json, time, threading, uuid
 try:
     import websocket as ws_module
 except ImportError:
-    try:
-        import websocket as ws_module
-    except ImportError:
-        print("websocket-client not installed", file=sys.stderr)
-        sys.exit(1)
+    print("websocket-client not installed", file=sys.stderr)
+    sys.exit(1)
 
 GW_URL = "ws://127.0.0.1:18789"
 TOKEN = "e05f77d029aa4b05d7138adc52ad26abb6848bcfcdba7248"
 
-def spawn(task_prompt: str, workspace: str) -> str:
-    session_id = str(uuid.uuid4())
-    req_id = [0]
-    result = {"done": False, "output": "", "sessionKey": ""}
-    ws = None
+result = {"done": False, "error": None}
 
-    def send(wc, msg):
-        req_id[0] += 1
-        wc.send(json.dumps({**msg, "id": str(req_id[0])}))
-
-    ws = ws_module.WebSocket()
-    try:
-        ws.connect(GW_URL, header=[f"Authorization: Bearer {TOKEN}"])
-    except Exception:
-        ws.connect(GW_URL)
-
-    def reader():
-        while not result["done"]:
-            try:
-                msg = json.loads(ws.recv())
-                if msg.get("event") == "connect.challenge":
-                    send(ws, {
-                        "type": "req", "method": "connect",
-                        "params": {
-                            "minProtocol": 3, "maxProtocol": 3,
-                            "client": {"id": "cli", "version": "2026.4.12", "platform": "linux", "mode": "cli"},
-                            "role": "operator",
-                            "scopes": ["operator.admin"],
-                            "caps": [], "commands": [], "permissions": {},
-                            "auth": {"token": TOKEN},
-                            "locale": "pt-BR", "userAgent": "openclaw-cli/2026.4.12"
-                        }
-                    })
-                    return
-                if msg.get("payload", {}).get("type") == "hello-ok":
-                    print("[spawn] Authenticated as operator.admin", flush=True)
-                    send(ws, {
-                        "type": "req", "method": "sessions.spawn",
-                        "params": {
-                            "task": task_prompt,
-                            "workspace": workspace,
-                            "runtime": "subagent",
-                            "model": "minimax-portal/MiniMax-M2.7"
-                        }
-                    })
-                    return
-                if msg.get("result", {}).get("sessionKey"):
-                    result["sessionKey"] = msg["result"]["sessionKey"]
-                if "output" in msg.get("result", {}):
-                    result["output"] += msg["result"].get("output", "")
-                if msg.get("result", {}).get("done"):
-                    result["done"] = True
-            except Exception:
-                break
-
-    t = threading.Thread(target=reader, daemon=True)
-    t.start()
-    time.sleep(0.5)
-
-    for _ in range(10):
-        if result["done"] or result["sessionKey"]:
-            break
-        time.sleep(0.5)
-
-    ws.close()
-    return result.get("output", "")
-
-if __name__ == "__main__":
+def main():
     if len(sys.argv) < 3:
         print("Usage: spawn-subagent.py <prompt-file> <workspace>", file=sys.stderr)
         sys.exit(1)
+    
     with open(sys.argv[1]) as f:
-        prompt = f.read()
-    output = spawn(prompt, sys.argv[2])
-    print(output if output else "[no output]")
+        task_prompt = f.read()
+    workspace = sys.argv[2]
+
+    req_id = [0]
+    ws = None
+
+    def send_method(method, params):
+        req_id[0] += 1
+        ws.send(json.dumps({
+            "type": "req", "id": str(req_id[0]),
+            "method": method, "params": params
+        }))
+
+    def on_message(ws, data):
+        global result
+        msg = json.loads(data)
+        if msg.get("event") == "connect.challenge":
+            send_method("connect", {
+                "minProtocol": 3, "maxProtocol": 3,
+                "client": {"id": "cli", "version": "2026.4.12", "platform": "linux", "mode": "cli"},
+                "role": "operator",
+                "scopes": [],
+                "caps": [], "commands": [], "permissions": {},
+                "auth": {"token": TOKEN},
+                "locale": "en-US", "userAgent": "openclaw-cli/2026.4.12"
+            })
+            return
+        if msg.get("payload", {}).get("type") == "hello-ok":
+            print("[spawn] Authenticated", flush=True)
+            send_method("sessions.create", {
+                "sessionKey": f"agent:main:subagent:{uuid.uuid4()}",
+                "type": "agent",
+                "runtime": "subagent",
+                "model": "minimax-portal/MiniMax-M2.7",
+                "workspaceDir": workspace,
+                "lane": "subagent"
+            })
+            return
+        if msg.get("type") == "res":
+            if msg.get("ok"):
+                print(f"[spawn] Spawned: {str(msg.get('payload', {}))[:200]}", flush=True)
+                result["done"] = True
+                ws.close()
+            else:
+                print(f"[spawn] Error: {msg.get('error')}", flush=True)
+                result["error"] = msg.get("error")
+                result["done"] = True
+                ws.close()
+
+    def on_error(ws, err):
+        print(f"[spawn] WS error: {err}", flush=True)
+        result["error"] = str(err)
+        result["done"] = True
+
+    def on_close(ws, *args):
+        result["done"] = True
+
+    def on_open(ws):
+        print("[spawn] Connected", flush=True)
+
+    ws = ws_module.WebSocketApp(GW_URL,
+        on_open=on_open, on_message=on_message,
+        on_error=on_error, on_close=on_close,
+        subprotocols=["json"])
+
+    t = threading.Thread(target=ws.run_forever, daemon=True)
+    t.start()
+
+    for _ in range(10):
+        if result["done"]: break
+        time.sleep(1)
+
+    ws.close()
+    if result["error"]:
+        print(f"[spawn] Failed: {result['error']}", file=sys.stderr, flush=True)
+        sys.exit(1)
+    print("[spawn] Subagent spawned", flush=True)
+    sys.exit(0)
+
+if __name__ == "__main__":
+    main()
 PYEOF
     chmod +x "$SPAWN_SCRIPT"
 fi
@@ -173,9 +186,7 @@ PROMPT_EOF
 log "Disparando subagent para task $ID: $TITLE"
 
 # ─── Spawn via WebSocket ────────────────────────────────────
-python3 "$SPAWN_SCRIPT" "$PROMPT_FILE" /root/.openclaw/workspace 2>&1 || {
-    log "ERRO: spawn falhou com código $?"
-}
+python3 "$SPAWN_SCRIPT" "$PROMPT_FILE" /root/.openclaw/workspace 2>&1 || log "ERRO: spawn falhou com código $?"
 
 rm -f "$PROMPT_FILE"
 log "Dispatcher finished for task $ID"
