@@ -7,6 +7,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { execSync } from 'child_process';
 import { readFileSync, existsSync } from 'fs';
 import { join } from 'path';
+import { logActivity } from '@/lib/activities-db';
 
 const OPENCLAW_DIR = process.env.OPENCLAW_DIR || '/root/.openclaw';
 
@@ -165,6 +166,13 @@ async function listSessions(): Promise<NextResponse> {
 
     // Sort by updatedAt desc
     sessions.sort((a, b) => b.updatedAt - a.updatedAt);
+
+    logActivity(
+      'message',
+      `Sessions viewed: ${sessions.length} session(s)`,
+      'success',
+      { metadata: { totalSessions: sessions.length } }
+    );
 
     return NextResponse.json({ sessions, total: sessions.length });
   } catch (error) {

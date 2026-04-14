@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { spawn } from "child_process";
+import { logActivity } from "@/lib/activities-db";
 
 async function createNotification(
   title: string,
@@ -42,6 +43,13 @@ export async function POST(request: NextRequest) {
     });
 
     child.unref();
+
+    logActivity(
+      'cron',
+      `Cron job manually triggered: ${id}`,
+      'success',
+      { metadata: { jobId: id, type: 'manual' } }
+    );
 
     // Create success notification
     await createNotification(

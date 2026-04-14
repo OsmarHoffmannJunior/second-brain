@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { readFileSync, writeFileSync, existsSync } from "fs";
 import { join } from "path";
+import { logActivity } from "@/lib/activities-db";
 
 const CRON_DIR = (process.env.OPENCLAW_DIR || "/root/.openclaw") + "/cron";
 const JOBS_FILE = join(CRON_DIR, "jobs.json");
@@ -117,6 +118,14 @@ export async function PUT(request: NextRequest) {
     };
 
     writeJobsFile(data);
+
+    logActivity(
+      'cron',
+      `Cron job "${id}" ${enabled ? 'enabled' : 'disabled'}`,
+      'success',
+      { metadata: { jobId: id, enabled } }
+    );
+
     return NextResponse.json({ success: true, id, enabled });
   } catch (error) {
     console.error("Error updating cron job:", error);
@@ -146,6 +155,14 @@ export async function DELETE(request: NextRequest) {
     }
 
     writeJobsFile(data);
+
+    logActivity(
+      'cron',
+      `Cron job "${id}" deleted`,
+      'success',
+      { metadata: { jobId: id } }
+    );
+
     return NextResponse.json({ success: true, deleted: id });
   } catch (error) {
     console.error("Error deleting cron job:", error);

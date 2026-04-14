@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { readFileSync, existsSync } from "fs";
 import { join } from "path";
+import { logActivity } from "@/lib/activities-db";
 
 const CRON_RUNS_DIR = (process.env.OPENCLAW_DIR || "/root/.openclaw") + "/cron/runs";
 
@@ -64,6 +65,13 @@ export async function GET(request: NextRequest) {
       (a, b) =>
         new Date(b.startedAt || 0).getTime() -
         new Date(a.startedAt || 0).getTime()
+    );
+
+    logActivity(
+      'cron',
+      `Cron run history viewed for job: ${id} (${runs.length} run(s))`,
+      'success',
+      { metadata: { jobId: id, totalRuns: runs.length } }
     );
 
     return NextResponse.json({ runs, total: runs.length });
