@@ -183,6 +183,9 @@ export async function POST(request: NextRequest) {
             }
           }
         } finally {
+          try {
+            await reader.cancel();
+          } catch {}
           controller.close();
         }
       },
@@ -606,7 +609,7 @@ export default function ChatTab({ agentId, sessionId, onSessionIdChange }: ChatT
           }
         }
       } finally {
-        reader.releaseLock();
+        reader.cancel();
       }
 
       if (assistantContent) {
