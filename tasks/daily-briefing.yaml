@@ -1,0 +1,26 @@
+# tasks/daily-briefing.yaml — Daily Briefing Scheduled Task
+
+schedule: "0 9 * * *"
+sessionTarget: "isolated"
+timezone: "America/Sao_Paulo"
+
+agentTurn:
+  announce: true
+  message: "Execute o daily briefing e entregue no tópico Daily Briefing."
+
+output:
+  format: "markdown"
+  destination: "telegram"
+
+actions:
+  - read: memory/pending.md
+  - read: memory/projects/*.md
+  - read: memory/sessions/YYYY-MM-DD.md
+  - read: automation/state/tasks.db
+  - generate: briefing consolidated
+  - send: telegram topic "Daily Briefing"
+
+status: "pending_setup"
+created: "2026-04-14"
+lastRun: null
+nextRun: "2026-04-14 09:00 BRT"
