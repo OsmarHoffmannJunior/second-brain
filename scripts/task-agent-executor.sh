@@ -38,6 +38,7 @@ dispatch_task() {
     if [[ -x "${DISPATCH_SCRIPT}" ]]; then
         bash "${DISPATCH_SCRIPT}" "${id}" "${title}" "${desc}" "${prio}" "${cat}" "${due}" || {
             log "ERROR" "dispatch-task-agent.sh failed for task ${id}"
+            /root/.openclaw/scripts/send-telegram.sh "⚠️ Task Agent falhou ao processar task ${id}" || true
             return 1
         }
     else
