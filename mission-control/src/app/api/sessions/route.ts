@@ -1,30 +1,29 @@
 /**
  * Sessions API
- * GET /api/sessions          → list all sessions (from openclaw sessions list --json)
+ * GET /api/sessions          → list all sessions (from sessions.json)
  * GET /api/sessions?id=xxx   → get messages from a specific session (reads JSONL)
  */
 import { NextRequest, NextResponse } from 'next/server';
-import { execSync } from 'child_process';
 import { readFileSync, existsSync } from 'fs';
 import { join } from 'path';
 import { logActivity } from '@/lib/activities-db';
 
 const OPENCLAW_DIR = process.env.OPENCLAW_DIR || '/root/.openclaw';
+const SESSIONS_JSON = join(OPENCLAW_DIR, 'agents', 'main', 'sessions', 'sessions.json');
 
 interface RawSession {
   key: string;
-  kind: string;
+  sessionId: string;
   updatedAt: number;
-  ageMs: number;
-  sessionId?: string;
   systemSent?: boolean;
   abortedLastRun?: boolean;
+  model?: string;
+  lastChannel?: string;
+  lastTo?: string;
+  compactionCount?: number;
   inputTokens?: number;
   outputTokens?: number;
   totalTokens?: number;
-  totalTokensFresh?: boolean;
-  model?: string;
-  modelProvider?: string;
   contextTokens?: number;
 }
 
@@ -57,16 +56,8 @@ function parseSessionKey(key: string): {
   subagentId?: string;
   isRunEntry: boolean;
 } {
-  // Examples:
-  // agent:main:main
-  // agent:main:cron:<jobId>
-  // agent:main:cron:<jobId>:run:<sessionId>
-  // agent:main:subagent:<subagentId>
-  // agent:main:telegram:<chatId> or agent:main:direct:<...>
-
   const parts = key.split(':');
 
-  // Skip the ":run:" duplicate entries - these are redundant
   if (parts.includes('run')) {
     return { type: 'unknown', typeLabel: 'Run Entry', typeEmoji: '🔁', isRunEntry: true };
   }
@@ -95,7 +86,6 @@ function parseSessionKey(key: string): {
     };
   }
 
-  // telegram, direct, etc.
   return {
     type: 'direct',
     typeLabel: parts[2] ? `${parts[2].charAt(0).toUpperCase() + parts[2].slice(1)} Chat` : 'Direct Chat',
@@ -108,36 +98,37 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const sessionId = searchParams.get('id');
 
-  // Return messages for a specific session
   if (sessionId) {
     return getSessionMessages(sessionId);
   }
 
-  // Return list of all sessions
   return listSessions();
 }
 
 async function listSessions(): Promise<NextResponse> {
   try {
-    const output = execSync('openclaw sessions list --json 2>/dev/null', {
-      timeout: 10000,
-      encoding: 'utf-8',
-    });
+    if (!existsSync(SESSIONS_JSON)) {
+      return NextResponse.json({ sessions: [], total: 0 });
+    }
 
-    const data = JSON.parse(output);
-    const rawSessions: RawSession[] = data.sessions || [];
+    const raw = readFileSync(SESSIONS_JSON, 'utf-8');
+    const sessionsMap: Record<string, RawSession> = JSON.parse(raw);
+
+    const rawSessions = Object.entries(sessionsMap).map(([key, value]) => ({
+      ...value,
+      key,
+    }));
 
     const sessions: ParsedSession[] = rawSessions
       .reduce<ParsedSession[]>((acc, raw) => {
         const parsed = parseSessionKey(raw.key);
 
-        // Skip run-entry duplicates and unknown types
         if (parsed.isRunEntry || parsed.type === 'unknown') return acc;
 
         const totalTokens = raw.totalTokens || 0;
         const contextTokens = raw.contextTokens || 0;
         const contextUsedPercent =
-          contextTokens > 0 && raw.totalTokensFresh
+          contextTokens > 0
             ? Math.round((totalTokens / contextTokens) * 100)
             : null;
 
@@ -151,9 +142,9 @@ async function listSessions(): Promise<NextResponse> {
           cronJobId: parsed.cronJobId,
           subagentId: parsed.subagentId,
           updatedAt: raw.updatedAt,
-          ageMs: raw.ageMs,
-          model: raw.model || 'unknown',
-          modelProvider: raw.modelProvider || 'anthropic',
+          ageMs: Date.now() - raw.updatedAt,
+          model: raw.model || 'minimax-portal/MiniMax-M2.7',
+          modelProvider: 'minimax-portal',
           inputTokens: raw.inputTokens || 0,
           outputTokens: raw.outputTokens || 0,
           totalTokens,
@@ -164,7 +155,6 @@ async function listSessions(): Promise<NextResponse> {
         return acc;
       }, []);
 
-    // Sort by updatedAt desc
     sessions.sort((a, b) => b.updatedAt - a.updatedAt);
 
     logActivity(
@@ -197,7 +187,6 @@ interface JsonlLine {
 }
 
 async function getSessionMessages(sessionId: string): Promise<NextResponse> {
-  // Security: only allow UUID-like session IDs
   if (!/^[a-f0-9-]{36}$/.test(sessionId)) {
     return NextResponse.json({ error: 'Invalid session ID' }, { status: 400 });
   }
@@ -289,6 +278,13 @@ async function getSessionMessages(sessionId: string): Promise<NextResponse> {
         // Skip malformed lines
       }
     }
+
+    logActivity(
+      'message',
+      `Session messages viewed: ${messages.length} message(s) from ${sessionId}`,
+      'success',
+      { metadata: { sessionId, messageCount: messages.length } }
+    );
 
     return NextResponse.json({
       sessionId,
