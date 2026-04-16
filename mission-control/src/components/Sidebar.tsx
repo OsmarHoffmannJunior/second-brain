@@ -49,6 +49,7 @@ const navItems = [
   { href: "/search", label: "Search", icon: Search },
   { href: "/analytics", label: "Analytics", icon: BarChart3 },
   { href: "/reports", label: "Reports", icon: FileBarChart },
+  { href: "/clients", label: "SEO Clients", icon: BarChart3 },
   { href: "/skills", label: "Skills", icon: Puzzle },
   { href: "/about", label: getAgentDisplayName(), icon: User },
 ];
