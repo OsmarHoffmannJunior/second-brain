@@ -417,16 +417,23 @@ export default function ClientDetailPage() {
             <div className="text-xs text-[var(--text-muted)] mb-1">Meta Cliques/mês</div>
             <div className="text-sm text-[var(--text-primary)]">{client.monthly_clicks_goal.toLocaleString('pt-BR')}</div>
             {(() => {
-              const lastMonth = monthlyData.length > 0 ? monthlyData[monthlyData.length - 1] : null;
-              if (!lastMonth) return null;
+              if (monthlyData.length === 0) return null;
               const goal = client.monthly_clicks_goal ?? 0;
-              const actual = lastMonth.clicks;
-              const pct = goal > 0 ? Math.round((actual / goal) * 100) : 0;
-              const diff = actual - goal;
+              const bestMonth = monthlyData.reduce((best, m) => m.clicks > best.clicks ? m : best, monthlyData[0]);
+              const pct = goal > 0 ? Math.round((bestMonth.clicks / goal) * 100) : 0;
+              const diff = bestMonth.clicks - goal;
               const isGood = diff >= 0;
+              const [y, mo] = bestMonth.month.split('-');
+              const MONTH_NAMES = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+              const monthLabel = `${MONTH_NAMES[parseInt(mo) - 1]}/${y}`;
               return (
-                <div className={`text-xs font-mono mt-1 ${isGood ? 'text-emerald-400' : 'text-amber-400'}`}>
-                  {pct}% da meta ({diff >= 0 ? '+' : ''}{diff.toLocaleString('pt-BR')})
+                <div className={`mt-2 space-y-0.5`}>
+                  <div className={`text-xs font-mono ${isGood ? 'text-emerald-400' : 'text-amber-400'}`}>
+                    {pct}% da meta ({diff >= 0 ? '+' : ''}{diff.toLocaleString('pt-BR')})
+                  </div>
+                  <div className="text-xs text-[var(--text-muted)]">
+                    Melhor mês: <span className="font-mono text-[var(--text-secondary)]">{monthLabel}</span> → <span className="font-mono font-semibold text-[var(--text-primary)]">{bestMonth.clicks.toLocaleString('pt-BR')}</span> cliques
+                  </div>
                 </div>
               );
             })()}
