@@ -18,6 +18,14 @@ const fmtFull = (n: number) => n.toLocaleString('pt-BR');
 const fmtPct = (n: number) => n.toFixed(2)+'%';
 const fmtPos = (n: number) => n.toFixed(2);
 
+function delta(curr: number, prev: number, positiveIsGood = true) {
+  if (!prev) return null;
+  const diff = ((curr - prev) / prev) * 100;
+  const isPositive = diff >= 0;
+  const isGood = positiveIsGood ? isPositive : !isPositive;
+  return { diff, isGood };
+}
+
 // ─── Section: Monthly Traffic ────────────────────────────────────────────
 
 function MonthlySection({ clientId }: { clientId: string }) {
@@ -74,20 +82,43 @@ function MonthlySection({ clientId }: { clientId: string }) {
               <thead><tr className="border-b border-[var(--border)] text-xs text-[var(--text-muted)] uppercase tracking-wider">
                 <th className="text-left px-5 py-3 font-semibold">Mês</th>
                 <th className="text-right px-5 py-3 font-semibold">Cliques</th>
+                <th className="text-right px-5 py-3 font-semibold">vs Mês Ant.</th>
                 <th className="text-right px-5 py-3 font-semibold">Impressões</th>
+                <th className="text-right px-5 py-3 font-semibold">vs Mês Ant.</th>
                 <th className="text-right px-5 py-3 font-semibold">CTR</th>
+                <th className="text-right px-5 py-3 font-semibold">vs Mês Ant.</th>
                 <th className="text-right px-5 py-3 font-semibold">Posição</th>
+                <th className="text-right px-5 py-3 font-semibold">vs Mês Ant.</th>
               </tr></thead>
               <tbody>
-                {monthly.map((row, i) => (
-                  <tr key={i} className="border-b border-[var(--border)] last:border-0 hover:bg-[var(--bg-hover)]">
-                    <td className="px-5 py-3 text-sm font-medium text-[var(--text-primary)]">{row.month}</td>
-                    <td className="px-5 py-3 text-sm text-right font-mono text-[var(--text-secondary)]">{fmtFull(row.clicks)}</td>
-                    <td className="px-5 py-3 text-sm text-right font-mono text-[var(--text-secondary)]">{fmtFull(row.impressions)}</td>
-                    <td className="px-5 py-3 text-sm text-right font-mono text-[var(--text-secondary)]">{fmtPct(row.ctr)}</td>
-                    <td className="px-5 py-3 text-sm text-right font-mono text-[var(--text-secondary)]">{fmtPos(row.position)}</td>
-                  </tr>
-                ))}
+                {monthly.map((row, i) => {
+                  const prev = monthly[i - 1];
+                  const dClicks = delta(row.clicks, prev?.clicks);
+                  const dImpr = delta(row.impressions, prev?.impressions);
+                  const dCtr = delta(row.ctr, prev?.ctr);
+                  const dPos = delta(row.position, prev?.position, false);
+                  return (
+                    <tr key={i} className="border-b border-[var(--border)] last:border-0 hover:bg-[var(--bg-hover)]">
+                      <td className="px-5 py-3 text-sm font-medium text-[var(--text-primary)]">{row.month}</td>
+                      <td className="px-5 py-3 text-sm text-right font-mono text-[var(--text-secondary)]">{fmtFull(row.clicks)}</td>
+                      <td className="px-5 py-3 text-sm text-right font-mono">
+                        {dClicks ? <span className={dClicks.isGood ? 'text-green-400' : 'text-amber-400'}>{(dClicks.diff >= 0 ? '+' : '')}{dClicks.diff.toFixed(1)}%</span> : <span className="text-[var(--text-muted)]">—</span>}
+                      </td>
+                      <td className="px-5 py-3 text-sm text-right font-mono text-[var(--text-secondary)]">{fmtFull(row.impressions)}</td>
+                      <td className="px-5 py-3 text-sm text-right font-mono">
+                        {dImpr ? <span className={dImpr.isGood ? 'text-green-400' : 'text-amber-400'}>{(dImpr.diff >= 0 ? '+' : '')}{dImpr.diff.toFixed(1)}%</span> : <span className="text-[var(--text-muted)]">—</span>}
+                      </td>
+                      <td className="px-5 py-3 text-sm text-right font-mono text-[var(--text-secondary)]">{fmtPct(row.ctr)}</td>
+                      <td className="px-5 py-3 text-sm text-right font-mono">
+                        {dCtr ? <span className={dCtr.isGood ? 'text-green-400' : 'text-amber-400'}>{(dCtr.diff >= 0 ? '+' : '')}{dCtr.diff.toFixed(1)}%</span> : <span className="text-[var(--text-muted)]">—</span>}
+                      </td>
+                      <td className="px-5 py-3 text-sm text-right font-mono text-[var(--text-secondary)]">{fmtPos(row.position)}</td>
+                      <td className="px-5 py-3 text-sm text-right font-mono">
+                        {dPos ? <span className={dPos.isGood ? 'text-green-400' : 'text-amber-400'}>{(dPos.diff >= 0 ? '+' : '')}{dPos.diff.toFixed(1)}%</span> : <span className="text-[var(--text-muted)]">—</span>}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
