@@ -15,6 +15,7 @@ interface Client {
   monthly_leads_goal?: number;
   main_keywords?: string;
   competitors?: string;
+  notes?: string;
   created_at?: string;
 }
 
@@ -22,7 +23,7 @@ export default function ClientsPage() {
   const [clients, setClients] = useState<Client[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
-  const [form, setForm] = useState({ name: '', company: '', domain: '', niche: '', monthly_clicks_goal: '', monthly_leads_goal: '', main_keywords: '', competitors: '' });
+  const [form, setForm] = useState({ name: '', company: '', domain: '', niche: '', monthly_clicks_goal: '', monthly_leads_goal: '', main_keywords: '', competitors: '', notes: '' });
   const [editingId, setEditingId] = useState<number | null>(null);
 
   const fetchClients = async () => {
@@ -38,9 +39,15 @@ export default function ClientsPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const payload = {
-      ...form,
-      monthly_clicks_goal: form.monthly_clicks_goal ? parseInt(form.monthly_clicks_goal) : undefined,
-      monthly_leads_goal: form.monthly_leads_goal ? parseInt(form.monthly_leads_goal) : undefined,
+      name: form.name,
+      company: form.company || null,
+      domain: form.domain,
+      niche: form.niche || null,
+      monthly_clicks_goal: form.monthly_clicks_goal ? parseInt(form.monthly_clicks_goal) : null,
+      monthly_leads_goal: form.monthly_leads_goal ? parseInt(form.monthly_leads_goal) : null,
+      main_keywords: form.main_keywords || null,
+      competitors: form.competitors || null,
+      notes: form.notes || null,
     };
     const method = editingId ? 'PUT' : 'POST';
     const url = editingId ? `/api/clients/${editingId}` : '/api/clients';
@@ -52,7 +59,7 @@ export default function ClientsPage() {
     if (res.ok) {
       setShowForm(false);
       setEditingId(null);
-      setForm({ name: '', company: '', domain: '', niche: '', monthly_clicks_goal: '', monthly_leads_goal: '', main_keywords: '', competitors: '' });
+      setForm({ name: '', company: '', domain: '', niche: '', monthly_clicks_goal: '', monthly_leads_goal: '', main_keywords: '', competitors: '', notes: '' });
       fetchClients();
     }
   };
@@ -67,6 +74,7 @@ export default function ClientsPage() {
       monthly_leads_goal: c.monthly_leads_goal?.toString() ?? '',
       main_keywords: c.main_keywords ?? '',
       competitors: c.competitors ?? '',
+      notes: c.notes ?? '',
     });
     setEditingId(c.id ?? null);
     setShowForm(true);
@@ -83,7 +91,7 @@ export default function ClientsPage() {
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-[var(--text-primary)]">Clientes SEO</h1>
         <button
-          onClick={() => { setEditingId(null); setForm({ name: '', company: '', domain: '', niche: '', monthly_clicks_goal: '', monthly_leads_goal: '', main_keywords: '', competitors: '' }); setShowForm(true); }}
+          onClick={() => { setEditingId(null); setForm({ name: '', company: '', domain: '', niche: '', monthly_clicks_goal: '', monthly_leads_goal: '', main_keywords: '', competitors: '', notes: '' }); setShowForm(true); }}
           className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-[var(--accent)] text-[var(--bg)] hover:opacity-90 transition-opacity"
         >
           <Plus size={16} /> Novo Cliente
@@ -191,9 +199,18 @@ export default function ClientsPage() {
                   </div>
                 </div>
 
-                {/* Keywords + Concorrentes */}
+                {/* Anotações, Keywords, Concorrentes */}
                 <div className="grid grid-cols-1 gap-4">
-                  <FormField label="Keywords Principais" optional hint="Separadas por vírgula. Usadas como referência rápida.">
+                  <FormField label="Anotações" optional hint="Suporta markdown: **negrito**, *itálico*, `código`, [links](url).">
+                    <textarea
+                      rows={3}
+                      placeholder="Anotações rápidas..."
+                      className="w-full p-2.5 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-[var(--text-primary)] text-sm font-mono focus:border-[var(--accent)] focus:outline-none transition-colors resize-y"
+                      value={form.notes}
+                      onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
+                    />
+                  </FormField>
+                  <FormField label="Keywords Principais" optional hint="Separadas por vírgula.">
                     <input
                       placeholder="acompanhantes florianópolis, acompanhantes Blumenau..."
                       className="w-full p-2.5 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-[var(--text-primary)] text-sm focus:border-[var(--accent)] focus:outline-none transition-colors"
@@ -201,7 +218,7 @@ export default function ClientsPage() {
                       onChange={e => setForm(f => ({ ...f, main_keywords: e.target.value }))}
                     />
                   </FormField>
-                  <FormField label="Concorrentes" optional hint="Domínios concorrentes, separados por vírgula.">
+                  <FormField label="Concorrentes" optional hint="Domínios separados por vírgula.">
                     <input
                       placeholder="concorrente1.com.br, concorrente2.com.br"
                       className="w-full p-2.5 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-[var(--text-primary)] text-sm font-mono focus:border-[var(--accent)] focus:outline-none transition-colors"

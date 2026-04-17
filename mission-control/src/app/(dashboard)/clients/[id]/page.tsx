@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Upload, BarChart2, Clock, Plus, Trash2, ChevronDown, ChevronUp } from 'lucide-react';
+import { ArrowLeft, Upload, BarChart2, Clock, Plus, Trash2, ChevronDown, ChevronUp, FileText, Edit3, Save, X } from 'lucide-react';
 
 interface Client {
   id: number;
@@ -15,6 +15,7 @@ interface Client {
   monthly_leads_goal?: number;
   main_keywords?: string;
   competitors?: string;
+  notes?: string;
   imports?: ImportRecord[];
 }
 
@@ -42,6 +43,23 @@ interface Keyword extends KeywordMonthly {
   monthly?: KeywordMonthly[];
   latest_position?: number;
   latest_month?: string;
+}
+
+// Minimal markdown-to-HTML renderer
+function renderMarkdown(md: string): string {
+  if (!md) return '';
+  return md
+    .replace(/```(\w*)\n([\s\S]*?)```/g, '<pre class="bg-[var(--bg-hover)] border border-[var(--border)] rounded-lg p-3 my-2 overflow-x-auto"><code class="text-sm font-mono text-[var(--text-primary)]">$2</code></pre>')
+    .replace(/`([^`]+)`/g, '<code class="bg-[var(--bg-hover)] text-[var(--accent)] px-1.5 py-0.5 rounded text-xs font-mono">$1</code>')
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener" class="text-[var(--accent)] underline hover:opacity-80">$1</a>')
+    .replace(/^### (.+)$/gm, '<h3 class="text-sm font-semibold text-[var(--text-primary)] mt-4 mb-1">$1</h3>')
+    .replace(/^## (.+)$/gm, '<h2 class="text-base font-semibold text-[var(--text-primary)] mt-4 mb-2">$1</h2>')
+    .replace(/^# (.+)$/gm, '<h1 class="text-lg font-bold text-[var(--text-primary)] mt-4 mb-2">$1</h1>')
+    .replace(/^---$/gm, '<hr class="border-[var(--border)] my-3" />')
+    .replace(/^\*\*([^*]+)\*\*$/gm, '<strong>$1</strong>')
+    .replace(/^\* ([\s\S]*?)$/gm, '<li class="ml-4 list-disc text-sm text-[var(--text-secondary)] leading-relaxed">$1</li>')
+    .replace(/\n\n/g, '</p><p class="text-sm text-[var(--text-secondary)] leading-relaxed my-2">')
+    .replace(/\n/g, '<br />');
 }
 
 const TYPE_LABELS: Record<string, string> = {
@@ -380,6 +398,21 @@ export default function ClientDetailPage() {
   const [client, setClient] = useState<Client | null>(null);
   const [loading, setLoading] = useState(true);
   const [monthlyData, setMonthlyData] = useState<{ month: string; clicks: number }[]>([]);
+  const [notesEditing, setNotesEditing] = useState(false);
+  const [notesDraft, setNotesDraft] = useState('');
+  const [notesSaving, setNotesSaving] = useState(false);
+
+  const handleSaveNotes = async () => {
+    setNotesSaving(true);
+    await fetch(`/api/clients/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ notes: notesDraft }),
+    });
+    setClient((c: any) => ({ ...c, notes: notesDraft }));
+    setNotesEditing(false);
+    setNotesSaving(false);
+  };
 
   useEffect(() => {
     fetch(`/api/clients/${id}`)
@@ -510,6 +543,62 @@ export default function ClientDetailPage() {
         <Link href={`/clients/${id}/reports`} className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-medium bg-[var(--bg-hover)] border border-[var(--border)] text-[var(--text-primary)] hover:border-[var(--border-bright)] transition-all">
           <BarChart2 size={16} /> Gerar Relatório
         </Link>
+      </div>
+
+      {/* Notes */}
+      <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl overflow-hidden">
+        <div className="px-5 py-3 border-b border-[var(--border)] flex items-center justify-between flex-wrap gap-3">
+          <div className="flex items-center gap-2">
+            <FileText size={15} className="text-[var(--accent)]" />
+            <h2 className="text-sm font-semibold text-[var(--text-primary)]">Anotações</h2>
+          </div>
+          {!notesEditing ? (
+            <button
+              onClick={() => { setNotesDraft(client.notes ?? ''); setNotesEditing(true); }}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-[var(--text-secondary)] border border-[var(--border)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)] transition-colors"
+            >
+              <Edit3 size={12} /> {client.notes ? 'Editar' : 'Adicionar'}
+            </button>
+          ) : (
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setNotesEditing(false)}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-[var(--text-muted)] border border-[var(--border)] hover:bg-[var(--bg-hover)] transition-colors"
+              >
+                <X size={12} /> Cancelar
+              </button>
+              <button
+                onClick={handleSaveNotes}
+                disabled={notesSaving}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-[var(--accent)] text-[var(--bg)] hover:opacity-90 disabled:opacity-40 transition-opacity"
+              >
+                <Save size={12} /> {notesSaving ? 'Salvando...' : 'Salvar'}
+              </button>
+            </div>
+          )}
+        </div>
+
+        {notesEditing ? (
+          <div className="p-5">
+            <textarea
+              value={notesDraft}
+              onChange={e => setNotesDraft(e.target.value)}
+              className="w-full p-3 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-[var(--text-primary)] text-sm font-mono focus:border-[var(--accent)] focus:outline-none transition-colors resize-y"
+              style={{ minHeight: '200px' }}
+              placeholder="# Objetivos&#10;&#10;- ...&#10;&#10;## Andamento&#10;&#10;...&#10;&#10;## Links&#10;&#10;[Texto](url)&#10;&#10;## Código&#10;&#10;```html&#10;&lt;tag&gt;...&#10;```"
+              autoFocus
+            />
+            <p className="text-xs text-[var(--text-muted)] mt-2">💡 Suporta markdown: **negrito**, *itálico*, `código`, [links](url), code blocks com ```.</p>
+          </div>
+        ) : (
+          <div className="px-5 py-4">
+            {client.notes ? (
+              <div className="text-sm text-[var(--text-secondary)] leading-relaxed" dangerouslySetInnerHTML={{ __html: renderMarkdown(client.notes ?? '') }} />
+            ) : (
+              <p className="text-sm text-[var(--text-muted)] italic">Nenhuma anotação. Clique em "Adicionar" para começar.</p>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Keywords */}
