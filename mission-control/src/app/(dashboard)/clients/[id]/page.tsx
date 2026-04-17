@@ -386,9 +386,9 @@ export default function ClientDetailPage() {
       .then(r => r.json())
       .then(d => { setClient(d); setLoading(false); })
       .catch(() => setLoading(false));
-    fetch(`/api/clients/${id}/data?period=all`)
+    fetch(`/api/clients/${id}/data?type=monthly`)
       .then(r => r.json())
-      .then(d => { if (Array.isArray(d.monthly)) setMonthlyData(d.monthly); })
+      .then(d => { if (Array.isArray(d)) setMonthlyData(d); })
       .catch(() => {});
   }, [id]);
 
