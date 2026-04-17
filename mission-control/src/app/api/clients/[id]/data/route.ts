@@ -15,6 +15,8 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
   const type = searchParams.get('type') ?? 'daily';
   const from = searchParams.get('from') ?? undefined;
   const to = searchParams.get('to') ?? undefined;
+  const periodStart = searchParams.get('periodStart') ?? undefined;
+  const periodEnd = searchParams.get('periodEnd') ?? undefined;
   const limit = parseInt(searchParams.get('limit') ?? '50');
 
   try {
@@ -23,9 +25,9 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     } else if (type === 'monthly') {
       return NextResponse.json(getGscMonthly(clientId, from, to));
     } else if (type === 'queries') {
-      return NextResponse.json(getGscQueries(clientId, limit));
+      return NextResponse.json(getGscQueries(clientId, limit, periodStart, periodEnd));
     } else if (type === 'pages') {
-      return NextResponse.json(getGscPages(clientId, limit));
+      return NextResponse.json(getGscPages(clientId, limit, periodStart, periodEnd));
     }
     return NextResponse.json({ error: 'Unknown type' }, { status: 400 });
   } catch (e: any) {

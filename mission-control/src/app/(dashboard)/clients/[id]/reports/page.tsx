@@ -29,12 +29,18 @@ export default function ReportsPage() {
 
   const loadData = async (fromDate?: string, toDate?: string) => {
     setLoading(true);
-    const baseMonthly = `/api/clients/${id}/data?type=monthly`;
-    const monthlyUrl = fromDate && toDate ? `${baseMonthly}&from=${fromDate}&to=${toDate}` : baseMonthly;
+    const monthlyBase = `/api/clients/${id}/data?type=monthly`;
+    const monthlyUrl = fromDate && toDate ? `${monthlyBase}&from=${fromDate}&to=${toDate}` : monthlyBase;
+    const queriesUrl = fromDate && toDate
+      ? `/api/clients/${id}/data?type=queries&limit=30&periodStart=${fromDate}&periodEnd=${toDate}`
+      : `/api/clients/${id}/data?type=queries&limit=30`;
+    const pagesUrl = fromDate && toDate
+      ? `/api/clients/${id}/data?type=pages&limit=30&periodStart=${fromDate}&periodEnd=${toDate}`
+      : `/api/clients/${id}/data?type=pages&limit=30`;
     const [m, p, q] = await Promise.all([
       fetch(monthlyUrl).then(r => r.json()),
-      fetch(`/api/clients/${id}/data?type=pages&limit=30`).then(r => r.json()),
-      fetch(`/api/clients/${id}/data?type=queries&limit=30`).then(r => r.json()),
+      fetch(pagesUrl).then(r => r.json()),
+      fetch(queriesUrl).then(r => r.json()),
     ]);
     setMonthly(Array.isArray(m) ? m : []);
     setPages(Array.isArray(p) ? p : []);

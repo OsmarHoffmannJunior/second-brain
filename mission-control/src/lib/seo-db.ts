@@ -158,12 +158,15 @@ export function importGscQueries(clientId: number, rows: Omit<GscQuery, 'client_
   return count;
 }
 
-export function getGscQueries(clientId: number, limit = 50): GscQuery[] {
+export function getGscQueries(clientId: number, limit = 50, periodStart?: string, periodEnd?: string): GscQuery[] {
   const db = getDb();
-  const rows = db.prepare(`
-    SELECT * FROM gsc_queries WHERE client_id = ?
-    ORDER BY clicks DESC LIMIT ?
-  `).all(clientId, limit) as GscQuery[];
+  let sql = 'SELECT * FROM gsc_queries WHERE client_id = ?';
+  const params: (string | number)[] = [clientId];
+  if (periodStart) { sql += ' AND period_start >= ?'; params.push(periodStart); }
+  if (periodEnd) { sql += ' AND period_end <= ?'; params.push(periodEnd); }
+  sql += ' ORDER BY clicks DESC LIMIT ?';
+  params.push(limit);
+  const rows = db.prepare(sql).all(...params) as GscQuery[];
   db.close();
   return rows;
 }
@@ -199,12 +202,15 @@ export function importGscPages(clientId: number, rows: Omit<GscPage, 'client_id'
   return count;
 }
 
-export function getGscPages(clientId: number, limit = 50): GscPage[] {
+export function getGscPages(clientId: number, limit = 50, periodStart?: string, periodEnd?: string): GscPage[] {
   const db = getDb();
-  const rows = db.prepare(`
-    SELECT * FROM gsc_pages WHERE client_id = ?
-    ORDER BY clicks DESC LIMIT ?
-  `).all(clientId, limit) as GscPage[];
+  let sql = 'SELECT * FROM gsc_pages WHERE client_id = ?';
+  const params: (string | number)[] = [clientId];
+  if (periodStart) { sql += ' AND period_start >= ?'; params.push(periodStart); }
+  if (periodEnd) { sql += ' AND period_end <= ?'; params.push(periodEnd); }
+  sql += ' ORDER BY clicks DESC LIMIT ?';
+  params.push(limit);
+  const rows = db.prepare(sql).all(...params) as GscPage[];
   db.close();
   return rows;
 }
