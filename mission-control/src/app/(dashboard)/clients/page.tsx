@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Plus, ExternalLink, Trash2, Edit2 } from 'lucide-react';
+import { Plus, ExternalLink, Trash2, Edit2, Globe, Target, Users, Search, BarChart2 } from 'lucide-react';
+import { FormField } from '@/components/ui/FormField';
 
 interface Client {
   id: number;
@@ -91,23 +92,141 @@ export default function ClientsPage() {
 
       {/* Form Modal */}
       {showForm && (
-        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center" onClick={e => e.target === e.currentTarget && setShowForm(false)}>
-          <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-6 w-full max-w-lg space-y-4">
-            <h2 className="text-lg font-semibold text-[var(--text-primary)]">{editingId ? 'Editar Cliente' : 'Novo Cliente'}</h2>
-            <form onSubmit={handleSubmit} className="space-y-3">
-              <div className="grid grid-cols-2 gap-3">
-                <input required placeholder="Nome *" className="col-span-2 p-2 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-[var(--text-primary)] text-sm" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} />
-                <input placeholder="Empresa" className="p-2 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-[var(--text-primary)] text-sm" value={form.company} onChange={e => setForm(f => ({ ...f, company: e.target.value }))} />
-                <input required placeholder="Domínio (ex: exemplo.com.br) *" className="p-2 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-[var(--text-primary)] text-sm" value={form.domain} onChange={e => setForm(f => ({ ...f, domain: e.target.value }))} />
-                <input placeholder="Nicho" className="p-2 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-[var(--text-primary)] text-sm" value={form.niche} onChange={e => setForm(f => ({ ...f, niche: e.target.value }))} />
-                <input placeholder="Meta cliques/mês" type="number" className="p-2 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-[var(--text-primary)] text-sm" value={form.monthly_clicks_goal} onChange={e => setForm(f => ({ ...f, monthly_clicks_goal: e.target.value }))} />
-                <input placeholder="Meta leads/mês" type="number" className="p-2 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-[var(--text-primary)] text-sm" value={form.monthly_leads_goal} onChange={e => setForm(f => ({ ...f, monthly_leads_goal: e.target.value }))} />
-                <input placeholder="Keywords principais (separadas por vírgula)" className="col-span-2 p-2 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-[var(--text-primary)] text-sm" value={form.main_keywords} onChange={e => setForm(f => ({ ...f, main_keywords: e.target.value }))} />
-                <input placeholder="Concorrentes (separados por vírgula)" className="col-span-2 p-2 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-[var(--text-primary)] text-sm" value={form.competitors} onChange={e => setForm(f => ({ ...f, competitors: e.target.value }))} />
+        <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4" onClick={e => e.target === e.currentTarget && setShowForm(false)}>
+          <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl w-full max-w-xl overflow-hidden">
+            {/* Modal header */}
+            <div className="px-6 pt-6 pb-4 border-b border-[var(--border)]">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: 'var(--accent)', opacity: 0.15 }}>
+                  <Globe size={18} style={{ color: 'var(--accent)' }} />
+                </div>
+                <div>
+                  <h2 className="text-base font-semibold text-[var(--text-primary)]">
+                    {editingId ? 'Editar Cliente' : 'Novo Cliente'}
+                  </h2>
+                  <p className="text-xs text-[var(--text-muted)] mt-0.5">
+                    {editingId ? 'Atualize os dados do cliente' : 'Adicione um novo projeto ao portfólio'}
+                  </p>
+                </div>
               </div>
-              <div className="flex gap-2 justify-end">
-                <button type="button" onClick={() => setShowForm(false)} className="px-4 py-2 rounded-lg text-sm border border-[var(--border)] text-[var(--text-secondary)] hover:bg-[var(--bg-hover)]">Cancelar</button>
-                <button type="submit" className="px-4 py-2 rounded-lg text-sm font-medium bg-[var(--accent)] text-[var(--bg)] hover:opacity-90">{editingId ? 'Salvar' : 'Criar'}</button>
+            </div>
+
+            {/* Modal body */}
+            <form onSubmit={handleSubmit} className="p-6">
+              <div className="space-y-5">
+                {/* Nome + Empresa */}
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField label="Nome do Cliente" required>
+                    <input
+                      required
+                      placeholder="Ex: Santtas"
+                      className="w-full p-2.5 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-[var(--text-primary)] text-sm focus:border-[var(--accent)] focus:outline-none transition-colors"
+                      value={form.name}
+                      onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
+                    />
+                  </FormField>
+                  <FormField label="Empresa" optional>
+                    <input
+                      placeholder="Razão social ou marca"
+                      className="w-full p-2.5 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-[var(--text-primary)] text-sm focus:border-[var(--accent)] focus:outline-none transition-colors"
+                      value={form.company}
+                      onChange={e => setForm(f => ({ ...f, company: e.target.value }))}
+                    />
+                  </FormField>
+                </div>
+
+                {/* Domínio + Nicho */}
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField label="Domínio" required hint="Domínio principal do projeto (ex: exemplo.com.br)">
+                    <input
+                      required
+                      placeholder="exemplo.com.br"
+                      className="w-full p-2.5 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-[var(--text-primary)] text-sm font-mono focus:border-[var(--accent)] focus:outline-none transition-colors"
+                      value={form.domain}
+                      onChange={e => setForm(f => ({ ...f, domain: e.target.value }))}
+                    />
+                  </FormField>
+                  <FormField label="Nicho" optional>
+                    <input
+                      placeholder="Área de atuação"
+                      className="w-full p-2.5 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-[var(--text-primary)] text-sm focus:border-[var(--accent)] focus:outline-none transition-colors"
+                      value={form.niche}
+                      onChange={e => setForm(f => ({ ...f, niche: e.target.value }))}
+                    />
+                  </FormField>
+                </div>
+
+                {/* Metas */}
+                <div>
+                  <div className="flex items-center gap-2 mb-3">
+                    <Target size={13} className="text-[var(--accent)]" />
+                    <span className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider">Metas Mensais</span>
+                    <span className="text-xs text-[var(--text-muted)] italic">(opcionais — usadas para comparar com o tráfego real)</span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <FormField label="Meta de Cliques" optional hint="Meta mensal de cliques no Google">
+                      <div className="relative">
+                        <input
+                          type="number"
+                          placeholder="0"
+                          className="w-full p-2.5 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-[var(--text-primary)] text-sm focus:border-[var(--accent)] focus:outline-none transition-colors pr-14"
+                          value={form.monthly_clicks_goal}
+                          onChange={e => setForm(f => ({ ...f, monthly_clicks_goal: e.target.value }))}
+                        />
+                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[var(--text-muted)]">cliques</span>
+                      </div>
+                    </FormField>
+                    <FormField label="Meta de Leads" optional hint="Meta mensal de leads/conversões">
+                      <div className="relative">
+                        <input
+                          type="number"
+                          placeholder="0"
+                          className="w-full p-2.5 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-[var(--text-primary)] text-sm focus:border-[var(--accent)] focus:outline-none transition-colors pr-12"
+                          value={form.monthly_leads_goal}
+                          onChange={e => setForm(f => ({ ...f, monthly_leads_goal: e.target.value }))}
+                        />
+                        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[var(--text-muted)]">leads</span>
+                      </div>
+                    </FormField>
+                  </div>
+                </div>
+
+                {/* Keywords + Concorrentes */}
+                <div className="grid grid-cols-1 gap-4">
+                  <FormField label="Keywords Principais" optional hint="Separadas por vírgula. Usadas como referência rápida.">
+                    <input
+                      placeholder="acompanhantes florianópolis, acompanhantes Blumenau..."
+                      className="w-full p-2.5 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-[var(--text-primary)] text-sm focus:border-[var(--accent)] focus:outline-none transition-colors"
+                      value={form.main_keywords}
+                      onChange={e => setForm(f => ({ ...f, main_keywords: e.target.value }))}
+                    />
+                  </FormField>
+                  <FormField label="Concorrentes" optional hint="Domínios concorrentes, separados por vírgula.">
+                    <input
+                      placeholder="concorrente1.com.br, concorrente2.com.br"
+                      className="w-full p-2.5 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-[var(--text-primary)] text-sm font-mono focus:border-[var(--accent)] focus:outline-none transition-colors"
+                      value={form.competitors}
+                      onChange={e => setForm(f => ({ ...f, competitors: e.target.value }))}
+                    />
+                  </FormField>
+                </div>
+              </div>
+
+              {/* Modal footer */}
+              <div className="flex gap-3 justify-end mt-6 pt-4 border-t border-[var(--border)]">
+                <button
+                  type="button"
+                  onClick={() => setShowForm(false)}
+                  className="px-5 py-2.5 rounded-lg text-sm border border-[var(--border)] text-[var(--text-secondary)] hover:bg-[var(--bg-hover)] transition-colors"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2.5 rounded-lg text-sm font-semibold bg-[var(--accent)] text-[var(--bg)] hover:opacity-90 transition-opacity shadow-lg shadow-[var(--accent)]/20"
+                >
+                  {editingId ? 'Salvar Alterações' : 'Criar Cliente'}
+                </button>
               </div>
             </form>
           </div>

@@ -379,12 +379,17 @@ export default function ClientDetailPage() {
   const { id } = useParams();
   const [client, setClient] = useState<Client | null>(null);
   const [loading, setLoading] = useState(true);
+  const [monthlyData, setMonthlyData] = useState<{ month: string; clicks: number }[]>([]);
 
   useEffect(() => {
     fetch(`/api/clients/${id}`)
       .then(r => r.json())
       .then(d => { setClient(d); setLoading(false); })
       .catch(() => setLoading(false));
+    fetch(`/api/clients/${id}/data?period=all`)
+      .then(r => r.json())
+      .then(d => { if (Array.isArray(d.monthly)) setMonthlyData(d.monthly); })
+      .catch(() => {});
   }, [id]);
 
   if (loading) return <div className="p-6 text-[var(--text-muted)]">Carregando...</div>;
@@ -407,9 +412,88 @@ export default function ClientDetailPage() {
           <div className="font-mono text-sm text-[var(--text-primary)]">{client.domain}</div>
         </div>
         {client.niche && <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-4"><div className="text-xs text-[var(--text-muted)] mb-1">Nicho</div><div className="text-sm text-[var(--text-primary)]">{client.niche}</div></div>}
-        {client.monthly_clicks_goal && <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-4"><div className="text-xs text-[var(--text-muted)] mb-1">Meta Cliques</div><div className="text-sm text-[var(--text-primary)]">{client.monthly_clicks_goal.toLocaleString('pt-BR')}/mês</div></div>}
-        {client.monthly_leads_goal && <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-4"><div className="text-xs text-[var(--text-muted)] mb-1">Meta Leads</div><div className="text-sm text-[var(--text-primary)]">{client.monthly_leads_goal.toLocaleString('pt-BR')}/mês</div></div>}
+        {client.monthly_clicks_goal && (
+          <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-4">
+            <div className="text-xs text-[var(--text-muted)] mb-1">Meta Cliques/mês</div>
+            <div className="text-sm text-[var(--text-primary)]">{client.monthly_clicks_goal.toLocaleString('pt-BR')}</div>
+            {(() => {
+              const lastMonth = monthlyData.length > 0 ? monthlyData[monthlyData.length - 1] : null;
+              if (!lastMonth) return null;
+              const goal = client.monthly_clicks_goal ?? 0;
+              const actual = lastMonth.clicks;
+              const pct = goal > 0 ? Math.round((actual / goal) * 100) : 0;
+              const diff = actual - goal;
+              const isGood = diff >= 0;
+              return (
+                <div className={`text-xs font-mono mt-1 ${isGood ? 'text-emerald-400' : 'text-amber-400'}`}>
+                  {pct}% da meta ({diff >= 0 ? '+' : ''}{diff.toLocaleString('pt-BR')})
+                </div>
+              );
+            })()}
+          </div>
+        )}
+        {client.monthly_leads_goal && <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-4"><div className="text-xs text-[var(--text-muted)] mb-1">Meta Leads/mês</div><div className="text-sm text-[var(--text-primary)]">{client.monthly_leads_goal.toLocaleString('pt-BR')}</div></div>}
       </div>
+
+      {/* Meta vs Real — last 3 months */}
+      {client.monthly_clicks_goal && monthlyData.length > 0 && (
+        <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl overflow-hidden">
+          <div className="px-5 py-3 border-b border-[var(--border)]">
+            <h2 className="text-sm font-semibold text-[var(--text-primary)]">Meta vs Tráfego Real</h2>
+            <p className="text-xs text-[var(--text-muted)] mt-0.5">Comparação dos últimos meses com a meta de {client.monthly_clicks_goal.toLocaleString('pt-BR')} cliques/mês</p>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-[var(--border)]">
+                  <th className="text-left px-5 py-2.5 text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">Mês</th>
+                  <th className="text-right px-5 py-2.5 text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">Cliques Reais</th>
+                  <th className="text-right px-5 py-2.5 text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">Meta</th>
+                  <th className="text-right px-5 py-2.5 text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">Atingido</th>
+                  <th className="text-right px-5 py-2.5 text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider">Diferença</th>
+                </tr>
+              </thead>
+              <tbody>
+                {monthlyData.slice(-6).reverse().map(m => {
+                  const goal = client.monthly_clicks_goal ?? 0;
+                  const actual = m.clicks;
+                  const pct = goal > 0 ? Math.round((actual / goal) * 100) : 0;
+                  const diff = actual - goal;
+                  const isGood = diff >= 0;
+                  const barWidth = Math.min(pct, 100);
+                  const [y, mo] = m.month.split('-');
+                  const MONTH_NAMES = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+                  const monthLabel = `${MONTH_NAMES[parseInt(mo) - 1]}/${y}`;
+                  return (
+                    <tr key={m.month} className="border-b border-[var(--border)] last:border-0 hover:bg-[var(--bg-hover)]">
+                      <td className="px-5 py-3 text-sm font-mono text-[var(--text-primary)]">{monthLabel}</td>
+                      <td className="px-5 py-3 text-sm text-right font-mono font-semibold text-[var(--text-primary)]">{actual.toLocaleString('pt-BR')}</td>
+                      <td className="px-5 py-3 text-sm text-right font-mono text-[var(--text-muted)]">{goal.toLocaleString('pt-BR')}</td>
+                      <td className="px-5 py-3 text-right">
+                        <div className="flex items-center justify-end gap-2">
+                          <span className={`text-xs font-mono font-semibold ${isGood ? 'text-emerald-400' : 'text-amber-400'}`}>{pct}%</span>
+                          <div className="w-20 h-1.5 rounded-full bg-[var(--bg-hover)]" style={{ overflow: 'hidden' }}>
+                            <div
+                              className="h-full rounded-full transition-all"
+                              style={{
+                                width: `${barWidth}%`,
+                                background: isGood ? '#10b981' : '#f59e0b',
+                              }}
+                            />
+                          </div>
+                        </div>
+                      </td>
+                      <td className={`px-5 py-3 text-sm text-right font-mono font-semibold ${isGood ? 'text-emerald-400' : 'text-amber-400'}`}>
+                        {diff >= 0 ? '+' : ''}{diff.toLocaleString('pt-BR')}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
 
       {/* Actions */}
       <div className="flex gap-4 flex-wrap">
