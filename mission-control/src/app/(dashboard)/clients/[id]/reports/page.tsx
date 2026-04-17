@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, BarChart2, RefreshCw } from 'lucide-react';
+import { ArrowLeft, BarChart2 } from 'lucide-react';
 
 interface Client { id: number; name: string; domain: string; }
 
@@ -35,7 +35,7 @@ function MonthlySection({ clientId }: { clientId: string }) {
     setLoading(false);
   };
 
-  useEffect(() => { load(); }, [clientId]);
+  useEffect(() => { load(); }, [clientId, from, to]);
 
   const totalClicks = monthly.reduce((s, m) => s + (m.clicks || 0), 0);
   const totalImpr = monthly.reduce((s, m) => s + (m.impressions || 0), 0);
@@ -50,8 +50,7 @@ function MonthlySection({ clientId }: { clientId: string }) {
           <input type="date" value={from} onChange={e => setFrom(e.target.value)} className="p-1.5 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-[var(--text-primary)] text-xs font-mono" />
           <span className="text-[var(--text-muted)] text-xs">→</span>
           <input type="date" value={to} onChange={e => setTo(e.target.value)} className="p-1.5 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-[var(--text-primary)] text-xs font-mono" />
-          <button onClick={load} disabled={loading} className="p-1.5 rounded-lg hover:bg-[var(--bg-hover)] text-[var(--text-muted)] disabled:opacity-40"><RefreshCw size={14} className={loading ? 'animate-spin' : ''} /></button>
-        </div>
+</div>
       </div>
 
       {monthly.length > 0 ? (
@@ -119,7 +118,7 @@ function PagesSection({ clientId }: { clientId: string }) {
     setLoading(false);
   };
 
-  useEffect(() => { load(); }, [clientId]);
+  useEffect(() => { load(); }, [clientId, periodStart, periodEnd]);
 
   return (
     <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl overflow-hidden">
@@ -129,8 +128,7 @@ function PagesSection({ clientId }: { clientId: string }) {
           <input type="date" value={periodStart} onChange={e => setPeriodStart(e.target.value)} placeholder="Início" className="p-1.5 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-[var(--text-primary)] text-xs font-mono" />
           <span className="text-[var(--text-muted)] text-xs">→</span>
           <input type="date" value={periodEnd} onChange={e => setPeriodEnd(e.target.value)} placeholder="Fim" className="p-1.5 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-[var(--text-primary)] text-xs font-mono" />
-          <button onClick={load} disabled={loading} className="p-1.5 rounded-lg hover:bg-[var(--bg-hover)] text-[var(--text-muted)] disabled:opacity-40"><RefreshCw size={14} className={loading ? 'animate-spin' : ''} /></button>
-        </div>
+</div>
       </div>
       {pages.length > 0 ? (
         <table className="w-full">
@@ -181,7 +179,7 @@ function QueriesSection({ clientId }: { clientId: string }) {
     setLoading(false);
   };
 
-  useEffect(() => { load(); }, [clientId]);
+  useEffect(() => { load(); }, [clientId, periodStart, periodEnd]);
 
   return (
     <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl overflow-hidden">
@@ -191,8 +189,7 @@ function QueriesSection({ clientId }: { clientId: string }) {
           <input type="date" value={periodStart} onChange={e => setPeriodStart(e.target.value)} placeholder="Início" className="p-1.5 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-[var(--text-primary)] text-xs font-mono" />
           <span className="text-[var(--text-muted)] text-xs">→</span>
           <input type="date" value={periodEnd} onChange={e => setPeriodEnd(e.target.value)} placeholder="Fim" className="p-1.5 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-[var(--text-primary)] text-xs font-mono" />
-          <button onClick={load} disabled={loading} className="p-1.5 rounded-lg hover:bg-[var(--bg-hover)] text-[var(--text-muted)] disabled:opacity-40"><RefreshCw size={14} className={loading ? 'animate-spin' : ''} /></button>
-        </div>
+</div>
       </div>
       {queries.length > 0 ? (
         <table className="w-full">
