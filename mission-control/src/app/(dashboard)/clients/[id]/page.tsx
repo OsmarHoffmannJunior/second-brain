@@ -57,6 +57,7 @@ function positionDelta(curr: number, prev: number) {
   return { diff, isGood };
 }
 
+
 function KeywordsSection({ clientId }: { clientId: string }) {
   const [keywords, setKeywords] = useState<Keyword[]>([]);
   const [loading, setLoading] = useState(true);
@@ -67,6 +68,10 @@ function KeywordsSection({ clientId }: { clientId: string }) {
   const [newMonth, setNewMonth] = useState('');
   const [newPosition, setNewPosition] = useState('');
   const [saving, setSaving] = useState(false);
+  const [editMonth, setEditMonth] = useState<{ kwId: number; month: string; position: string } | null>(null);
+  const [deleteMonth, setDeleteMonth] = useState<{ kwId: number; month: string } | null>(null);
+
+  const MONTH_NAMES = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
 
   const load = async () => {
     setLoading(true);
@@ -118,9 +123,43 @@ function KeywordsSection({ clientId }: { clientId: string }) {
     load();
   };
 
+  const handleSaveEdit = async (kwId: number, e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editMonth || editMonth.position === '') return;
+    setSaving(true);
+    await fetch(`/api/clients/${clientId}/keywords/${kwId}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ month: editMonth.month, position: parseFloat(editMonth.position) }),
+    });
+    setEditMonth(null);
+    setSaving(false);
+    load();
+  };
+
+  const handleDeleteMonth = async () => {
+    if (!deleteMonth) return;
+    setSaving(true);
+    await fetch(`/api/clients/${clientId}/keywords/${deleteMonth.kwId}?month=${deleteMonth.month}`, { method: 'DELETE' });
+    setDeleteMonth(null);
+    setSaving(false);
+    load();
+  };
+
   const toggleExpand = (kwId: number) => setExpanded(e => ({ ...e, [kwId]: !e[kwId] }));
 
   const fmtPos = (n: number) => n % 1 === 0 ? n.toString() : n.toFixed(1);
+
+  const fmtMonth = (month: string) => {
+    const [y, m] = month.split('-');
+    return `${MONTH_NAMES[parseInt(m) - 1]}/${y}`;
+  };
+
+  const positionDelta = (curr: number, prev: number) => {
+    const diff = curr - prev;
+    const isGood = diff < 0;
+    return { diff, isGood };
+  };
 
   return (
     <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl overflow-hidden">
@@ -137,18 +176,18 @@ function KeywordsSection({ clientId }: { clientId: string }) {
       {/* Add Keyword Form */}
       {showAdd && (
         <form onSubmit={handleAddKeyword} className="px-5 py-4 border-b border-[var(--border)] bg-[var(--bg-hover)] space-y-3">
+          <input
+            required
+            placeholder="Keyword (ex: acompanhantes florianópolis)"
+            value={newKw.keyword}
+            onChange={e => setNewKw(k => ({ ...k, keyword: e.target.value }))}
+            className="w-full p-2 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-[var(--text-primary)] text-sm"
+          />
           <div className="grid grid-cols-2 gap-3">
-            <input
-              required
-              placeholder="Keyword (ex: acompanhantes sp)"
-              value={newKw.keyword}
-              onChange={e => setNewKw(k => ({ ...k, keyword: e.target.value }))}
-              className="col-span-2 p-2 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-[var(--text-primary)] text-sm"
-            />
             <input
               type="number"
               step="0.1"
-              placeholder="Posição inicial (hoje)"
+              placeholder="Posição inicial"
               value={newKw.initialPosition}
               onChange={e => setNewKw(k => ({ ...k, initialPosition: e.target.value }))}
               className="p-2 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-[var(--text-primary)] text-sm"
@@ -161,11 +200,7 @@ function KeywordsSection({ clientId }: { clientId: string }) {
             />
           </div>
           <div className="flex justify-end">
-            <button
-              type="submit"
-              disabled={saving}
-              className="px-4 py-2 rounded-lg text-sm font-medium bg-[var(--accent)] text-[var(--bg)] hover:opacity-90 disabled:opacity-40"
-            >
+            <button type="submit" disabled={saving} className="px-4 py-2 rounded-lg text-sm font-medium bg-[var(--accent)] text-[var(--bg)] hover:opacity-90 disabled:opacity-40">
               {saving ? 'Salvando...' : 'Cadastrar'}
             </button>
           </div>
@@ -182,105 +217,134 @@ function KeywordsSection({ clientId }: { clientId: string }) {
       ) : (
         <div>
           {keywords.map(kw => {
-            const allPositions: { month: string; pos: number }[] = [];
-            if (kw.initial_month && kw.initial_position) {
-              allPositions.push({ month: kw.initial_month, pos: kw.initial_position });
-            }
-            if (kw.monthly) {
-              kw.monthly.forEach(m => allPositions.push({ month: m.month, pos: m.position }));
-            }
-            allPositions.sort((a, b) => a.month.localeCompare(b.month));
-            const current = kw.latest_position ?? kw.initial_position;
-            const first = allPositions[0];
-            const last = allPositions[allPositions.length - 1];
-            const overallDelta = first && last ? positionDelta(last.pos, first.pos) : null;
-            const isExpanded = expanded[kw.id];
+            const initialEntry = kw.initial_month && kw.initial_position
+              ? { month: kw.initial_month, pos: kw.initial_position, isInitial: true }
+              : null;
+            const monthlyEntries = (kw.monthly ?? []).map(m => ({ month: m.month, pos: m.position, isInitial: false }));
+            const allEntries = [
+              ...(initialEntry ? [initialEntry] : []),
+              ...monthlyEntries,
+            ].sort((a, b) => a.month.localeCompare(b.month));
+
+            const first = allEntries[0];
+            const last = allEntries[allEntries.length - 1];
+            const best = allEntries.reduce((min, e) => e.pos < min ? e.pos : min, first?.pos ?? Infinity);
+            const overallDelta = first && last && first.pos !== last.pos ? positionDelta(last.pos, first.pos) : null;
+            const isExpanded = !!expanded[kw.id];
 
             return (
               <div key={kw.id} className="border-b border-[var(--border)] last:border-0">
+                {/* Header row */}
                 <div className="px-5 py-3 flex items-center gap-3 hover:bg-[var(--bg-hover)] transition-colors">
-                  <button onClick={() => toggleExpand(kw.id)} className="text-[var(--text-muted)] hover:text-[var(--text-primary)]">
-                    {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                  <button onClick={() => toggleExpand(kw.id)} className="text-[var(--text-muted)] hover:text-[var(--text-primary)] flex-shrink-0">
+                    {isExpanded ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
                   </button>
                   <div className="flex-1 min-w-0">
-                    <div className="text-sm font-medium text-[var(--text-primary)] truncate">{kw.keyword}</div>
-                    <div className="text-xs text-[var(--text-muted)] mt-0.5">
-                      Início: {kw.initial_position ? `${fmtPos(kw.initial_position)} (${kw.initial_month ?? '—'})` : '—'}
-                      {kw.latest_position && kw.latest_position !== kw.initial_position
-                        ? ` → Atual: ${fmtPos(kw.latest_position)} (${kw.latest_month})`
-                        : ''}
+                    <div className="text-sm font-medium text-[var(--text-primary)]">{kw.keyword}</div>
+                    <div className="text-xs text-[var(--text-muted)] mt-0.5 flex flex-wrap gap-x-3 gap-y-0.5">
+                      <span>Início: <span className="font-mono">{kw.initial_position ? `${fmtPos(kw.initial_position)} (${fmtMonth(kw.initial_month!)})` : '—'}</span></span>
+                      <span>Melhor: <span className="font-mono text-emerald-400">{best !== Infinity ? fmtPos(best) : '—'}</span></span>
+                      <span>Atual: <span className="font-mono font-bold">{last ? fmtPos(last.pos) : '—'}</span></span>
+                      <span>{allEntries.length} meses</span>
                     </div>
                   </div>
                   <div className="flex items-center gap-2 flex-shrink-0">
                     {overallDelta && (
-                      <span className={`text-xs font-mono font-medium ${overallDelta.isGood ? 'text-green-400' : 'text-amber-400'}`}>
-                        {overallDelta.diff < 0 ? '' : '+'}{fmtPos(overallDelta.diff)} overall
+                      <span className={`text-xs font-mono font-medium px-2 py-0.5 rounded-full ${overallDelta.isGood ? 'bg-emerald-950/40 text-emerald-400' : 'bg-amber-950/40 text-amber-400'}`}>
+                        {overallDelta.diff < 0 ? '' : '+'}{fmtPos(overallDelta.diff)}
                       </span>
                     )}
-                    {last && (
-                      <span className="text-sm font-bold font-display text-[var(--text-primary)]">{fmtPos(last.pos)}</span>
-                    )}
-                    <button
-                      onClick={() => handleDeleteKeyword(kw.id)}
-                      className="p-1 rounded hover:bg-red-950/30 text-[var(--text-muted)] hover:text-red-400"
-                    >
+                    <button onClick={() => handleDeleteKeyword(kw.id)} className="p-1.5 rounded-lg hover:bg-red-950/30 text-[var(--text-muted)] hover:text-red-400" title="Remover keyword">
                       <Trash2 size={13} />
                     </button>
                   </div>
                 </div>
 
-                {/* Expanded: monthly timeline */}
+                {/* Expanded: full table */}
                 {isExpanded && (
                   <div className="px-5 pb-4">
-                    <div className="flex items-center gap-1 flex-wrap mb-3">
-                      {allPositions.map((p, i) => {
-                        const prev = allPositions[i - 1];
-                        const d = prev ? positionDelta(p.pos, prev.pos) : null;
-                        return (
-                          <div key={p.month} className="flex items-center gap-1">
-                            {i > 0 && (
-                              <span className="text-[var(--text-muted)] text-xs mx-0.5">
-                                {d ? <span className={d.isGood ? 'text-green-400' : 'text-amber-400'}>{d.diff < 0 ? '↓' : '↑'}</span> : ''}
-                              </span>
-                            )}
-                            <div className={`px-2 py-1 rounded-lg text-xs font-mono ${i === allPositions.length - 1 ? 'bg-[var(--accent)] text-[var(--bg)] font-bold' : 'bg-[var(--bg-hover)] border border-[var(--border)] text-[var(--text-secondary)]'}`}>
-                              {p.month.slice(5)}: {fmtPos(p.pos)}
-                            </div>
-                          </div>
-                        );
-                      })}
+                    {/* Table header */}
+                    <div className="grid grid-cols-[auto_1fr_auto_auto] gap-2 px-3 py-2 text-xs text-[var(--text-muted)] uppercase tracking-wider border-b border-[var(--border)]">
+                      <div className="w-16">Mês</div>
+                      <div>Posição</div>
+                      <div className="w-12 text-center">Evol.</div>
+                      <div className="w-20 text-right">Ações</div>
                     </div>
 
-                    {/* Add monthly position */}
+                    {/* Rows */}
+                    {allEntries.map((entry, i) => {
+                      const prev = allEntries[i - 1];
+                      const delta = prev ? positionDelta(entry.pos, prev.pos) : null;
+                      const isLast = i === allEntries.length - 1;
+                      const isEdit = editMonth?.kwId === kw.id && editMonth?.month === entry.month;
+
+                      return (
+                        <div key={entry.month} className={`grid grid-cols-[auto_1fr_auto_auto] gap-2 px-3 py-2 items-center border-b border-[var(--border)] last:border-0 hover:bg-[var(--bg-hover)] ${isLast && entry.isInitial ? 'border-t-2 border-[var(--accent)]/50' : ''}`}>
+                          {isEdit ? (
+                            <>
+                              <div className="w-16 text-xs font-mono text-[var(--text-muted)]">{fmtMonth(entry.month)}</div>
+                              <form onSubmit={e => handleSaveEdit(kw.id, e)} className="flex items-center gap-1.5">
+                                <input
+                                  type="number"
+                                  step="0.1"
+                                  value={editMonth.position}
+                                  onChange={e => setEditMonth(m => m ? { ...m, position: e.target.value } : null)}
+                                  className="w-20 p-1 rounded bg-[var(--bg)] border border-[var(--accent)] text-[var(--text-primary)] text-sm font-mono"
+                                  autoFocus
+                                />
+                                <button type="submit" disabled={saving} className="text-xs px-2 py-1 rounded bg-[var(--accent)] text-[var(--bg)] hover:opacity-90 disabled:opacity-40">OK</button>
+                              </form>
+                              <div />
+                              <button onClick={() => setEditMonth(null)} className="text-xs px-2 py-1 rounded border border-[var(--border)] text-[var(--text-muted)] hover:bg-[var(--bg-hover)]">✕</button>
+                            </>
+                          ) : (
+                            <>
+                              <div className="w-16 text-sm font-mono text-[var(--text-secondary)]">
+                                <span className={entry.isInitial ? 'text-[var(--accent)] font-semibold' : ''}>{fmtMonth(entry.month)}</span>
+                              </div>
+                              <div className={`text-sm font-mono font-bold ${isLast && !entry.isInitial ? 'text-[var(--accent)]' : 'text-[var(--text-primary)]'}`}>
+                                {entry.isInitial ? <span className="text-[var(--accent)]">{fmtPos(entry.pos)} <span className="text-xs font-normal text-[var(--text-muted)]">(início)</span></span> : fmtPos(entry.pos)}
+                              </div>
+                              <div className="w-12 text-center">
+                                {delta ? (
+                                  <span className={`text-xs font-mono ${delta.isGood ? 'text-green-400' : 'text-amber-400'}`}>
+                                    {delta.diff < 0 ? '↓' : '↑'} {Math.abs(delta.diff).toFixed(0)}
+                                  </span>
+                                ) : <span className="text-[var(--text-muted)]">—</span>}
+                              </div>
+                              <div className="w-20 flex items-center justify-end gap-1">
+                                <button
+                                  onClick={() => setEditMonth({ kwId: kw.id, month: entry.month, position: entry.pos.toString() })}
+                                  className="text-xs px-2 py-1 rounded border border-[var(--border)] text-[var(--text-muted)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-primary)]"
+                                >
+                                  Editar
+                                </button>
+                                {!entry.isInitial && (
+                                  <button
+                                    onClick={() => { setDeleteMonth({ kwId: kw.id, month: entry.month }); }}
+                                    className="p-1 rounded text-red-500/60 hover:bg-red-950/30 hover:text-red-400"
+                                    title="Remover este mês"
+                                  >
+                                    <Trash2 size={12} />
+                                  </button>
+                                )}
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      );
+                    })}
+
+                    {/* Add month row */}
                     {addMonthMode === kw.id ? (
-                      <form onSubmit={(e) => handleAddPosition(kw.id, e)} className="flex items-center gap-2 mt-2">
-                        <input
-                          type="month"
-                          value={newMonth}
-                          onChange={e => setNewMonth(e.target.value)}
-                          className="p-1.5 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-[var(--text-primary)] text-xs font-mono"
-                        />
-                        <input
-                          type="number"
-                          step="0.1"
-                          placeholder="Posição"
-                          value={newPosition}
-                          onChange={e => setNewPosition(e.target.value)}
-                          className="w-20 p-1.5 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-[var(--text-primary)] text-xs"
-                          autoFocus
-                        />
-                        <button type="submit" disabled={saving} className="px-3 py-1.5 rounded-lg text-xs font-medium bg-[var(--accent)] text-[var(--bg)] hover:opacity-90 disabled:opacity-40">
-                          {saving ? '...' : 'Add'}
-                        </button>
-                        <button type="button" onClick={() => setAddMonthMode(null)} className="px-3 py-1.5 rounded-lg text-xs border border-[var(--border)] text-[var(--text-muted)] hover:bg-[var(--bg-hover)]">
-                          ✕
-                        </button>
+                      <form onSubmit={e => handleAddPosition(kw.id, e)} className="flex items-center gap-2 mt-3 px-3 py-2 bg-[var(--bg-hover)] rounded-lg">
+                        <input type="month" value={newMonth} onChange={e => setNewMonth(e.target.value)} className="p-1.5 rounded bg-[var(--bg)] border border-[var(--border)] text-[var(--text-primary)] text-xs font-mono" autoFocus />
+                        <input type="number" step="0.1" placeholder="Posição" value={newPosition} onChange={e => setNewPosition(e.target.value)} className="w-20 p-1.5 rounded bg-[var(--bg)] border border-[var(--border)] text-[var(--text-primary)] text-xs" />
+                        <button type="submit" disabled={saving} className="px-3 py-1.5 rounded text-xs font-medium bg-[var(--accent)] text-[var(--bg)] hover:opacity-90 disabled:opacity-40">{saving ? '...' : 'Add'}</button>
+                        <button type="button" onClick={() => { setAddMonthMode(null); setNewMonth(''); setNewPosition(''); }} className="px-2 py-1.5 rounded text-xs border border-[var(--border)] text-[var(--text-muted)] hover:bg-[var(--bg)]">✕</button>
                       </form>
                     ) : (
-                      <button
-                        onClick={() => setAddMonthMode(kw.id)}
-                        className="mt-2 text-xs text-[var(--accent)] hover:text-[var(--accent-light)] flex items-center gap-1"
-                      >
+                      <button onClick={() => setAddMonthMode(kw.id)} className="mt-3 text-xs text-[var(--accent)] hover:text-[var(--accent-light)] flex items-center gap-1 px-3 py-1.5 rounded-lg hover:bg-[var(--bg-hover)] transition-colors">
                         <Plus size={11} /> Adicionar posição do mês
                       </button>
                     )}
@@ -289,6 +353,20 @@ function KeywordsSection({ clientId }: { clientId: string }) {
               </div>
             );
           })}
+        </div>
+      )}
+
+      {/* Delete month confirmation */}
+      {deleteMonth && (
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center" onClick={e => e.target === e.currentTarget && setDeleteMonth(null)}>
+          <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl p-6 w-full max-w-sm space-y-4">
+            <h3 className="font-semibold text-[var(--text-primary)]">Remover {fmtMonth(deleteMonth.month)}?</h3>
+            <p className="text-sm text-[var(--text-muted)]">Esta ação não pode ser desfeita.</p>
+            <div className="flex gap-2 justify-end">
+              <button onClick={() => setDeleteMonth(null)} className="px-4 py-2 rounded-lg text-sm border border-[var(--border)] text-[var(--text-secondary)] hover:bg-[var(--bg-hover)]">Cancelar</button>
+              <button onClick={handleDeleteMonth} disabled={saving} className="px-4 py-2 rounded-lg text-sm font-medium bg-red-600 text-white hover:bg-red-700 disabled:opacity-40">Remover</button>
+            </div>
+          </div>
         </div>
       )}
     </div>
