@@ -150,7 +150,7 @@ export function importGscQueries(clientId: number, rows: Omit<GscQuery, 'client_
     VALUES (@client_id, @query, @clicks, @impressions, @ctr, @position, @period_start, @period_end)
   `);
   const insertMany = db.transaction((rows: Omit<GscQuery, 'client_id'>[]) => {
-    for (const row of rows) insert.run({ client_id: clientId, ...row });
+    for (const row of rows) insert.run({ client_id: clientId, ...row, period_start: periodStart ?? null, period_end: periodEnd ?? null });
     return rows.length;
   });
   const count = insertMany(rows);
@@ -191,7 +191,7 @@ export function importGscPages(clientId: number, rows: Omit<GscPage, 'client_id'
     VALUES (@client_id, @url, @clicks, @impressions, @ctr, @position, @period_start, @period_end)
   `);
   const insertMany = db.transaction((rows: Omit<GscPage, 'client_id'>[]) => {
-    for (const row of rows) insert.run({ client_id: clientId, ...row });
+    for (const row of rows) insert.run({ client_id: clientId, ...row, period_start: periodStart ?? null, period_end: periodEnd ?? null });
     return rows.length;
   });
   const count = insertMany(rows);
