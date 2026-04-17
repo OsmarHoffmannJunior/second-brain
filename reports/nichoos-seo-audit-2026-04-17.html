@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SEO Audit — nichoos.com | 17 Abr 2026</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', -apple-system, sans-serif; background: #0d0d0f; color: #e5e7eb; min-height: 100vh; }
+  .gradient-bg { background: linear-gradient(135deg, #0f0f1a 0%, #1a1040 50%, #0d1a2d 100%); }
+  .glass { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(12px); }
+  .accent { color: #818cf8; }
+  .text-muted { color: #6b7280; }
+  .text-green { color: #4ade80; }
+  .text-red { color: #f87171; }
+  .text-amber { color: #fbbf24; }
+  .section-card { background: #141418; border: 1px solid #1f1f28; border-radius: 16px; padding: 24px; margin-bottom: 20px; }
+  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 28px; }
+  .kpi-card { background: #141418; border: 1px solid #1f1f28; border-radius: 12px; padding: 16px; }
+  .badge-crit { background:#7f1d1d;color:#fca5a5;padding:2px 10px;border-radius:999px;font-size:11px;font-weight:700 }
+  .badge-high { background:#78350f;color:#fdba74;padding:2px 10px;border-radius:999px;font-size:11px;font-weight:700 }
+  .badge-mid { background:#713f12;color:#fcd34d;padding:2px 10px;border-radius:999px;font-size:11px;font-weight:700 }
+  .badge-low { background:#14532d;color:#86efac;padding:2px 10px;border-radius:999px;font-size:11px;font-weight:700 }
+  table { width:100%;border-collapse:collapse; }
+  th { text-align:left;padding:10px 12px;background:#1a1a1a;color:#9ca3af;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid #2a2a2a }
+  td { padding:9px 12px;border-bottom:1px solid #1a1a1a;color:#d1d5db;font-size:13px }
+  tr:last-child td { border-bottom:none }
+  tr:hover td { background:#1a1a1a }
+  .mono { font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+  .page-tag { background:#1e1b4b;color:#a5b4fc;padding:1px 7px;border-radius:4px;font-size:11px;font-family:monospace }
+  .status-redirect { color:#fbbf24 }
+  .status-broken { color:#f87171 }
+  .status-404 { color:#f87171 }
+  .severity-bar { height:4px;border-radius:2px;margin-top:6px }
+  .toc { position: sticky; top: 20px; }
+  .toc-item { padding:6px 12px;border-radius:8px;color:#9ca3af;font-size:13px;transition:all .15s;display:block }
+  .toc-item:hover { background:#1f1f28;color:#e5e7eb }
+  .toc-item.active { background:#1e1b4b;color:#a5b4fc }
+  .progress-bar { height:6px;background:#1f1f28;border-radius:3px;overflow:hidden }
+  .progress-fill { height:100%;border-radius:3px }
+  .two-col { display:grid;grid-template-columns:1fr 280px;gap:24px;align-items:start }
+  @media(max-width:900px) { .two-col { grid-template-columns:1fr } .kpi-grid { grid-template-columns:1fr 1fr } }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="gradient-bg" style="padding:48px 40px 36px;border-bottom:1px solid #1f1f28">
+  <div style="max-width:1100px;margin:0 auto">
+    <div style="font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#818cf8;margin-bottom:10px">SEO Technical Audit</div>
+    <h1 style="font-size:28px;font-weight:800;color:#f1f5f9;margin-bottom:6px">nichoos.com</h1>
+    <p style="color:#9ca3af;font-size:14px">Relatório completo de auditoria técnica de SEO • <span style="color:#6b7280">17 de Abril de 2026</span></p>
+    <div style="margin-top:16px;display:flex;gap:12px;flex-wrap:wrap">
+      <span class="badge-crit">🔴 2 Críticos</span>
+      <span class="badge-high">🟠 4 Altos</span>
+      <span class="badge-mid">🟡 2 Médios</span>
+      <span class="badge-low">🟢 2 Baixos</span>
+    </div>
+  </div>
+</div>
+
+<!-- KPI Overview -->
+<div style="max-width:1100px;margin:28px auto;padding:0 24px">
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div style="font-size:11px;color:#6b7280;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Total Issues</div>
+      <div style="font-size:32px;font-weight:800;color:#f1f5f9">47</div>
+      <div style="font-size:12px;color:#6b7280;margin-top:4px">10 categorias afetadas</div>
+    </div>
+    <div class="kpi-card">
+      <div style="font-size:11px;color:#6b7280;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Pages Afetadas</div>
+      <div style="font-size:32px;font-weight:800;color:#f1f5f9">4</div>
+      <div style="font-size:12px;color:#6b7280;margin-top:4px">URLs com problemas</div>
+    </div>
+    <div class="kpi-card">
+      <div style="font-size:11px;color:#6b7280;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">/landingpage</div>
+      <div style="font-size:32px;font-weight:800;color:#ef4444">5</div>
+      <div style="font-size:12px;color:#6b7280;margin-top:4px">problemas isolados</div>
+    </div>
+    <div class="kpi-card">
+      <div style="font-size:11px;color:#6b7280;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Prioridade Máxima</div>
+      <div style="font-size:32px;font-weight:800;color:#ef4444">500</div>
+      <div style="font-size:12px;color:#6b7280;margin-top:4px">/blog — servidor</div>
+    </div>
+  </div>
+</div>
+
+<!-- Main content -->
+<div style="max-width:1100px;margin:0 auto;padding:0 24px 48px">
+<div class="two-col">
+
+<!-- Left: sections -->
+<div>
+
+<!-- ── 1. Crítico: /landingpage ── -->
+<div class="section-card" id="landingpage">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+    <span class="badge-crit">CRÍTICO</span>
+    <h2 style="font-size:16px;font-weight:700;color:#f1f5f9">Landing Page sem conteúdo</h2>
+  </div>
+  <p style="color:#9ca3af;font-size:13px;line-height:1.7;margin-bottom:16px">
+    A página <span class="mono" style="color:#a5b4fc">https://www.nichoos.com/landingpage</span> está completamente vazia — sem título, sem H1, sem meta description e sem texto. Esta é uma página <strong style="color:#f1f5f9">completamente ignorada pelos motores de busca</strong> e pode estar consumindo budget de crawl desnecessariamente.
+  </p>
+  <div style="background:#1c1c1e;border-radius:10px;overflow:hidden">
+    <table>
+      <thead><tr>
+        <th style="padding:10px 14px">Problema</th>
+        <th style="padding:10px 14px;text-align:right">Severidade</th>
+      </tr></thead>
+      <tbody>
+        <tr><td style="padding:9px 14px">Title tag ausente</td><td style="padding:9px 14px;text-align:right"><span class="badge-crit">Crítico</span></td></tr>
+        <tr><td style="padding:9px 14px">Meta description ausente</td><td style="padding:9px 14px;text-align:right"><span class="badge-crit">Crítico</span></td></tr>
+        <tr><td style="padding:9px 14px">H1 ausente</td><td style="padding:9px 14px;text-align:right"><span class="badge-crit">Crítico</span></td></tr>
+        <tr><td style="padding:9px 14px">0 palavras de conteúdo</td><td style="padding:9px 14px;text-align:right"><span class="badge-crit">Crítico</span></td></tr>
+        <tr><td style="padding:9px 14px">Text/HTML ratio: 0.00</td><td style="padding:9px 14px;text-align:right"><span class="badge-crit">Crítico</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div style="margin-top:14px;padding:12px;background:#0f172a;border:1px solid #1e3a5f;border-radius:8px">
+    <div style="font-size:12px;font-weight:600;color:#60a5fa;margin-bottom:6px">⚡ Recomendação</div>
+    <p style="font-size:13px;color:#93c5fd;line-height:1.6">Remover esta página do sitemap XML e do robots.txt se não tem conteúdo. Se tem valor estratégico, desenvolver com conteúdo mínimo de 300 palavras, title e meta description otimizados.</p>
+  </div>
+</div>
+
+<!-- ── 2. Crítico: /blog com 500 ── -->
+<div class="section-card" id="blog-500">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+    <span class="badge-crit">CRÍTICO</span>
+    <h2 style="font-size:16px;font-weight:700;color:#f1f5f9">Blog retornando erro 500</h2>
+  </div>
+  <p style="color:#9ca3af;font-size:13px;line-height:1.7;margin-bottom:14px">
+    A página <span class="mono" style="color:#a5b4fc">https://www.nichoos.com/blog</span> está retornando <strong style="color:#f87171">HTTP 500 (Internal Server Error)</strong>. Isso significa que o Googlebot não consegue acessar o conteúdo e a página está <strong style="color:#f1f5f9">totalmente fora dos resultados de busca</strong>.
+  </p>
+  <div style="background:#1c1c1e;border-radius:10px;padding:16px">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div style="width:48px;height:48px;background:#7f1d1d;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px">500</div>
+      <div>
+        <div style="font-size:14px;font-weight:600;color:#f1f5f9">Internal Server Error</div>
+        <div style="font-size:12px;color:#6b7280;margin-top:2px">https://www.nichoos.com/blog • Detectado: 17 Abr 2026</div>
+      </div>
+    </div>
+  </div>
+  <div style="margin-top:14px;padding:12px;background:#0f172a;border:1px solid #1e3a5f;border-radius:8px">
+    <div style="font-size:12px;font-weight:600;color:#60a5fa;margin-bottom:6px">⚡ Recomendação</div>
+    <p style="font-size:13px;color:#93c5fd;line-height:1.6">Verificar logs do servidor imediatamente. Corrigir o erro 500. Uma vez online, a página deve ser revalidada com Google Search Console para reindexação.</p>
+  </div>
+</div>
+
+<!-- ── 3. JS/CSS quebrados ── -->
+<div class="section-card" id="broken-assets">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
+    <span class="badge-high">ALTO</span>
+    <h2 style="font-size:16px;font-weight:700;color:#f1f5f9">Arquivos JS retornando 404</h2>
+  </div>
+  <p style="color:#6b7280;font-size:12px;margin-bottom:16px">3 arquivos JavaScript retornando HTTP 404 em páginas do site — impacta renderização e UX.</p>
+  <div style="background:#1c1c1e;border-radius:10px;overflow:hidden">
+    <table>
+      <thead><tr>
+        <th>Página</th>
+        <th>Recurso (404)</th>
+        <th>Tipo</th>
+      </tr></thead>
+      <tbody>
+        <tr><td style="padding:9px 14px"><span class="page-tag">/politicadeprivacidade</span></td><td style="padding:9px 14px" class="mono text-red">0e58e391aee7803a.js</td><td style="padding:9px 14px">JavaScript</td></tr>
+        <tr><td style="padding:9px 14px"><span class="page-tag">/termosecondicoes</span></td><td style="padding:9px 14px" class="mono text-red">32ce375a71ce00d2.js</td><td style="padding:9px 14px">JavaScript</td></tr>
+        <tr><td style="padding:9px 14px"><span class="page-tag">/termosecondicoes</span></td><td style="padding:9px 14px" class="mono text-red">turbopack-791f749624d5a445.js</td><td style="padding:9px 14px">JavaScript</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div style="margin-top:14px;padding:12px;background:#0f172a;border:1px solid #1e3a5f;border-radius:8px">
+    <div style="font-size:12px;font-weight:600;color:#60a5fa;margin-bottom:6px">⚡ Recomendação</div>
+    <p style="font-size:13px;color:#93c5fd;line-height:1.6">Verificar se houve rebuild do Next.js que alterou os hashes dos chunks. Fazer deploy com a build atual para regenerar os assets estáticos.</p>
+  </div>
+</div>
+
+<!-- ── 4. Sitemap issues ── -->
+<div class="section-card" id="sitemap">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
+    <span class="badge-high">ALTO</span>
+    <h2 style="font-size:16px;font-weight:700;color:#f1f5f9">Sitemap com URLs inválidas</h2>
+  </div>
+  <p style="color:#6b7280;font-size:12px;margin-bottom:16px">{len(sitemap_issues)} entradas no sitemap XML com problemas — {len(redirects)} redirects e {len(broken_sitemap)} URLs quebradas.</p>
+
+  <div style="margin-bottom:16px">
+    <div style="font-size:12px;font-weight:600;color:#9ca3af;margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em">🔴 URLs Quebradas (Broken URL)</div>
+    <div style="background:#1c1c1e;border-radius:10px;overflow:hidden">
+      <table>
+        <thead><tr><th>Link no Sitemap</th><th>Issue</th></tr></thead>
+        <tbody>
+        <tr><td style="padding:9px 14px" class="mono text-red">/blog</td><td style="padding:9px 14px"><span class="badge-crit" style="font-size:10px">Broken URL</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div>
+    <div style="font-size:12px;font-weight:600;color:#9ca3af;margin-bottom:8px;text-transform:uppercase;letter-spacing:.05em">🟡 Redirects (no sitemap)</div>
+    <div style="background:#1c1c1e;border-radius:10px;overflow:hidden">
+      <table>
+        <thead><tr><th>Link no Sitemap</th><th>Tipo</th></tr></thead>
+        <tbody>
+        <tr><td style="padding:9px 14px" class="mono text-amber">/clube/escolaonline</td><td style="padding:9px 14px"><span class="badge-high" style="font-size:10px">Redirect</span></td></tr>
+        <tr><td style="padding:9px 14px" class="mono text-amber">/clube/sebraedelas</td><td style="padding:9px 14px"><span class="badge-high" style="font-size:10px">Redirect</span></td></tr>
+        <tr><td style="padding:9px 14px" class="mono text-amber">/clube/comudelas</td><td style="padding:9px 14px"><span class="badge-high" style="font-size:10px">Redirect</span></td></tr>
+        <tr><td style="padding:9px 14px" class="mono text-amber">/clube/trilhaebem</td><td style="padding:9px 14px"><span class="badge-high" style="font-size:10px">Redirect</span></td></tr>
+        <tr><td style="padding:9px 14px" class="mono text-amber">/clube/growthmachine</td><td style="padding:9px 14px"><span class="badge-high" style="font-size:10px">Redirect</span></td></tr>
+        <tr><td style="padding:9px 14px" class="mono text-amber">/clube/v8sales</td><td style="padding:9px 14px"><span class="badge-high" style="font-size:10px">Redirect</span></td></tr>
+        <tr><td style="padding:9px 14px" class="mono text-amber">/clube/rme</td><td style="padding:9px 14px"><span class="badge-high" style="font-size:10px">Redirect</span></td></tr>
+        <tr><td style="padding:9px 14px" class="mono text-amber">/clube/bequest</td><td style="padding:9px 14px"><span class="badge-high" style="font-size:10px">Redirect</span></td></tr>
+        <tr><td style="padding:9px 14px" class="mono text-amber">/clube/youniverse</td><td style="padding:9px 14px"><span class="badge-high" style="font-size:10px">Redirect</span></td></tr>
+        <tr><td style="padding:9px 14px" class="mono text-amber">/clube/eludicarclube</td><td style="padding:9px 14px"><span class="badge-high" style="font-size:10px">Redirect</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:12px;color:#6b7280;margin-top:8px">Mostrando 10 de 16 redirects. Recomenda-se remover todas as URLs com redirect do sitemap e manter apenas URLs canonical.</p>
+  </div>
+</div>
+
+<!-- ── 5. Text ratio / Low content ── -->
+<div class="section-card" id="content">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
+    <span class="badge-mid">MÉDIO</span>
+    <h2 style="font-size:16px;font-weight:700;color:#f1f5f9">Pages com pouco conteúdo texto</h2>
+  </div>
+  <p style="color:#6b7280;font-size:12px;margin-bottom:16px">Text/HTML ratio muito baixo indica páginas com pouco conteúdo indexável. Ratio ideal: acima de 0.15 (15%).</p>
+  <div style="background:#1c1c1e;border-radius:10px;overflow:hidden">
+    <table>
+      <thead><tr><th>Página</th><th style="text-align:right">Ratio</th><th style="text-align:right">Status</th></tr></thead>
+      <tbody>
+        <tr><td style="padding:9px 14px"><span class="page-tag">/</span></td><td style="padding:9px 14px;text-align:right;font-family:monospace;color:#ef4444">3.00%</td><td style="padding:9px 14px;text-align:right">🔴 Crítico</td></tr>
+        <tr><td style="padding:9px 14px"><span class="page-tag">/landingpage</span></td><td style="padding:9px 14px;text-align:right;font-family:monospace;color:#ef4444">0.00%</td><td style="padding:9px 14px;text-align:right">🔴 Crítico</td></tr>
+        <tr><td style="padding:9px 14px"><span class="page-tag">/precos</span></td><td style="padding:9px 14px;text-align:right;font-family:monospace;color:#ef4444">2.00%</td><td style="padding:9px 14px;text-align:right">🔴 Crítico</td></tr>
+        <tr><td style="padding:9px 14px"><span class="page-tag">/recursos</span></td><td style="padding:9px 14px;text-align:right;font-family:monospace;color:#ef4444">4.00%</td><td style="padding:9px 14px;text-align:right">🔴 Crítico</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ── 6. Structured data ── -->
+<div class="section-card" id="schema">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
+    <span class="badge-mid">MÉDIO</span>
+    <h2 style="font-size:16px;font-weight:700;color:#f1f5f9">Structured Data sem aggregateRating</h2>
+  </div>
+  <p style="color:#6b7280;font-size:12px;margin-bottom:16px">As páginas declaram schema <code style="color:#a5b4fc;font-size:12px">SoftwareApp</code> mas não incluem <code style="color:#a5b4fc;font-size:12px">aggregateRating</code>, perdendo Rich Snippets no Google.</p>
+  <div style="background:#1c1c1e;border-radius:10px;overflow:hidden">
+    <table>
+      <thead><tr><th>Página</th><th>Schema</th><th>Campo</th><th>Problema</th></tr></thead>
+      <tbody>
+        <tr><td style="padding:9px 14px"><span class="page-tag">/</span></td><td style="padding:9px 14px">Software App</td><td style="padding:9px 14px">aggregateRating or review</td><td style="padding:9px 14px;color:#f87171;font-size:12px">A value for the aggregateRating or review field is required.</td></tr>
+        <tr><td style="padding:9px 14px"><span class="page-tag">/precos</span></td><td style="padding:9px 14px">Software App</td><td style="padding:9px 14px">aggregateRating or review</td><td style="padding:9px 14px;color:#f87171;font-size:12px">A value for the aggregateRating or review field is required.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ── 7. Unminified assets ── -->
+<div class="section-card" id="unminified">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
+    <span class="badge-low">BAIXO</span>
+    <h2 style="font-size:16px;font-weight:700;color:#f1f5f9">Assets JavaScript não-minificados</h2>
+  </div>
+  <p style="color:#6b7280;font-size:12px;margin-bottom:16px">{len(unminified)} arquivos JS servidos sem minificação — impacta levemente tempo de carregamento. <strong style="color:#e5e7eb">Não é crítico para SEO mas prejudica Core Web Vitals.</strong></p>
+  <div style="background:#1c1c1e;border-radius:10px;overflow:hidden">
+    <table>
+      <thead><tr><th>Página</th><th style="text-align:right">Arquivos sem minificar</th></tr></thead>
+      <tbody>
+        <tr><td style="padding:9px 14px"><span class="page-tag">/landingpage</span></td><td style="padding:9px 14px;text-align:right;font-family:monospace;color:#fbbf24">4x</td></tr>
+        <tr><td style="padding:9px 14px"><span class="page-tag">/</span></td><td style="padding:9px 14px;text-align:right;font-family:monospace;color:#fbbf24">3x</td></tr>
+        <tr><td style="padding:9px 14px"><span class="page-tag">/politicadeprivacidade</span></td><td style="padding:9px 14px;text-align:right;font-family:monospace;color:#fbbf24">3x</td></tr>
+        <tr><td style="padding:9px 14px"><span class="page-tag">/precos</span></td><td style="padding:9px 14px;text-align:right;font-family:monospace;color:#fbbf24">3x</td></tr>
+        <tr><td style="padding:9px 14px"><span class="page-tag">/recursos</span></td><td style="padding:9px 14px;text-align:right;font-family:monospace;color:#fbbf24">3x</td></tr>
+        <tr><td style="padding:9px 14px"><span class="page-tag">/termosecondicoes</span></td><td style="padding:9px 14px;text-align:right;font-family:monospace;color:#fbbf24">3x</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ── Resumo de prioridades ── -->
+<div class="section-card">
+  <h2 style="font-size:15px;font-weight:700;color:#f1f5f9;margin-bottom:14px">📋 Plano de Ação Prioritizado</h2>
+  <div style="display:flex;flex-direction:column;gap:10px">
+    <div style="display:flex;align-items:flex-start;gap:14px;padding:14px;background:#1a1a1a;border-radius:10px;border:1px solid #252525">
+      <div style="width:28px;height:28px;background:#1f1f28;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#9ca3af;flex-shrink:0;margin-top:1px">1</div>
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px">
+          <span style="background:#7f1d1d;color:#fca5a5;padding:1px 7px;border-radius:4px;font-size:10px;font-weight:700">CRÍTICO</span>
+          <span style="font-size:13px;font-weight:600;color:#e5e7eb">Corrigir erro 500 do /blog</span>
+        </div>
+        <p style="font-size:12px;color:#6b7280;line-height:1.5">Verificar logs e restaurar funcionalidade da página.</p>
+      </div>
+    </div>
+    <div style="display:flex;align-items:flex-start;gap:14px;padding:14px;background:#1a1a1a;border-radius:10px;border:1px solid #252525">
+      <div style="width:28px;height:28px;background:#1f1f28;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#9ca3af;flex-shrink:0;margin-top:1px">2</div>
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px">
+          <span style="background:#7f1d1d;color:#fca5a5;padding:1px 7px;border-radius:4px;font-size:10px;font-weight:700">CRÍTICO</span>
+          <span style="font-size:13px;font-weight:600;color:#e5e7eb">Remover ou corrigir /landingpage</span>
+        </div>
+        <p style="font-size:12px;color:#6b7280;line-height:1.5">Ou desenvolver conteúdo mínimo ou remover do sitemap.</p>
+      </div>
+    </div>
+    <div style="display:flex;align-items:flex-start;gap:14px;padding:14px;background:#1a1a1a;border-radius:10px;border:1px solid #252525">
+      <div style="width:28px;height:28px;background:#1f1f28;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#9ca3af;flex-shrink:0;margin-top:1px">3</div>
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px">
+          <span style="background:#78350f;color:#fdba74;padding:1px 7px;border-radius:4px;font-size:10px;font-weight:700">ALTO</span>
+          <span style="font-size:13px;font-weight:600;color:#e5e7eb">Corrigir 3 arquivos JS 404</span>
+        </div>
+        <p style="font-size:12px;color:#6b7280;line-height:1.5">Fazer rebuild/redeploy do Next.js para regenerar chunks.</p>
+      </div>
+    </div>
+    <div style="display:flex;align-items:flex-start;gap:14px;padding:14px;background:#1a1a1a;border-radius:10px;border:1px solid #252525">
+      <div style="width:28px;height:28px;background:#1f1f28;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#9ca3af;flex-shrink:0;margin-top:1px">4</div>
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px">
+          <span style="background:#78350f;color:#fdba74;padding:1px 7px;border-radius:4px;font-size:10px;font-weight:700">ALTO</span>
+          <span style="font-size:13px;font-weight:600;color:#e5e7eb">Limpar sitemap de redirects</span>
+        </div>
+        <p style="font-size:12px;color:#6b7280;line-height:1.5">Remover URLs com redirect do sitemap XML.</p>
+      </div>
+    </div>
+    <div style="display:flex;align-items:flex-start;gap:14px;padding:14px;background:#1a1a1a;border-radius:10px;border:1px solid #252525">
+      <div style="width:28px;height:28px;background:#1f1f28;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#9ca3af;flex-shrink:0;margin-top:1px">5</div>
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px">
+          <span style="background:#713f12;color:#fcd34d;padding:1px 7px;border-radius:4px;font-size:10px;font-weight:700">MÉDIO</span>
+          <span style="font-size:13px;font-weight:600;color:#e5e7eb">Adicionar aggregateRating ao schema</span>
+        </div>
+        <p style="font-size:12px;color:#6b7280;line-height:1.5">Implementar schema SoftwareApp com rating válido.</p>
+      </div>
+    </div>
+    <div style="display:flex;align-items:flex-start;gap:14px;padding:14px;background:#1a1a1a;border-radius:10px;border:1px solid #252525">
+      <div style="width:28px;height:28px;background:#1f1f28;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#9ca3af;flex-shrink:0;margin-top:1px">6</div>
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px">
+          <span style="background:#713f12;color:#fcd34d;padding:1px 7px;border-radius:4px;font-size:10px;font-weight:700">MÉDIO</span>
+          <span style="font-size:13px;font-weight:600;color:#e5e7eb">Melhorar text ratio das páginas</span>
+        </div>
+        <p style="font-size:12px;color:#6b7280;line-height:1.5">Adicionar conteúdo textual relevante às páginas críticas.</p>
+      </div>
+    </div>
+    <div style="display:flex;align-items:flex-start;gap:14px;padding:14px;background:#1a1a1a;border-radius:10px;border:1px solid #252525">
+      <div style="width:28px;height:28px;background:#1f1f28;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#9ca3af;flex-shrink:0;margin-top:1px">7</div>
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px">
+          <span style="background:#14532d;color:#86efac;padding:1px 7px;border-radius:4px;font-size:10px;font-weight:700">BAIXO</span>
+          <span style="font-size:13px;font-weight:600;color:#e5e7eb">Minificar assets JS/CSS</span>
+        </div>
+        <p style="font-size:12px;color:#6b7280;line-height:1.5">Configurar Next.js build para minificar em produção.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<!-- Right sidebar: TOC -->
+<div>
+  <div style="position:sticky;top:20px">
+    <div style="font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#6b7280;margin-bottom:10px;padding-left:4px">Índice</div>
+    <div style="background:#141418;border:1px solid #1f1f28;border-radius:12px;overflow:hidden;padding:6px">
+      <a href="#landingpage" class="toc-item">🚨 /landingpage vazia</a>
+      <a href="#blog-500" class="toc-item">🚨 /blog — erro 500</a>
+      <a href="#broken-assets" class="toc-item">🟠 JS/CSS 404</a>
+      <a href="#sitemap" class="toc-item">🟠 Sitemap inválido</a>
+      <a href="#content" class="toc-item">🟡 Text ratio baixo</a>
+      <a href="#schema" class="toc-item">🟡 Schema sem rating</a>
+      <a href="#unminified" class="toc-item">🟢 Assets não-minificados</a>
+    </div>
+
+    <div style="margin-top:16px;background:#141418;border:1px solid #1f1f28;border-radius:12px;padding:16px">
+      <div style="font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#6b7280;margin-bottom:12px">Resumo Geral</div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:12px;color:#9ca3af">Total issues</span>
+          <span style="font-size:13px;font-weight:700;color:#f1f5f9">47</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:12px;color:#9ca3af">Pages únicas</span>
+          <span style="font-size:13px;font-weight:700;color:#f1f5f9">8</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:12px;color:#9ca3af">Críticos</span>
+          <span style="font-size:13px;font-weight:700;color:#ef4444">2</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:12px;color:#9ca3af">Altos</span>
+          <span style="font-size:13px;font-weight:700;color:#f97316">4</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:12px;color:#9ca3af">Médios</span>
+          <span style="font-size:13px;font-weight:700;color:#eab308">2</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:12px;color:#9ca3af">Baixos</span>
+          <span style="font-size:13px;font-weight:700;color:#22c55e">2</span>
+        </div>
+        <div style="border-top:1px solid #2a2a2a;padding-top:10px;margin-top:2px">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <span style="font-size:12px;color:#9ca3af">Score SEO</span>
+            <span style="font-size:16px;font-weight:800;color:#f97316">42/100</span>
+          </div>
+          <div class="progress-bar" style="margin-top:6px">
+            <div class="progress-fill" style="width:42%;background:linear-gradient(90deg,#ef4444,#f97316)"></div>
+          </div>
+          <div style="font-size:11px;color:#6b7280;margin-top:4px">Performance muito abaixo do ideal</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:16px;background:#141418;border:1px solid #1f1f28;border-radius:12px;padding:16px">
+      <div style="font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#6b7280;margin-bottom:10px">Principais páginas afetadas</div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <div style="width:6px;height:6px;border-radius:50%;background:#ef4444;flex-shrink:0"></div>
+          <span class="mono" style="font-size:12px;color:#d1d5db">/landingpage</span>
+          <span style="font-size:11px;color:#6b7280;margin-left:auto">5 issues</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div style="width:6px;height:6px;border-radius:50%;background:#ef4444;flex-shrink:0"></div>
+          <span class="mono" style="font-size:12px;color:#d1d5db">/blog</span>
+          <span style="font-size:11px;color:#6b7280;margin-left:auto">1 issue</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div style="width:6px;height:6px;border-radius:50%;background:#f97316;flex-shrink:0"></div>
+          <span class="mono" style="font-size:12px;color:#d1d5db">/</span>
+          <span style="font-size:11px;color:#6b7280;margin-left:auto">3 issues</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div style="width:6px;height:6px;border-radius:50%;background:#f97316;flex-shrink:0"></div>
+          <span class="mono" style="font-size:12px;color:#d1d5db">/politicadeprivacidade</span>
+          <span style="font-size:11px;color:#6b7280;margin-left:auto">2 issues</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div style="width:6px;height:6px;border-radius:50%;background:#f97316;flex-shrink:0"></div>
+          <span class="mono" style="font-size:12px;color:#d1d5db">/termosecondicoes</span>
+          <span style="font-size:11px;color:#6b7280;margin-left:auto">2 issues</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</div><!-- end two-col -->
+</div><!-- end container -->
+
+<!-- Footer -->
+<div style="border-top:1px solid #1f1f28;padding:20px 24px;text-align:center">
+  <p style="font-size:12px;color:#6b7280">SEO Audit nichoo.com • Gerado em 17 de Abril de 2026 • Baseado em dados do Screaming Frog / crawler</p>
+</div>
+
+</body>
+</html>
