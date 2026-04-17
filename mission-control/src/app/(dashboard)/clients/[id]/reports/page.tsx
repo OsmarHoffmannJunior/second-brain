@@ -29,9 +29,10 @@ export default function ReportsPage() {
 
   const loadData = async (fromDate?: string, toDate?: string) => {
     setLoading(true);
-    const params = (d: string) => fromDate && toDate ? `?from=${d}&to=${toDate}` : '';
+    const baseMonthly = `/api/clients/${id}/data?type=monthly`;
+    const monthlyUrl = fromDate && toDate ? `${baseMonthly}&from=${fromDate}&to=${toDate}` : baseMonthly;
     const [m, p, q] = await Promise.all([
-      fetch(`/api/clients/${id}/data?type=monthly${params(fromDate || '')}`).then(r => r.json()),
+      fetch(monthlyUrl).then(r => r.json()),
       fetch(`/api/clients/${id}/data?type=pages&limit=30`).then(r => r.json()),
       fetch(`/api/clients/${id}/data?type=queries&limit=30`).then(r => r.json()),
     ]);
