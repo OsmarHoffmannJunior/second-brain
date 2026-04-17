@@ -39,7 +39,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
         // Full monthly history for detail page
         monthly: allMonthly.map((m: any) => ({ keyword_id: m.keyword_id, month: m.month, position: m.position })),
         // Report-specific fields when period filter is applied
-        best_position: (from || to) ? bestPosition : null,
+        best_position: bestPosition,
         recent_position: recent?.position ?? null,
         recent_month: recent?.month ?? null,
         data_points: filtered.length,
