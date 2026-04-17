@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, BarChart2, Target } from 'lucide-react';
+import { ArrowLeft, BarChart2, Target, HelpCircle } from 'lucide-react';
+import { Tooltip } from '@/components/ui/Tooltip';
 
 interface Client { id: number; name: string; domain: string; }
 
@@ -81,14 +82,14 @@ function MonthlySection({ clientId }: { clientId: string }) {
             <table className="w-full">
               <thead><tr className="border-b border-[var(--border)] text-xs text-[var(--text-muted)] uppercase tracking-wider">
                 <th className="text-left px-5 py-3 font-semibold">Mês</th>
-                <th className="text-right px-5 py-3 font-semibold">Cliques</th>
-                <th className="text-right px-5 py-3 font-semibold">vs Mês Ant.</th>
-                <th className="text-right px-5 py-3 font-semibold">Impressões</th>
-                <th className="text-right px-5 py-3 font-semibold">vs Mês Ant.</th>
-                <th className="text-right px-5 py-3 font-semibold">CTR</th>
-                <th className="text-right px-5 py-3 font-semibold">vs Mês Ant.</th>
-                <th className="text-right px-5 py-3 font-semibold">Posição</th>
-                <th className="text-right px-5 py-3 font-semibold">vs Mês Ant.</th>
+                <th className="text-right px-5 py-3 font-semibold"><Tooltip content="Número de cliques no Google Search Console no período." side="bottom">Cliques <HelpCircle size={11} className="inline text-[var(--text-muted)]" /></Tooltip></th>
+                <th className="text-right px-5 py-3 font-semibold"><Tooltip content="Variação percentual vs mês anterior. Verde = melhora, Amarelo = piora." side="bottom">vs Mês Ant. <HelpCircle size={11} className="inline text-[var(--text-muted)]" /></Tooltip></th>
+                <th className="text-right px-5 py-3 font-semibold"><Tooltip content="Quantas vezes seu site apareceu no Google no período." side="bottom">Impressões <HelpCircle size={11} className="inline text-[var(--text-muted)]" /></Tooltip></th>
+                <th className="text-right px-5 py-3 font-semibold"><Tooltip content="Variação percentual vs mês anterior. Verde = melhora, Amarelo = piora." side="bottom">vs Mês Ant. <HelpCircle size={11} className="inline text-[var(--text-muted)]" /></Tooltip></th>
+                <th className="text-right px-5 py-3 font-semibold"><Tooltip content="Cliques ÷ Impressões × 100. Mede quão atrativo seu resultado é para quem vê." side="bottom">CTR <HelpCircle size={11} className="inline text-[var(--text-muted)]" /></Tooltip></th>
+                <th className="text-right px-5 py-3 font-semibold"><Tooltip content="Variação percentual vs mês anterior. Verde = melhora, Amarelo = piora." side="bottom">vs Mês Ant. <HelpCircle size={11} className="inline text-[var(--text-muted)]" /></Tooltip></th>
+                <th className="text-right px-5 py-3 font-semibold"><Tooltip content="Posição média no Google no mês. Quanto menor, melhor." side="bottom">Posição <HelpCircle size={11} className="inline text-[var(--text-muted)]" /></Tooltip></th>
+                <th className="text-right px-5 py-3 font-semibold"><Tooltip content="Variação percentual vs mês anterior. Verde = melhora, Amarelo = piora." side="bottom">vs Mês Ant. <HelpCircle size={11} className="inline text-[var(--text-muted)]" /></Tooltip></th>
               </tr></thead>
               <tbody>
                 {monthly.map((row, i) => {
@@ -166,9 +167,9 @@ function PagesSection({ clientId }: { clientId: string }) {
           <thead><tr className="border-b border-[var(--border)] text-xs text-[var(--text-muted)] uppercase tracking-wider">
             <th className="text-left px-5 py-3 font-semibold w-8">#</th>
             <th className="text-left px-5 py-3 font-semibold">URL</th>
-            <th className="text-right px-5 py-3 font-semibold">Cliques</th>
+            <th className="text-right px-5 py-3 font-semibold"><Tooltip content="Número de cliques no Google Search Console no período." side="bottom">Cliques <HelpCircle size={11} className="inline text-[var(--text-muted)]" /></Tooltip></th>
             <th className="text-right px-5 py-3 font-semibold">Impr.</th>
-            <th className="text-right px-5 py-3 font-semibold">CTR</th>
+            <th className="text-right px-5 py-3 font-semibold"><Tooltip content="Cliques ÷ Impressões × 100. Mede quão atrativo seu resultado é para quem vê." side="bottom">CTR <HelpCircle size={11} className="inline text-[var(--text-muted)]" /></Tooltip></th>
             <th className="text-right px-5 py-3 font-semibold">Pos</th>
           </tr></thead>
           <tbody>
@@ -227,9 +228,9 @@ function QueriesSection({ clientId }: { clientId: string }) {
           <thead><tr className="border-b border-[var(--border)] text-xs text-[var(--text-muted)] uppercase tracking-wider">
             <th className="text-left px-5 py-3 font-semibold w-8">#</th>
             <th className="text-left px-5 py-3 font-semibold">Query</th>
-            <th className="text-right px-5 py-3 font-semibold">Cliques</th>
+            <th className="text-right px-5 py-3 font-semibold"><Tooltip content="Número de cliques no Google Search Console no período." side="bottom">Cliques <HelpCircle size={11} className="inline text-[var(--text-muted)]" /></Tooltip></th>
             <th className="text-right px-5 py-3 font-semibold">Impr.</th>
-            <th className="text-right px-5 py-3 font-semibold">CTR</th>
+            <th className="text-right px-5 py-3 font-semibold"><Tooltip content="Cliques ÷ Impressões × 100. Mede quão atrativo seu resultado é para quem vê." side="bottom">CTR <HelpCircle size={11} className="inline text-[var(--text-muted)]" /></Tooltip></th>
             <th className="text-right px-5 py-3 font-semibold">Pos</th>
           </tr></thead>
           <tbody>
@@ -332,10 +333,10 @@ function KeywordsReportSection({ clientId }: { clientId: string }) {
             <thead>
               <tr className="border-b border-[var(--border)] text-xs text-[var(--text-muted)] uppercase tracking-wider">
                 <th className="text-left px-5 py-3 font-semibold">Keyword</th>
-                <th className="text-right px-5 py-3 font-semibold">Inicial</th>
-                <th className="text-right px-5 py-3 font-semibold">Melhor (hist.)</th>
-                <th className="text-right px-5 py-3 font-semibold">Recente</th>
-                <th className="text-right px-5 py-3 font-semibold">Evolução</th>
+                <th className="text-right px-5 py-3 font-semibold"><Tooltip content="Posição no ranking no momento do cadastro da keyword." side="top">Inicial <HelpCircle size={11} className="inline text-[var(--text-muted)]" /></Tooltip></th>
+                <th className="text-right px-5 py-3 font-semibold"><Tooltip content="Menor posição já atingida desde o cadastro. Não é resetada." side="top">Melhor (hist.) <HelpCircle size={11} className="inline text-[var(--text-muted)]" /></Tooltip></th>
+                <th className="text-right px-5 py-3 font-semibold"><Tooltip content="Último dado disponível no período selecionado acima." side="top">Recente <HelpCircle size={11} className="inline text-[var(--text-muted)]" /></Tooltip></th>
+                <th className="text-right px-5 py-3 font-semibold"><Tooltip content="Recente − Inicial. Verde = subiu no ranking. Amarelo = caiu." side="top">Evolução <HelpCircle size={11} className="inline text-[var(--text-muted)]" /></Tooltip></th>
               </tr>
             </thead>
             <tbody>
