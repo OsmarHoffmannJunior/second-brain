@@ -242,3 +242,61 @@ export function getLastImport(clientId: number, importType: string) {
   db.close();
   return row;
 }
+
+// ─── Keywords ────────────────────────────────────────────────────────────
+
+export interface Keyword {
+  id?: number;
+  client_id: number;
+  keyword: string;
+  initial_position?: number;
+  initial_month?: string;
+  created_at?: string;
+}
+
+export interface KeywordMonthly {
+  keyword_id: number;
+  month: string;
+  position: number;
+}
+
+export function getKeywords(clientId: number): (Keyword & { latest_position?: number; latest_month?: string; monthly?: KeywordMonthly[] })[] {
+  const db = getDb();
+  const keywords = db.prepare('SELECT * FROM keywords WHERE client_id = ? ORDER BY keyword ASC').all(clientId) as Keyword[];
+  const result = keywords.map(kw => {
+    const monthly = db.prepare('SELECT * FROM keyword_monthly WHERE keyword_id = ? ORDER BY month ASC').all(kw.id) as KeywordMonthly[];
+    const last = monthly.length > 0 ? monthly[monthly.length - 1] : null;
+    return { ...kw, monthly, latest_position: last?.position, latest_month: last?.month };
+  });
+  db.close();
+  return result;
+}
+
+export function createKeyword(clientId: number, keyword: string, initialPosition?: number, initialMonth?: string): number {
+  const db = getDb();
+  const result = db.prepare('INSERT INTO keywords (client_id, keyword, initial_position, initial_month) VALUES (?, ?, ?, ?)')
+    .run(clientId, keyword, initialPosition ?? null, initialMonth ?? null);
+  db.close();
+  return result.lastInsertRowid as number;
+}
+
+export function deleteKeyword(id: number): boolean {
+  const db = getDb();
+  const result = db.prepare('DELETE FROM keywords WHERE id = ?').run(id);
+  db.close();
+  return result.changes > 0;
+}
+
+export function addKeywordPosition(keywordId: number, month: string, position: number): void {
+  const db = getDb();
+  db.prepare('INSERT OR REPLACE INTO keyword_monthly (keyword_id, month, position) VALUES (?, ?, ?)')
+    .run(keywordId, month, position);
+  db.close();
+}
+
+export function deleteKeywordPosition(keywordId: number, month: string): boolean {
+  const db = getDb();
+  const result = db.prepare('DELETE FROM keyword_monthly WHERE keyword_id = ? AND month = ?').run(keywordId, month);
+  db.close();
+  return result.changes > 0;
+}
