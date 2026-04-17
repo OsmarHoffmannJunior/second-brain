@@ -15,6 +15,8 @@ import {
   DollarSign,
   Settings,
   History,
+  CheckSquare,
+  TrendingUp,
 } from "lucide-react";
 
 const dockItems = [
@@ -29,6 +31,8 @@ const dockItems = [
   { href: "/sessions", label: "Sessions", icon: History },
   { href: "/skills", label: "Skills", icon: Puzzle },
   { href: "/costs", label: "Costs & Analytics", icon: DollarSign },
+  { href: "/tasks", label: "Tasks", icon: CheckSquare },
+  { href: "/clients", label: "SEO", icon: TrendingUp },
   { href: "/settings", label: "Settings", icon: Settings },
 ];
 
