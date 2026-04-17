@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, BarChart2 } from 'lucide-react';
+import { ArrowLeft, BarChart2, Target } from 'lucide-react';
 
 interface Client { id: number; name: string; domain: string; }
 
@@ -254,6 +254,125 @@ function QueriesSection({ clientId }: { clientId: string }) {
   );
 }
 
+// ─── Section: Keywords Report ───────────────────────────────────────────
+
+interface KwReport {
+  id: number;
+  keyword: string;
+  initial_position: number | null;
+  initial_month?: string;
+  best_position: number | null;
+  recent_position: number | null;
+  recent_month?: string;
+  data_points: number;
+}
+
+function KeywordsReportSection({ clientId }: { clientId: string }) {
+  const [keywords, setKeywords] = useState<KwReport[]>([]);
+  const [from, setFrom] = useState('');
+  const [to, setTo] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [sortBy, setSortBy] = useState<'best' | 'recent' | 'gain'>('best');
+
+  const load = async () => {
+    setLoading(true);
+    let url = `/api/clients/${clientId}/keywords`;
+    const qs: string[] = [];
+    if (from) qs.push(`from=${from}`);
+    if (to) qs.push(`to=${to}`);
+    if (qs.length) url += '?' + qs.join('&');
+    const d = await fetch(url).then(r => r.json());
+    setKeywords(Array.isArray(d) ? d : []);
+    setLoading(false);
+  };
+
+  useEffect(() => { load(); }, [clientId, from, to]);
+
+  const sorted = [...keywords].sort((a, b) => {
+    if (sortBy === 'best') return (a.best_position ?? 999) - (b.best_position ?? 999);
+    if (sortBy === 'recent') return (a.recent_position ?? 999) - (b.recent_position ?? 999);
+    // gain: (initial - recent) descending
+    const gainA = (a.initial_position ?? 0) - (a.recent_position ?? a.initial_position ?? 0);
+    const gainB = (b.initial_position ?? 0) - (b.recent_position ?? b.initial_position ?? 0);
+    return gainB - gainA;
+  });
+
+  const fmtPos = (n: number | null) => n !== null ? (n % 1 === 0 ? n.toString() : n.toFixed(1)) : '—';
+
+  return (
+    <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl overflow-hidden">
+      <div className="px-5 py-4 border-b border-[var(--border)] flex items-center justify-between flex-wrap gap-3">
+        <h2 className="font-semibold text-[var(--text-primary)] flex items-center gap-2"><Target size={16} /> Keywords</h2>
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-[var(--text-muted)]">De</span>
+          <input type="month" value={from} onChange={e => setFrom(e.target.value)} className="p-1.5 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-[var(--text-primary)] text-xs font-mono" />
+          <span className="text-xs text-[var(--text-muted)]">Até</span>
+          <input type="month" value={to} onChange={e => setTo(e.target.value)} className="p-1.5 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-[var(--text-primary)] text-xs font-mono" />
+        </div>
+        <select
+          value={sortBy}
+          onChange={e => setSortBy(e.target.value as any)}
+          className="p-1.5 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-[var(--text-primary)] text-xs"
+        >
+          <option value="best">Ordenar: melhor posição</option>
+          <option value="recent">Ordenar: posição recente</option>
+          <option value="gain">Ordenar: maior ganho</option>
+        </select>
+      </div>
+
+      {loading ? (
+        <div className="py-8 text-center text-sm text-[var(--text-muted)]">Carregando...</div>
+      ) : sorted.length === 0 ? (
+        <div className="py-8 text-center text-sm text-[var(--text-muted)]">
+          Nenhuma keyword cadastrada. Cadastre em /clients na aba de keywords.
+        </div>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-[var(--border)] text-xs text-[var(--text-muted)] uppercase tracking-wider">
+                <th className="text-left px-5 py-3 font-semibold">Keyword</th>
+                <th className="text-right px-5 py-3 font-semibold">Inicial</th>
+                <th className="text-right px-5 py-3 font-semibold">Melhor (hist.)</th>
+                <th className="text-right px-5 py-3 font-semibold">Recente</th>
+                <th className="text-right px-5 py-3 font-semibold">Evolução</th>
+              </tr>
+            </thead>
+            <tbody>
+              {sorted.map(kw => {
+                const gain = kw.initial_position != null && kw.recent_position != null
+                  ? kw.initial_position - kw.recent_position
+                  : null;
+                const gainPositive = gain != null && gain > 0;
+                const gainNegative = gain != null && gain < 0;
+                const hasData = kw.data_points > 0;
+                return (
+                  <tr key={kw.id} className="border-b border-[var(--border)] last:border-0 hover:bg-[var(--bg-hover)]">
+                    <td className="px-5 py-3 text-sm text-[var(--text-primary)] max-w-[220px] truncate">{kw.keyword}</td>
+                    <td className="px-5 py-3 text-sm text-right font-mono text-[var(--text-muted)]">{fmtPos(kw.initial_position)}</td>
+                    <td className="px-5 py-3 text-sm text-right font-mono font-bold text-emerald-400">{fmtPos(kw.best_position)}</td>
+                    <td className="px-5 py-3 text-sm text-right font-mono text-[var(--text-secondary)] font-medium">
+                      {fmtPos(kw.recent_position)}
+                      {kw.recent_month && <span className="text-[var(--text-muted)] text-xs ml-1">({kw.recent_month.slice(5)})</span>}
+                    </td>
+                    <td className="px-5 py-3 text-sm text-right font-mono">
+                      {gain !== null ? (
+                        <span className={gainPositive ? 'text-green-400' : gainNegative ? 'text-amber-400' : 'text-[var(--text-muted)]'}>
+                          {gainPositive ? '+' : ''}{gain}
+                        </span>
+                      ) : <span className="text-[var(--text-muted)]">—</span>}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── Main Page ─────────────────────────────────────────────────────────────
 
 export default function ReportsPage() {
@@ -279,6 +398,7 @@ export default function ReportsPage() {
       <MonthlySection clientId={id as string} />
       <PagesSection clientId={id as string} />
       <QueriesSection clientId={id as string} />
+      <KeywordsReportSection clientId={id as string} />
     </div>
   );
 }

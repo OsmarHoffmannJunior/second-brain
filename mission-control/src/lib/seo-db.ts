@@ -3,7 +3,7 @@ import path from 'path';
 
 const DB_PATH = path.join(process.cwd(), 'data', 'tasks.db');
 
-function getDb() {
+export function getDb() {
   const db = new Database(DB_PATH);
   db.pragma('journal_mode = WAL');
   db.pragma('foreign_keys = ON');
