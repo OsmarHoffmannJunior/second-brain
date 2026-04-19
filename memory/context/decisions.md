@@ -18,10 +18,15 @@
 
 | Decisão | Data | Motivo |
 |---------|------|--------|
-| UFW + Fail2Ban configurados | 2026-04-13 | Server hardening |
+| **Firewall NGFW Hetzner bloqueia portas** | 2026-04-18 | Portas 3000 (MC), 22000 (Syncthing), 3100 (Paperclip) não são acessíveis publicamente — bloqueadas pelo firewall da cloud. Services escutam em 0.0.0.0 mas cloud firewall impõe filtro de entrada. Não reportar como vulnerabilidade real. |
+| **PaperclipAI removido** | 2026-04-18 | Osmar solicitou descontinuação. Processo morto, npm uninstall, dados em /home/mission/.paperclip removidos. |
+| **SMB restrito a localhost** | 2026-04-18 | smbd agora escuta apenas 127.0.0.1:445/139 — não mais exposto em 0.0.0.0. Bind interfaces only = yes com IP Tailscale. |
+| **SSH: PasswordAuthentication=no** | 2026-04-18 | Config explícito no sshd_config — sem possibility de fallback para auth por senha. |
 | Backups antes de mudanças destructivas | 2026-04-13 | Regra AGENTS.md |
 | `trash` > `rm` | 2026-04-13 | Recuperável > gone forever |
 | **Senhas: .env apenas** | 2026-04-13 | NUNCA armazenar senhas em outro lugar além de .env ✅ Migrado |
+| ~~Composio para Google Data~~ | ❌ removido 2026-04-19 | Usar API direta do Google (GSC/GA) ou CSV manual |
+| **Revisão PT-BR em relatórios** | 2026-04-16 | Sempre fazer varredura final em português BR antes de entregar relatórios HTML/materiais. Corrigir: concordância, grafia, termos técnicos, caracteres estranho (ex: chinês residual), frases incompletas. |
 
 ---
 
