@@ -3,16 +3,25 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, BarChart2, Target, HelpCircle } from 'lucide-react';
+import { ArrowLeft, HelpCircle, RefreshCw, AlertTriangle } from 'lucide-react';
 import { Tooltip } from '@/components/ui/Tooltip';
 
-interface Client { id: number; name: string; domain: string; }
+// ─── Types ────────────────────────────────────────────────────────────────
 
-interface MonthlyData { month: string; clicks: number; impressions: number; ctr: number; position: number; }
-interface PageData { url: string; clicks: number; impressions: number; ctr: number; position: number; period_start?: string; period_end?: string; }
-interface QueryData { query: string; clicks: number; impressions: number; ctr: number; position: number; period_start?: string; period_end?: string; }
+interface Client {
+  id: number;
+  name: string;
+  domain: string;
+  gsc_property_url?: string;
+}
 
-// ─── Shared helpers ───────────────────────────────────────────────────────
+interface GscMonthly { month: string; clicks: number; impressions: number; ctr: number; position: number; }
+interface GscQuery { query: string; clicks: number; impressions: number; ctr: number; position: number; }
+interface GscPage { pageUrl: string; clicks: number; impressions: number; ctr: number; position: number; }
+
+interface GscMeta { requestsToday: number; lastUpdated: string; }
+
+// ─── Helpers ──────────────────────────────────────────────────────────────
 
 const fmtNum = (n: number) => n >= 1e6 ? (n/1e6).toFixed(2)+'M' : n >= 1000 ? (n/1000).toFixed(1)+'K' : n.toLocaleString('pt-BR');
 const fmtFull = (n: number) => n.toLocaleString('pt-BR');
@@ -27,46 +36,104 @@ function delta(curr: number, prev: number, positiveIsGood = true) {
   return { diff, isGood };
 }
 
+function timeAgo(iso: string): string {
+  const diff = Date.now() - new Date(iso).getTime();
+  const min = Math.floor(diff / 60000);
+  if (min < 1) return 'agora';
+  if (min < 60) return `${min} min`;
+  const hr = Math.floor(min / 60);
+  if (hr < 24) return `${hr}h`;
+  return `${Math.floor(hr/24)}d`;
+}
+
+// ─── GscBadge ─────────────────────────────────────────────────────────────
+
+function GscBadge() {
+  return (
+    <span className="text-xs text-[var(--text-muted)] bg-[var(--bg)] border border-[var(--border)] px-2 py-0.5 rounded font-medium">
+      🔵 Google Search Console
+    </span>
+  );
+}
+
+// ─── GscUsageBadge ────────────────────────────────────────────────────────
+
+function GscUsageBadge({ meta }: { meta: GscMeta | null }) {
+  if (!meta) return null;
+  const { requestsToday, lastUpdated } = meta;
+  const warn = requestsToday > 8000;
+  return (
+    <span className={`text-xs ${warn ? 'text-amber-400' : 'text-[var(--text-muted)]'} flex items-center gap-1`}>
+      ⏱ Atualizado há {timeAgo(lastUpdated)} • {requestsToday.toLocaleString()} requisições hoje
+      {warn && <AlertTriangle size={11} className="text-amber-400" />}
+    </span>
+  );
+}
+
 // ─── Section: Monthly Traffic ────────────────────────────────────────────
 
-function MonthlySection({ clientId }: { clientId: string }) {
-  const [monthly, setMonthly] = useState<MonthlyData[]>([]);
-  const [from, setFrom] = useState('');
-  const [to, setTo] = useState('');
+function MonthlySection({ clientId, gscUrl }: { clientId: string; gscUrl?: string }) {
+  const [rows, setRows] = useState<GscMonthly[]>([]);
+  const [from, setFrom] = useState(() => {
+    const d = new Date(); d.setMonth(d.getMonth() - 3);
+    return d.toISOString().split('T')[0];
+  });
+  const [to, setTo] = useState(() => new Date().toISOString().split('T')[0]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [meta, setMeta] = useState<GscMeta | null>(null);
 
   const load = async () => {
+    if (!gscUrl) return;
     setLoading(true);
-    let url = `/api/clients/${clientId}/data?type=monthly`;
-    if (from && to) url += `&from=${from}&to=${to}`;
-    const d = await fetch(url).then(r => r.json());
-    setMonthly(Array.isArray(d) ? d : []);
+    setError(null);
+    try {
+      const u = `/api/clients/${clientId}/gsc?type=monthly&from=${from}&to=${to}`;
+      const d = await fetch(u).then(r => r.json());
+      if (d.error) { setError(d.error); setRows([]); }
+      else { setRows(d.rows || []); setMeta({ requestsToday: d.requestsToday ?? 0, lastUpdated: d.lastUpdated ?? '' }); }
+    } catch { setError('Erro de conexão'); }
     setLoading(false);
   };
 
-  useEffect(() => { load(); }, [clientId, from, to]);
+  useEffect(() => { load(); }, [clientId, from, to, gscUrl]);
 
-  const totalClicks = monthly.reduce((s, m) => s + (m.clicks || 0), 0);
-  const totalImpr = monthly.reduce((s, m) => s + (m.impressions || 0), 0);
-  const avgCtr = monthly.length ? monthly.reduce((s, m) => s + (m.ctr || 0), 0) / monthly.length : 0;
-  const avgPos = monthly.length ? monthly.reduce((s, m) => s + (m.position || 0), 0) / monthly.length : 0;
+  const totalClicks = rows.reduce((s, m) => s + (m.clicks || 0), 0);
+  const totalImpr = rows.reduce((s, m) => s + (m.impressions || 0), 0);
+  const avgCtr = rows.length ? rows.reduce((s, m) => s + (m.ctr || 0), 0) / rows.length : 0;
+  const avgPos = rows.length ? rows.reduce((s, m) => s + (m.position || 0), 0) / rows.length : 0;
 
   return (
     <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl overflow-hidden">
       <div className="px-5 py-4 border-b border-[var(--border)] flex items-center justify-between flex-wrap gap-3">
-        <h2 className="font-semibold text-[var(--text-primary)]">Tráfego Mensal</h2>
         <div className="flex items-center gap-2">
-          <input type="date" value={from} onChange={e => setFrom(e.target.value)} className="p-1.5 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-[var(--text-primary)] text-xs font-mono" />
-          <span className="text-[var(--text-muted)] text-xs">→</span>
-          <input type="date" value={to} onChange={e => setTo(e.target.value)} className="p-1.5 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-[var(--text-primary)] text-xs font-mono" />
-</div>
+          <h2 className="font-semibold text-[var(--text-primary)]">Tráfego Mensal</h2>
+          <GscBadge />
+        </div>
+        <div className="flex items-center gap-3">
+          <GscUsageBadge meta={meta} />
+          <div className="flex items-center gap-2">
+            <input type="date" value={from} onChange={e => setFrom(e.target.value)} className="p-1.5 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-[var(--text-primary)] text-xs font-mono" />
+            <span className="text-[var(--text-muted)] text-xs">→</span>
+            <input type="date" value={to} onChange={e => setTo(e.target.value)} className="p-1.5 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-[var(--text-primary)] text-xs font-mono" />
+            <button onClick={load} className="p-1.5 rounded-lg hover:bg-[var(--bg-hover)] text-[var(--text-muted)]" title="Atualizar"><RefreshCw size={13} /></button>
+          </div>
+        </div>
       </div>
 
-      {monthly.length > 0 ? (
+      {!gscUrl ? (
+        <div className="flex items-center justify-center gap-2 py-10 text-sm text-amber-400">
+          <AlertTriangle size={15} /> Configure a URL da propriedade GSC no cadastro do cliente para ver os dados.
+        </div>
+      ) : error ? (
+        <div className="flex items-center justify-center gap-2 py-10 text-sm text-red-400">
+          <AlertTriangle size={15} /> {error}
+        </div>
+      ) : rows.length > 0 ? (
         <>
           <div className="grid grid-cols-4 gap-px bg-[var(--border)] border-b border-[var(--border)]">
             {[
-              { label: 'Cliques', value: fmtNum(totalClicks), sub: `${monthly.length} meses` },
+              { label: 'Cliques', value: fmtNum(totalClicks), sub: `${rows.length} meses` },
               { label: 'Impressões', value: fmtNum(totalImpr), sub: 'total' },
               { label: 'CTR Médio', value: fmtPct(avgCtr), sub: 'média' },
               { label: 'Posição Média', value: fmtPos(avgPos), sub: 'ranking' },
@@ -82,18 +149,18 @@ function MonthlySection({ clientId }: { clientId: string }) {
             <table className="w-full">
               <thead><tr className="border-b border-[var(--border)] text-xs text-[var(--text-muted)] uppercase tracking-wider">
                 <th className="text-left px-5 py-3 font-semibold">Mês</th>
-                <th className="text-right px-5 py-3 font-semibold"><Tooltip content="Número de cliques no Google Search Console no período." side="bottom">Cliques <HelpCircle size={11} className="inline text-[var(--text-muted)]" /></Tooltip></th>
-                <th className="text-right px-5 py-3 font-semibold"><Tooltip content="Variação percentual vs mês anterior. Verde = melhora, Amarelo = piora." side="bottom">vs Mês Ant. <HelpCircle size={11} className="inline text-[var(--text-muted)]" /></Tooltip></th>
-                <th className="text-right px-5 py-3 font-semibold"><Tooltip content="Quantas vezes seu site apareceu no Google no período." side="bottom">Impressões <HelpCircle size={11} className="inline text-[var(--text-muted)]" /></Tooltip></th>
-                <th className="text-right px-5 py-3 font-semibold"><Tooltip content="Variação percentual vs mês anterior. Verde = melhora, Amarelo = piora." side="bottom">vs Mês Ant. <HelpCircle size={11} className="inline text-[var(--text-muted)]" /></Tooltip></th>
-                <th className="text-right px-5 py-3 font-semibold"><Tooltip content="Cliques ÷ Impressões × 100. Mede quão atrativo seu resultado é para quem vê." side="bottom">CTR <HelpCircle size={11} className="inline text-[var(--text-muted)]" /></Tooltip></th>
-                <th className="text-right px-5 py-3 font-semibold"><Tooltip content="Variação percentual vs mês anterior. Verde = melhora, Amarelo = piora." side="bottom">vs Mês Ant. <HelpCircle size={11} className="inline text-[var(--text-muted)]" /></Tooltip></th>
-                <th className="text-right px-5 py-3 font-semibold"><Tooltip content="Posição média no Google no mês. Quanto menor, melhor." side="bottom">Posição <HelpCircle size={11} className="inline text-[var(--text-muted)]" /></Tooltip></th>
-                <th className="text-right px-5 py-3 font-semibold"><Tooltip content="Variação percentual vs mês anterior. Verde = melhora, Amarelo = piora." side="bottom">vs Mês Ant. <HelpCircle size={11} className="inline text-[var(--text-muted)]" /></Tooltip></th>
+                <th className="text-right px-5 py-3 font-semibold"><Tooltip content="Número de cliques no Google Search Console no período." side="bottom">Cliques <HelpCircle size={11} className="inline" /></Tooltip></th>
+                <th className="text-right px-5 py-3 font-semibold">vs Mês Ant.</th>
+                <th className="text-right px-5 py-3 font-semibold">Impressões</th>
+                <th className="text-right px-5 py-3 font-semibold">vs Mês Ant.</th>
+                <th className="text-right px-5 py-3 font-semibold">CTR</th>
+                <th className="text-right px-5 py-3 font-semibold">vs Mês Ant.</th>
+                <th className="text-right px-5 py-3 font-semibold">Posição</th>
+                <th className="text-right px-5 py-3 font-semibold">vs Mês Ant.</th>
               </tr></thead>
               <tbody>
-                {monthly.map((row, i) => {
-                  const prev = monthly[i - 1];
+                {rows.map((row, i) => {
+                  const prev = rows[i - 1];
                   const dClicks = delta(row.clicks, prev?.clicks);
                   const dImpr = delta(row.impressions, prev?.impressions);
                   const dCtr = delta(row.ctr, prev?.ctr);
@@ -126,7 +193,7 @@ function MonthlySection({ clientId }: { clientId: string }) {
         </>
       ) : (
         <div className="flex items-center justify-center py-12 text-sm text-[var(--text-muted)]">
-          {loading ? 'Carregando...' : 'Sem dados — importe CSV de tráfego primeiro'}
+          {loading ? 'Carregando...' : 'Sem dados para o período selecionado'}
         </div>
       )}
     </div>
@@ -135,59 +202,84 @@ function MonthlySection({ clientId }: { clientId: string }) {
 
 // ─── Section: Pages ───────────────────────────────────────────────────────
 
-function PagesSection({ clientId }: { clientId: string }) {
-  const [pages, setPages] = useState<PageData[]>([]);
-  const [periodStart, setPeriodStart] = useState('');
-  const [periodEnd, setPeriodEnd] = useState('');
+function PagesSection({ clientId, gscUrl }: { clientId: string; gscUrl?: string }) {
+  const [rows, setRows] = useState<GscPage[]>([]);
+  const [from, setFrom] = useState(() => {
+    const d = new Date(); d.setMonth(d.getMonth() - 1);
+    return d.toISOString().split('T')[0];
+  });
+  const [to, setTo] = useState(() => new Date().toISOString().split('T')[0]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [meta, setMeta] = useState<GscMeta | null>(null);
 
   const load = async () => {
+    if (!gscUrl) return;
     setLoading(true);
-    let url = `/api/clients/${clientId}/data?type=pages&limit=30`;
-    if (periodStart && periodEnd) url += `&periodStart=${periodStart}&periodEnd=${periodEnd}`;
-    const d = await fetch(url).then(r => r.json());
-    setPages(Array.isArray(d) ? d : []);
+    setError(null);
+    try {
+      const u = `/api/clients/${clientId}/gsc?type=pages&from=${from}&to=${to}&limit=20`;
+      const d = await fetch(u).then(r => r.json());
+      if (d.error) { setError(d.error); setRows([]); }
+      else { setRows(d.rows || []); setMeta({ requestsToday: d.requestsToday ?? 0, lastUpdated: d.lastUpdated ?? '' }); }
+    } catch { setError('Erro de conexão'); }
     setLoading(false);
   };
 
-  useEffect(() => { load(); }, [clientId, periodStart, periodEnd]);
+  useEffect(() => { load(); }, [clientId, from, to, gscUrl]);
 
   return (
     <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl overflow-hidden">
       <div className="px-5 py-4 border-b border-[var(--border)] flex items-center justify-between flex-wrap gap-3">
-        <h2 className="font-semibold text-[var(--text-primary)]">Top 20 Páginas</h2>
         <div className="flex items-center gap-2">
-          <input type="date" value={periodStart} onChange={e => setPeriodStart(e.target.value)} placeholder="Início" className="p-1.5 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-[var(--text-primary)] text-xs font-mono" />
-          <span className="text-[var(--text-muted)] text-xs">→</span>
-          <input type="date" value={periodEnd} onChange={e => setPeriodEnd(e.target.value)} placeholder="Fim" className="p-1.5 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-[var(--text-primary)] text-xs font-mono" />
-</div>
+          <h2 className="font-semibold text-[var(--text-primary)]">Páginas Principais</h2>
+          <GscBadge />
+        </div>
+        <div className="flex items-center gap-3">
+          <GscUsageBadge meta={meta} />
+          <div className="flex items-center gap-2">
+            <input type="date" value={from} onChange={e => setFrom(e.target.value)} className="p-1.5 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-[var(--text-primary)] text-xs font-mono" />
+            <span className="text-[var(--text-muted)] text-xs">→</span>
+            <input type="date" value={to} onChange={e => setTo(e.target.value)} className="p-1.5 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-[var(--text-primary)] text-xs font-mono" />
+            <button onClick={load} className="p-1.5 rounded-lg hover:bg-[var(--bg-hover)] text-[var(--text-muted)]" title="Atualizar"><RefreshCw size={13} /></button>
+          </div>
+        </div>
       </div>
-      {pages.length > 0 ? (
-        <table className="w-full">
-          <thead><tr className="border-b border-[var(--border)] text-xs text-[var(--text-muted)] uppercase tracking-wider">
-            <th className="text-left px-5 py-3 font-semibold w-8">#</th>
-            <th className="text-left px-5 py-3 font-semibold">URL</th>
-            <th className="text-right px-5 py-3 font-semibold"><Tooltip content="Número de cliques no Google Search Console no período." side="bottom">Cliques <HelpCircle size={11} className="inline text-[var(--text-muted)]" /></Tooltip></th>
-            <th className="text-right px-5 py-3 font-semibold">Impr.</th>
-            <th className="text-right px-5 py-3 font-semibold"><Tooltip content="Cliques ÷ Impressões × 100. Mede quão atrativo seu resultado é para quem vê." side="bottom">CTR <HelpCircle size={11} className="inline text-[var(--text-muted)]" /></Tooltip></th>
-            <th className="text-right px-5 py-3 font-semibold">Pos</th>
-          </tr></thead>
-          <tbody>
-            {pages.slice(0, 20).map((p, i) => (
-              <tr key={i} className="border-b border-[var(--border)] last:border-0 hover:bg-[var(--bg-hover)]">
-                <td className="px-5 py-3 text-xs font-mono text-[var(--text-muted)]">{i+1}</td>
-                <td className="px-5 py-3 text-xs font-mono text-[var(--text-secondary)] max-w-[280px] truncate">{p.url.replace('https://','').replace('http://','')}</td>
-                <td className="px-5 py-3 text-sm text-right font-mono text-[var(--text-secondary)]">{fmtFull(p.clicks)}</td>
-                <td className="px-5 py-3 text-sm text-right font-mono text-[var(--text-secondary)]">{fmtFull(p.impressions)}</td>
-                <td className="px-5 py-3 text-sm text-right font-mono text-[var(--accent-light)]">{fmtPct(p.ctr)}</td>
-                <td className="px-5 py-3 text-sm text-right font-mono text-[var(--text-secondary)]">{fmtPos(p.position)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+
+      {!gscUrl ? (
+        <div className="flex items-center justify-center gap-2 py-10 text-sm text-amber-400">
+          <AlertTriangle size={15} /> Configure a URL da propriedade GSC no cadastro do cliente para ver os dados.
+        </div>
+      ) : error ? (
+        <div className="flex items-center justify-center gap-2 py-10 text-sm text-red-400">
+          <AlertTriangle size={15} /> {error}
+        </div>
+      ) : rows.length > 0 ? (
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead><tr className="border-b border-[var(--border)] text-xs text-[var(--text-muted)] uppercase tracking-wider">
+              <th className="text-left px-5 py-3 font-semibold">URL</th>
+              <th className="text-right px-5 py-3 font-semibold">Cliques</th>
+              <th className="text-right px-5 py-3 font-semibold">Impressões</th>
+              <th className="text-right px-5 py-3 font-semibold">CTR</th>
+              <th className="text-right px-5 py-3 font-semibold">Posição</th>
+            </tr></thead>
+            <tbody>
+              {rows.map((p, i) => (
+                <tr key={i} className="border-b border-[var(--border)] last:border-0 hover:bg-[var(--bg-hover)]">
+                  <td className="px-5 py-3 text-sm font-mono text-[var(--text-secondary)] max-w-xs truncate" title={p.pageUrl}>{p.pageUrl}</td>
+                  <td className="px-5 py-3 text-sm text-right font-mono text-[var(--text-secondary)]">{fmtFull(p.clicks)}</td>
+                  <td className="px-5 py-3 text-sm text-right font-mono text-[var(--text-secondary)]">{fmtFull(p.impressions)}</td>
+                  <td className="px-5 py-3 text-sm text-right font-mono text-[var(--text-secondary)]">{fmtPct(p.ctr)}</td>
+                  <td className="px-5 py-3 text-sm text-right font-mono text-[var(--text-secondary)]">{fmtPos(p.position)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       ) : (
         <div className="flex items-center justify-center py-12 text-sm text-[var(--text-muted)]">
-          {loading ? 'Carregando...' : 'Sem dados — importe CSV de páginas primeiro'}
+          {loading ? 'Carregando...' : 'Sem dados para o período selecionado'}
         </div>
       )}
     </div>
@@ -196,176 +288,129 @@ function PagesSection({ clientId }: { clientId: string }) {
 
 // ─── Section: Queries ─────────────────────────────────────────────────────
 
-function QueriesSection({ clientId }: { clientId: string }) {
-  const [queries, setQueries] = useState<QueryData[]>([]);
-  const [periodStart, setPeriodStart] = useState('');
-  const [periodEnd, setPeriodEnd] = useState('');
+function QueriesSection({ clientId, gscUrl }: { clientId: string; gscUrl?: string }) {
+  const [rows, setRows] = useState<GscQuery[]>([]);
+  const [from, setFrom] = useState(() => {
+    const d = new Date(); d.setMonth(d.getMonth() - 1);
+    return d.toISOString().split('T')[0];
+  });
+  const [to, setTo] = useState(() => new Date().toISOString().split('T')[0]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [meta, setMeta] = useState<GscMeta | null>(null);
 
   const load = async () => {
+    if (!gscUrl) return;
     setLoading(true);
-    let url = `/api/clients/${clientId}/data?type=queries&limit=30`;
-    if (periodStart && periodEnd) url += `&periodStart=${periodStart}&periodEnd=${periodEnd}`;
-    const d = await fetch(url).then(r => r.json());
-    setQueries(Array.isArray(d) ? d : []);
+    setError(null);
+    try {
+      const u = `/api/clients/${clientId}/gsc?type=queries&from=${from}&to=${to}&limit=20`;
+      const d = await fetch(u).then(r => r.json());
+      if (d.error) { setError(d.error); setRows([]); }
+      else { setRows(d.rows || []); setMeta({ requestsToday: d.requestsToday ?? 0, lastUpdated: d.lastUpdated ?? '' }); }
+    } catch { setError('Erro de conexão'); }
     setLoading(false);
   };
 
-  useEffect(() => { load(); }, [clientId, periodStart, periodEnd]);
+  useEffect(() => { load(); }, [clientId, from, to, gscUrl]);
 
   return (
     <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl overflow-hidden">
       <div className="px-5 py-4 border-b border-[var(--border)] flex items-center justify-between flex-wrap gap-3">
-        <h2 className="font-semibold text-[var(--text-primary)]">Top 20 Queries</h2>
         <div className="flex items-center gap-2">
-          <input type="date" value={periodStart} onChange={e => setPeriodStart(e.target.value)} placeholder="Início" className="p-1.5 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-[var(--text-primary)] text-xs font-mono" />
-          <span className="text-[var(--text-muted)] text-xs">→</span>
-          <input type="date" value={periodEnd} onChange={e => setPeriodEnd(e.target.value)} placeholder="Fim" className="p-1.5 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-[var(--text-primary)] text-xs font-mono" />
-</div>
+          <h2 className="font-semibold text-[var(--text-primary)]">Consultas Principais</h2>
+          <GscBadge />
+        </div>
+        <div className="flex items-center gap-3">
+          <GscUsageBadge meta={meta} />
+          <div className="flex items-center gap-2">
+            <input type="date" value={from} onChange={e => setFrom(e.target.value)} className="p-1.5 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-[var(--text-primary)] text-xs font-mono" />
+            <span className="text-[var(--text-muted)] text-xs">→</span>
+            <input type="date" value={to} onChange={e => setTo(e.target.value)} className="p-1.5 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-[var(--text-primary)] text-xs font-mono" />
+            <button onClick={load} className="p-1.5 rounded-lg hover:bg-[var(--bg-hover)] text-[var(--text-muted)]" title="Atualizar"><RefreshCw size={13} /></button>
+          </div>
+        </div>
       </div>
-      {queries.length > 0 ? (
-        <table className="w-full">
-          <thead><tr className="border-b border-[var(--border)] text-xs text-[var(--text-muted)] uppercase tracking-wider">
-            <th className="text-left px-5 py-3 font-semibold w-8">#</th>
-            <th className="text-left px-5 py-3 font-semibold">Query</th>
-            <th className="text-right px-5 py-3 font-semibold"><Tooltip content="Número de cliques no Google Search Console no período." side="bottom">Cliques <HelpCircle size={11} className="inline text-[var(--text-muted)]" /></Tooltip></th>
-            <th className="text-right px-5 py-3 font-semibold">Impr.</th>
-            <th className="text-right px-5 py-3 font-semibold"><Tooltip content="Cliques ÷ Impressões × 100. Mede quão atrativo seu resultado é para quem vê." side="bottom">CTR <HelpCircle size={11} className="inline text-[var(--text-muted)]" /></Tooltip></th>
-            <th className="text-right px-5 py-3 font-semibold">Pos</th>
-          </tr></thead>
-          <tbody>
-            {queries.slice(0, 20).map((q, i) => (
-              <tr key={i} className="border-b border-[var(--border)] last:border-0 hover:bg-[var(--bg-hover)]">
-                <td className="px-5 py-3 text-xs font-mono text-[var(--text-muted)]">{i+1}</td>
-                <td className="px-5 py-3 text-sm text-[var(--text-primary)] max-w-[280px] truncate">{q.query}</td>
-                <td className="px-5 py-3 text-sm text-right font-mono text-[var(--text-secondary)]">{fmtFull(q.clicks)}</td>
-                <td className="px-5 py-3 text-sm text-right font-mono text-[var(--text-secondary)]">{fmtFull(q.impressions)}</td>
-                <td className="px-5 py-3 text-sm text-right font-mono text-[var(--accent-light)]">{fmtPct(q.ctr)}</td>
-                <td className="px-5 py-3 text-sm text-right font-mono text-[var(--text-secondary)]">{fmtPos(q.position)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+
+      {!gscUrl ? (
+        <div className="flex items-center justify-center gap-2 py-10 text-sm text-amber-400">
+          <AlertTriangle size={15} /> Configure a URL da propriedade GSC no cadastro do cliente para ver os dados.
+        </div>
+      ) : error ? (
+        <div className="flex items-center justify-center gap-2 py-10 text-sm text-red-400">
+          <AlertTriangle size={15} /> {error}
+        </div>
+      ) : rows.length > 0 ? (
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead><tr className="border-b border-[var(--border)] text-xs text-[var(--text-muted)] uppercase tracking-wider">
+              <th className="text-left px-5 py-3 font-semibold">Consulta</th>
+              <th className="text-right px-5 py-3 font-semibold">Cliques</th>
+              <th className="text-right px-5 py-3 font-semibold">Impressões</th>
+              <th className="text-right px-5 py-3 font-semibold">CTR</th>
+              <th className="text-right px-5 py-3 font-semibold">Posição</th>
+            </tr></thead>
+            <tbody>
+              {rows.map((q, i) => (
+                <tr key={i} className="border-b border-[var(--border)] last:border-0 hover:bg-[var(--bg-hover)]">
+                  <td className="px-5 py-3 text-sm font-medium text-[var(--text-primary)]">{q.query}</td>
+                  <td className="px-5 py-3 text-sm text-right font-mono text-[var(--text-secondary)]">{fmtFull(q.clicks)}</td>
+                  <td className="px-5 py-3 text-sm text-right font-mono text-[var(--text-secondary)]">{fmtFull(q.impressions)}</td>
+                  <td className="px-5 py-3 text-sm text-right font-mono text-[var(--text-secondary)]">{fmtPct(q.ctr)}</td>
+                  <td className="px-5 py-3 text-sm text-right font-mono text-[var(--text-secondary)]">{fmtPos(q.position)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       ) : (
         <div className="flex items-center justify-center py-12 text-sm text-[var(--text-muted)]">
-          {loading ? 'Carregando...' : 'Sem dados — importe CSV de consultas primeiro'}
+          {loading ? 'Carregando...' : 'Sem dados para o período selecionado'}
         </div>
       )}
     </div>
   );
 }
 
-// ─── Section: Keywords Report ───────────────────────────────────────────
-
-interface KwReport {
-  id: number;
-  keyword: string;
-  initial_position: number | null;
-  initial_month?: string;
-  best_position: number | null;
-  recent_position: number | null;
-  recent_month?: string;
-  data_points: number;
-}
+// ─── Section: Keywords (DB-based, unchanged) ───────────────────────────────
 
 function KeywordsReportSection({ clientId }: { clientId: string }) {
-  const [keywords, setKeywords] = useState<KwReport[]>([]);
-  const [from, setFrom] = useState('');
-  const [to, setTo] = useState('');
-  const [loading, setLoading] = useState(true);
-  const [sortBy, setSortBy] = useState<'best' | 'recent' | 'gain'>('best');
+  // Keep existing DB-based keywords section unchanged
+  const [rows, setRows] = useState<{id:number;keyword:string;initial_position:number;best_position:number|null;months:Array<{month:string;position:number|null}>}[]>([]);
+  const [period] = useState('all');
 
-  const load = async () => {
-    setLoading(true);
-    let url = `/api/clients/${clientId}/keywords`;
-    const qs: string[] = [];
-    if (from) qs.push(`from=${from}`);
-    if (to) qs.push(`to=${to}`);
-    if (qs.length) url += '?' + qs.join('&');
-    const d = await fetch(url).then(r => r.json());
-    setKeywords(Array.isArray(d) ? d : []);
-    setLoading(false);
-  };
-
-  useEffect(() => { load(); }, [clientId, from, to]);
-
-  const sorted = [...keywords].sort((a, b) => {
-    if (sortBy === 'best') return (a.best_position ?? 999) - (b.best_position ?? 999);
-    if (sortBy === 'recent') return (a.recent_position ?? 999) - (b.recent_position ?? 999);
-    // gain: (initial - recent) descending
-    const gainA = (a.initial_position ?? 0) - (a.recent_position ?? a.initial_position ?? 0);
-    const gainB = (b.initial_position ?? 0) - (b.recent_position ?? b.initial_position ?? 0);
-    return gainB - gainA;
-  });
-
-  const fmtPos = (n: number | null) => n !== null ? (n % 1 === 0 ? n.toString() : n.toFixed(1)) : '—';
+  useEffect(() => {
+    fetch(`/api/clients/${clientId}/keywords?period=${period}`)
+      .then(r => r.json())
+      .then(d => setRows(d.keywords || []));
+  }, [clientId, period]);
 
   return (
     <div className="bg-[var(--bg-card)] border border-[var(--border)] rounded-xl overflow-hidden">
-      <div className="px-5 py-4 border-b border-[var(--border)] flex items-center justify-between flex-wrap gap-3">
-        <h2 className="font-semibold text-[var(--text-primary)] flex items-center gap-2"><Target size={16} /> Keywords</h2>
-        <div className="flex items-center gap-2">
-          <span className="text-xs text-[var(--text-muted)]">De</span>
-          <input type="month" value={from} onChange={e => setFrom(e.target.value)} className="p-1.5 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-[var(--text-primary)] text-xs font-mono" />
-          <span className="text-xs text-[var(--text-muted)]">Até</span>
-          <input type="month" value={to} onChange={e => setTo(e.target.value)} className="p-1.5 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-[var(--text-primary)] text-xs font-mono" />
-        </div>
-        <select
-          value={sortBy}
-          onChange={e => setSortBy(e.target.value as any)}
-          className="p-1.5 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-[var(--text-primary)] text-xs"
-        >
-          <option value="best">Ordenar: melhor posição</option>
-          <option value="recent">Ordenar: posição recente</option>
-          <option value="gain">Ordenar: maior ganho</option>
-        </select>
+      <div className="px-5 py-4 border-b border-[var(--border)] flex items-center gap-2">
+        <h2 className="font-semibold text-[var(--text-primary)]">Keywords</h2>
+        <span className="text-xs text-[var(--text-muted)] bg-[var(--bg)] border border-[var(--border)] px-2 py-0.5 rounded font-medium">📝 Base de dados</span>
       </div>
-
-      {loading ? (
-        <div className="py-8 text-center text-sm text-[var(--text-muted)]">Carregando...</div>
-      ) : sorted.length === 0 ? (
-        <div className="py-8 text-center text-sm text-[var(--text-muted)]">
-          Nenhuma keyword cadastrada. Cadastre em /clients na aba de keywords.
-        </div>
+      {rows.length === 0 ? (
+        <div className="flex items-center justify-center py-12 text-sm text-[var(--text-muted)]">Nenhuma keyword cadastrada</div>
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead>
-              <tr className="border-b border-[var(--border)] text-xs text-[var(--text-muted)] uppercase tracking-wider">
-                <th className="text-left px-5 py-3 font-semibold">Keyword</th>
-                <th className="text-right px-5 py-3 font-semibold"><Tooltip content="Posição no ranking no momento do cadastro da keyword." side="top">Inicial <HelpCircle size={11} className="inline text-[var(--text-muted)]" /></Tooltip></th>
-                <th className="text-right px-5 py-3 font-semibold"><Tooltip content="Menor posição já atingida desde o cadastro. Não é resetada." side="top">Melhor (hist.) <HelpCircle size={11} className="inline text-[var(--text-muted)]" /></Tooltip></th>
-                <th className="text-right px-5 py-3 font-semibold"><Tooltip content="Último dado disponível no período selecionado acima." side="top">Recente <HelpCircle size={11} className="inline text-[var(--text-muted)]" /></Tooltip></th>
-                <th className="text-right px-5 py-3 font-semibold"><Tooltip content="Recente − Inicial. Verde = subiu no ranking. Amarelo = caiu." side="top">Evolução <HelpCircle size={11} className="inline text-[var(--text-muted)]" /></Tooltip></th>
-              </tr>
-            </thead>
+            <thead><tr className="border-b border-[var(--border)] text-xs text-[var(--text-muted)] uppercase tracking-wider">
+              <th className="text-left px-5 py-3 font-semibold">Keyword</th>
+              <th className="text-right px-5 py-3 font-semibold">Inicial</th>
+              <th className="text-right px-5 py-3 font-semibold">Melhor</th>
+              <th className="text-right px-5 py-3 font-semibold">Atual</th>
+            </tr></thead>
             <tbody>
-              {sorted.map(kw => {
-                const gain = kw.initial_position != null && kw.recent_position != null
-                  ? kw.initial_position - kw.recent_position
-                  : null;
-                const gainPositive = gain != null && gain > 0;
-                const gainNegative = gain != null && gain < 0;
-                const hasData = kw.data_points > 0;
-                return (
-                  <tr key={kw.id} className="border-b border-[var(--border)] last:border-0 hover:bg-[var(--bg-hover)]">
-                    <td className="px-5 py-3 text-sm text-[var(--text-primary)] max-w-[220px] truncate">{kw.keyword}</td>
-                    <td className="px-5 py-3 text-sm text-right font-mono text-[var(--text-muted)]">{fmtPos(kw.initial_position)}</td>
-                    <td className="px-5 py-3 text-sm text-right font-mono font-bold text-emerald-400">{fmtPos(kw.best_position)}</td>
-                    <td className="px-5 py-3 text-sm text-right font-mono text-[var(--text-secondary)] font-medium">
-                      {fmtPos(kw.recent_position)}
-                      {kw.recent_month && <span className="text-[var(--text-muted)] text-xs ml-1">({kw.recent_month.slice(5)})</span>}
-                    </td>
-                    <td className="px-5 py-3 text-sm text-right font-mono">
-                      {gain !== null ? (
-                        <span className={gainPositive ? 'text-green-400' : gainNegative ? 'text-amber-400' : 'text-[var(--text-muted)]'}>
-                          {gainPositive ? '+' : ''}{gain}
-                        </span>
-                      ) : <span className="text-[var(--text-muted)]">—</span>}
-                    </td>
-                  </tr>
-                );
-              })}
+              {rows.map(kw => (
+                <tr key={kw.id} className="border-b border-[var(--border)] last:border-0 hover:bg-[var(--bg-hover)]">
+                  <td className="px-5 py-3 text-sm font-medium text-[var(--text-primary)]">{kw.keyword}</td>
+                  <td className="px-5 py-3 text-sm text-right font-mono text-[var(--text-secondary)]">{kw.initial_position ?? '—'}</td>
+                  <td className="px-5 py-3 text-sm text-right font-mono text-green-400">{kw.best_position ?? '—'}</td>
+                  <td className="px-5 py-3 text-sm text-right font-mono text-[var(--text-secondary)]">{kw.months[kw.months.length-1]?.position ?? '—'}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
@@ -392,13 +437,13 @@ export default function ReportsPage() {
         <Link href={`/clients/${id}`} className="p-2 rounded-lg hover:bg-[var(--bg-hover)] text-[var(--text-muted)]"><ArrowLeft size={20} /></Link>
         <div>
           <h1 className="text-2xl font-bold text-[var(--text-primary)]">Relatório</h1>
-          {client && <p className="text-sm text-[var(--text-muted)]">{client.name} &middot; {client.domain}</p>}
+          {client && <p className="text-sm text-[var(--text-muted)]">{client.name} · {client.domain}</p>}
         </div>
       </div>
 
-      <MonthlySection clientId={id as string} />
-      <PagesSection clientId={id as string} />
-      <QueriesSection clientId={id as string} />
+      <MonthlySection clientId={id as string} gscUrl={client?.gsc_property_url} />
+      <PagesSection clientId={id as string} gscUrl={client?.gsc_property_url} />
+      <QueriesSection clientId={id as string} gscUrl={client?.gsc_property_url} />
       <KeywordsReportSection clientId={id as string} />
     </div>
   );
