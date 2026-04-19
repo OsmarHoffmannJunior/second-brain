@@ -1,8 +1,11 @@
 # USER.md - About Your Human
 
-- **Name:** Osmar
+- **Name:** Osmar Hoffmann Junior
 - **What to call them:** Osmar
 - **Pronouns:** ele/dele
+- **Nascimento:** 09/09/1986
+- **Telefone:** 47999146178
+- **Instagram:** https://www.instagram.com/osmarhoffmannjr/
 - **Timezone:** BRT (UTC-3) — Itapema, Santa Catarina, Brazil
 - **Language:** Português (BR)
 
@@ -10,6 +13,10 @@
 
 ### Trabalho / Negócio
 - **Cargo:** Analista de SEO e Estrategista Digital
+- **Agencia:** Hoff Consultoria (dono)
+- **Site comercial:** www.hoffconsultoria.com.br
+- **Email comercial:** contato@hoffconsultoria.com.br
+- **Email pessoal:** ypperx@gmail.com
 - **Atuação:** Dono de agência que ajuda clientes a posicionar projetos em buscadores de forma orgânica — estratégia, execução, foco em alta performance.
 - **Expertise técnica:** SEO estratégico, ORM (Online Reputation Management), Gestão de Crises, automação com Google Sheets, Google Apps Script, LLM APIs (Gemini, MiniMax).
 - **Stack técnica:** Next.js, Tailwind CSS, Docker, Linux (Ubuntu/Debian), OpenClaw, SSH Tunneling, UFW, Fail2Ban.
@@ -17,9 +24,16 @@
 ### Projetos ativos
 - **Mission Control:** Arquitetura de agentes modular via arquivos Markdown (.MD) para escalar operações da agência.
 - **OpenClaw Integration:** Gateway com MiniMax-M2.7 via Telegram.
+- **Santtas:** Site de acompanhantes de luxo (br.santtas.com) — principal projeto pessoal.
+- **Hoff Consultoria:** Agência de SEO.
 - **Compliance:** Monitoramento da Reforma Tributária 2025/2026 e "Lei Felca" (Lei nº 15.211/2025).
 - **Liven Casa:** Gestão de faturamento e reviews de performance de tráfego.
 - **Equipe Santtas Brasil:** Workflows estruturados para desenvolvedores e criadores de conteúdo.
+
+### Família
+- **Mãe:** Odete Solange dos Santos Hoffmann
+- **Pai:** Osmar Hoffmann
+- **Esposa:** Andreia Grasiele de Oliveira Hoffmann (nascida 17/06/1991)
 
 ### Interesses
 - Automação de meta-tags, análise de keywords, clusters de conteúdo defensivo para ORM.

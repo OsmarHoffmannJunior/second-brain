@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-04-13T23:32:46.957Z",
+  "updatedAt": "2026-04-14T19:33:41.649Z",
   "entries": {
     "memory:memory/sessions/2026-04-13.md:1:28": {
       "key": "memory:memory/sessions/2026-04-13.md:1:28",
@@ -9,18 +9,20 @@
       "endLine": 28,
       "source": "memory",
       "snippet": "# 2026-04-13 — Primeira sessão ## Quem é o Osmar - Analista de SEO, dono de agência em Itapema/SC. - Fala português, timezone BRT (UTC-3). - Usa Telegram como canal principal. - Gosta de respostas diretas, sem enrolação. - Trabalha com automação de SEO, Google Sheets, Apps Script, LLMs (Gemini, MiniMax), Next.js, Docker, Linux. ## O que ele quer - Ajuda organizacional - Pesquisas - Automções - Gerenciamento de outros agentes ## Notas da sessão - Ele me mandou um prompt de \"Entreviste Seu Agente\" — respondi com 10 coisas que posso fazer. - Depois pediu pra eu perguntar o básico pro USER.md — ele respondeu com contexto detalhado (até incluiu info injetada sobre ele). - Atualizei USER.md com",
-      "recallCount": 1,
+      "recallCount": 2,
       "dailyCount": 0,
       "groundedCount": 0,
-      "totalScore": 1,
+      "totalScore": 2,
       "maxScore": 1,
       "firstRecalledAt": "2026-04-13T23:32:46.957Z",
-      "lastRecalledAt": "2026-04-13T23:32:46.957Z",
+      "lastRecalledAt": "2026-04-14T19:33:41.649Z",
       "queryHashes": [
-        "b74b08c24290"
+        "b74b08c24290",
+        "e481670c68f0"
       ],
       "recallDays": [
-        "2026-04-13"
+        "2026-04-13",
+        "2026-04-14"
       ],
       "conceptTags": [
         "itapema/sc",

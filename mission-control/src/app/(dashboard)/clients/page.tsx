@@ -16,6 +16,7 @@ interface Client {
   main_keywords?: string;
   competitors?: string;
   notes?: string;
+  gsc_property_url?: string;
   created_at?: string;
 }
 
@@ -23,7 +24,7 @@ export default function ClientsPage() {
   const [clients, setClients] = useState<Client[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
-  const [form, setForm] = useState({ name: '', company: '', domain: '', niche: '', monthly_clicks_goal: '', monthly_leads_goal: '', main_keywords: '', competitors: '', notes: '' });
+  const [form, setForm] = useState({ name: '', company: '', domain: '', niche: '', monthly_clicks_goal: '', monthly_leads_goal: '', main_keywords: '', competitors: '', notes: '', gsc_property_url: '' });
   const [editingId, setEditingId] = useState<number | null>(null);
 
   const fetchClients = async () => {
@@ -47,7 +48,7 @@ export default function ClientsPage() {
       monthly_leads_goal: form.monthly_leads_goal ? parseInt(form.monthly_leads_goal) : null,
       main_keywords: form.main_keywords || null,
       competitors: form.competitors || null,
-      notes: form.notes || null,
+      gsc_property_url: form.gsc_property_url || null,
     };
     const method = editingId ? 'PUT' : 'POST';
     const url = editingId ? `/api/clients/${editingId}` : '/api/clients';
@@ -59,7 +60,7 @@ export default function ClientsPage() {
     if (res.ok) {
       setShowForm(false);
       setEditingId(null);
-      setForm({ name: '', company: '', domain: '', niche: '', monthly_clicks_goal: '', monthly_leads_goal: '', main_keywords: '', competitors: '', notes: '' });
+      setForm({ name: '', company: '', domain: '', niche: '', monthly_clicks_goal: '', monthly_leads_goal: '', main_keywords: '', competitors: '', notes: '', gsc_property_url: '' });
       fetchClients();
     }
   };
@@ -75,6 +76,7 @@ export default function ClientsPage() {
       main_keywords: c.main_keywords ?? '',
       competitors: c.competitors ?? '',
       notes: c.notes ?? '',
+      gsc_property_url: c.gsc_property_url ?? '',
     });
     setEditingId(c.id ?? null);
     setShowForm(true);
@@ -91,7 +93,7 @@ export default function ClientsPage() {
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-[var(--text-primary)]">Clientes SEO</h1>
         <button
-          onClick={() => { setEditingId(null); setForm({ name: '', company: '', domain: '', niche: '', monthly_clicks_goal: '', monthly_leads_goal: '', main_keywords: '', competitors: '', notes: '' }); setShowForm(true); }}
+          onClick={() => { setEditingId(null); setForm({ name: '', company: '', domain: '', niche: '', monthly_clicks_goal: '', monthly_leads_goal: '', main_keywords: '', competitors: '', notes: '', gsc_property_url: '' }); setShowForm(true); }}
           className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium bg-[var(--accent)] text-[var(--bg)] hover:opacity-90 transition-opacity"
         >
           <Plus size={16} /> Novo Cliente
@@ -224,6 +226,14 @@ export default function ClientsPage() {
                       className="w-full p-2.5 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-[var(--text-primary)] text-sm font-mono focus:border-[var(--accent)] focus:outline-none transition-colors"
                       value={form.competitors}
                       onChange={e => setForm(f => ({ ...f, competitors: e.target.value }))}
+                    />
+                  </FormField>
+                  <FormField label="Google Search Console" optional hint="URL da propriedade GSC (ex: sc-domain:dominio.com.br)">
+                    <input
+                      placeholder="sc-domain:br.santtas.com"
+                      className="w-full p-2.5 rounded-lg bg-[var(--bg)] border border-[var(--border)] text-[var(--text-primary)] text-sm font-mono focus:border-[var(--accent)] focus:outline-none transition-colors"
+                      value={form.gsc_property_url}
+                      onChange={e => setForm(f => ({ ...f, gsc_property_url: e.target.value }))}
                     />
                   </FormField>
                 </div>

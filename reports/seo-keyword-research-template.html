@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Keyword Research — Concurso INSS 2026 | Article Brief</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════════════
+   CSS VARIABLES — Premium Dark SaaS Aesthetic
+   Based on: docs/design-reference-premium-dark-saas.md
+   ═══════════════════════════════════════════════════════════ */
+  :root {
+    /* Backgrounds — Deep Dark Layer */
+    --bg-deepest: #05050C;
+    --bg-deep: #08080C;
+    --bg-surface: #0A0B1E;
+    --bg-card: #11111E;
+    --bg-panel: #161730;
+    --bg-glass: rgba(30, 31, 66, 0.6);
+    --bg-glass-hover: rgba(30, 31, 80, 0.75);
+
+    /* Borders */
+    --border: #2D2D44;
+    --border-bright: #3D3D5C;
+    --border-glass: rgba(255, 255, 255, 0.05);
+    --border-accent: rgba(93, 95, 239, 0.4);
+
+    /* Text */
+    --text-primary: #FFFFFF;
+    --text-secondary: #9499C3;
+    --text-muted: #4B5563;
+    --text-body: #A1A1B5;
+
+    /* Accents — Indigo/Violet Spectrum */
+    --accent-primary: #3D37F1;
+    --accent-indigo: #5D5FEF;
+    --accent-lavender: #8086FF;
+    --accent-violet: #818CF8;
+    --accent-purple: #A594F9;
+    --accent-cyan: #00d4ff;
+    --accent-green: #00E57A;
+    --accent-green-dim: #4447E2;
+
+    /* Glows */
+    --glow-indigo: rgba(93, 95, 239, 0.2);
+    --glow-violet: rgba(123, 92, 255, 0.12);
+    --glow-cyan: rgba(0, 212, 255, 0.08);
+    --glow-green: rgba(0, 229, 122, 0.2);
+
+    /* Typography */
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+    /* Radius */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+    --radius-pill: 50px;
+
+    /* Shadows */
+    --shadow-card: 0 4px 32px rgba(0, 0, 0, 0.5);
+    --shadow-glow: 0 0 40px var(--glow-indigo);
+  }
+
+/* ═══════════════════════════════════════════════════════════
+   RESET & BASE
+   ═══════════════════════════════════════════════════════════ */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font-sans);
+    background: var(--bg-deepest);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+/* ═══════════════════════════════════════════════════════════
+   BACKGROUND — Mesh Gradient + Noise Grain
+   ═══════════════════════════════════════════════════════════ */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 90% 60% at 10% -5%, rgba(93, 95, 239, 0.12) 0%, transparent 55%),
+      radial-gradient(ellipse 70% 50% at 90% 105%, rgba(123, 92, 255, 0.1) 0%, transparent 55%),
+      radial-gradient(ellipse 50% 40% at 50% 50%, rgba(0, 212, 255, 0.04) 0%, transparent 65%),
+      linear-gradient(180deg, #080818 0%, #050510 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events: none;
+    opacity: 1;
+    z-index: 0;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 940px;
+    margin: 0 auto;
+    padding: 3.5rem 2rem 5rem;
+  }
+
+/* ═══════════════════════════════════════════════════════════
+   TYPOGRAPHY
+   ═══════════════════════════════════════════════════════════ */
+  h1 {
+    font-family: var(--font-display);
+    font-size: clamp(2.2rem, 5vw, 3.2rem);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    color: var(--text-primary);
+    margin-bottom: 0.75rem;
+  }
+
+  h1 em {
+    font-style: italic;
+    background: linear-gradient(135deg, var(--accent-indigo), var(--accent-violet));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  h2 {
+    font-family: var(--font-sans);
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 2.5rem 0 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    letter-spacing: -0.01em;
+  }
+
+  h2::before {
+    content: '';
+    width: 3px;
+    height: 1.4rem;
+    background: linear-gradient(180deg, var(--accent-indigo), var(--accent-violet));
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  h3 {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent-violet);
+    margin: 0 0 0.6rem;
+  }
+
+  h4 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.35rem;
+  }
+
+  p { color: var(--text-body); line-height: 1.65; }
+
+/* ═══════════════════════════════════════════════════════════
+   HEADER
+   ═══════════════════════════════════════════════════════════ */
+  .report-header {
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    animation: fadeUp 0.5s ease-out both;
+  }
+
+  .report-header::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100px;
+    height: 1px;
+    background: linear-gradient(90deg, var(--accent-indigo), transparent);
+  }
+
+  .report-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent-lavender);
+    margin-bottom: 1rem;
+  }
+
+  .report-label::before {
+    content: '';
+    width: 5px;
+    height: 5px;
+    background: var(--accent-indigo);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--accent-indigo);
+    animation: pulse-glow 2.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 8px var(--accent-indigo); }
+    50% { box-shadow: 0 0 3px var(--accent-indigo); opacity: 0.6; }
+  }
+
+  .header-subtitle {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    max-width: 580px;
+    line-height: 1.65;
+    margin-bottom: 1.5rem;
+  }
+
+  .header-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.75rem;
+  }
+
+  .meta-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+  }
+
+  .meta-item::before {
+    content: '';
+    width: 3px;
+    height: 3px;
+    background: var(--accent-violet);
+    border-radius: 50%;
+    flex-shrink: 0;
+    opacity: 0.7;
+  }
+
+/* ═══════════════════════════════════════════════════════════
+   CARDS — Glassmorphism Style
+   ═══════════════════════════════════════════════════════════ */
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    margin: 1rem 0;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.25s, background 0.25s, transform 0.25s;
+  }
+
+  .card:hover {
+    border-color: var(--border-bright);
+    background: #131326;
+    transform: translateY(-1px);
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius-lg);
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(93,95,239,0.08), transparent 50%, rgba(123,92,255,0.05));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  .card h3 { margin-top: 0; }
+
+/* ═══════════════════════════════════════════════════════════
+   STAT GRID
+   ═══════════════════════════════════════════════════════════ */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 1.25rem 0;
+  }
+
+  @media (max-width: 640px) {
+    .stat-grid { grid-template-columns: 1fr; }
+  }
+
+  .stat-box {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.75rem 1.25rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.25s;
+  }
+
+  .stat-box:hover {
+    border-color: var(--border-accent);
+    transform: translateY(-2px);
+  }
+
+  .stat-box::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent-indigo), transparent);
+    opacity: 0;
+    transition: opacity 0.25s;
+  }
+
+  .stat-box:hover::after { opacity: 1; }
+
+  .stat-box .number {
+    font-family: var(--font-display);
+    font-size: 2.75rem;
+    font-weight: 700;
+    line-height: 1;
+    background: linear-gradient(135deg, var(--accent-indigo), var(--accent-violet));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+
+  .stat-box .label {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+    line-height: 1.45;
+  }
+
+/* ═══════════════════════════════════════════════════════════
+   TABLES
+   ═══════════════════════════════════════════════════════════ */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.5rem 0;
+    font-size: 0.88rem;
+  }
+
+  thead tr { border-bottom: 1px solid var(--border-bright); }
+
+  th {
+    text-align: left;
+    padding: 0.5rem 1rem 0.5rem 0;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  td {
+    padding: 0.75rem 1rem 0.75rem 0;
+    border-bottom: 1px solid rgba(45, 45, 68, 0.5);
+    color: var(--text-secondary);
+    vertical-align: middle;
+  }
+
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(93, 95, 239, 0.04); color: var(--text-primary); }
+  td:first-child { color: var(--text-primary); font-weight: 500; }
+
+  .salary-cell {
+    color: var(--accent-green) !important;
+    font-weight: 600;
+    font-family: var(--font-mono);
+    font-size: 0.88rem;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   STATUS DOTS
+   ═══════════════════════════════════════════════════════════ */
+  .status-dot {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.82rem;
+  }
+
+  .status-dot::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .status-dot.green::before { background: var(--accent-green); box-shadow: 0 0 6px var(--accent-green); }
+  .status-dot.yellow::before { background: #FFB800; box-shadow: 0 0 6px rgba(255, 184, 0, 0.5); }
+  .status-dot.orange::before { background: #FF7C3A; box-shadow: 0 0 6px rgba(255, 124, 58, 0.5); }
+
+/* ═══════════════════════════════════════════════════════════
+   KEYWORD TAGS
+   ═══════════════════════════════════════════════════════════ */
+  .kw-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0.5rem 0 1.5rem;
+  }
+
+  .kw-tag {
+    display: inline-flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    padding: 0.3rem 0.8rem;
+    border-radius: var(--radius-pill);
+    font-size: 0.8rem;
+    font-weight: 500;
+    transition: all 0.15s;
+    cursor: default;
+  }
+
+  .kw-tag:hover {
+    border-color: var(--accent-lavender);
+    color: var(--accent-lavender);
+    background: rgba(93, 95, 239, 0.06);
+  }
+
+  .kw-tag.cyan {
+    border-color: rgba(0, 212, 255, 0.3);
+    color: var(--accent-cyan);
+    background: rgba(0, 212, 255, 0.06);
+  }
+
+  .kw-tag.violet {
+    border-color: rgba(123, 92, 255, 0.3);
+    color: var(--accent-purple);
+    background: rgba(123, 92, 255, 0.06);
+  }
+
+  .kw-tag.green {
+    border-color: rgba(0, 229, 122, 0.3);
+    color: var(--accent-green);
+    background: rgba(0, 229, 122, 0.06);
+  }
+
+/* ═══════════════════════════════════════════════════════════
+   CALLOUT BOXES
+   ═══════════════════════════════════════════════════════════ */
+  .callout {
+    background: rgba(93, 95, 239, 0.06);
+    border: 1px solid rgba(93, 95, 239, 0.2);
+    border-left: 3px solid var(--accent-indigo);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    padding: 1rem 1.25rem;
+    margin: 1.5rem 0;
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    line-height: 1.65;
+  }
+
+  .callout strong { color: var(--text-primary); }
+  .callout em { color: var(--accent-lavender); font-style: normal; }
+
+  .callout.warning {
+    background: rgba(255, 124, 58, 0.06);
+    border-color: rgba(255, 124, 58, 0.2);
+    border-left-color: #FF7C3A;
+  }
+
+/* ═══════════════════════════════════════════════════════════
+   BRIEF BOX
+   ═══════════════════════════════════════════════════════════ */
+  .brief-box {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin: 1rem 0;
+  }
+
+  .brief-header {
+    padding: 0.75rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(93, 95, 239, 0.04);
+  }
+
+  .brief-header h3 { margin: 0; }
+  .brief-body { padding: 1.25rem; }
+
+  .brief-title {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    line-height: 1.35;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+  }
+
+  .brief-title .highlight {
+    background: linear-gradient(135deg, var(--accent-indigo), var(--accent-violet));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .brief-note {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin-top: 0.4rem;
+  }
+
+  .mono-block {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: var(--accent-green);
+    background: rgba(0, 229, 122, 0.05);
+    border: 1px solid rgba(0, 229, 122, 0.12);
+    border-radius: var(--radius-sm);
+    padding: 0.6rem 1rem;
+    line-height: 1.6;
+    display: block;
+  }
+
+/* H2 List */
+  .h2-list {
+    list-style: none;
+    padding: 0;
+    counter-reset: h2-counter;
+  }
+
+  .h2-list li {
+    counter-increment: h2-counter;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.85rem;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid rgba(45, 45, 68, 0.4);
+    font-size: 0.88rem;
+  }
+
+  .h2-list li:last-child { border-bottom: none; }
+
+  .h2-list li::before {
+    content: counter(h2-counter, decimal-leading-zero);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 500;
+    color: var(--accent-indigo);
+    opacity: 0.7;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+  }
+
+  .h2-list li strong { color: var(--text-primary); display: block; margin-bottom: 0.2rem; font-size: 0.92rem; }
+  .h2-list li span { color: var(--text-body); font-size: 0.83rem; }
+
+/* SEO List */
+  .seo-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .seo-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    padding: 0.4rem 0;
+    font-size: 0.88rem;
+    color: var(--text-body);
+  }
+
+  .seo-list li::before { content: '→'; color: var(--accent-lavender); flex-shrink: 0; margin-top: 0.05rem; }
+  .seo-list li strong { color: var(--text-primary); }
+
+/* Priority Labels */
+  .priority-high { color: #FF5C5C; font-weight: 600; }
+  .priority-med { color: #FFB800; font-weight: 600; }
+  .priority-low { color: var(--accent-green); font-weight: 600; }
+
+/* ═══════════════════════════════════════════════════════════
+   SOURCE TAGS
+   ═══════════════════════════════════════════════════════════ */
+  .source-cloud { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
+  .source-tag {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--text-muted);
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid var(--border);
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SECTION DIVIDER
+   ═══════════════════════════════════════════════════════════ */
+  .section-divider {
+    height: 1px;
+    background: linear-gradient(90deg, var(--border), transparent);
+    margin: 2.5rem 0;
+  }
+
+/* ═══════════════════════════════════════════════════════════
+   ANIMATIONS
+   ═══════════════════════════════════════════════════════════ */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .report-header { animation: fadeUp 0.5s ease-out both; }
+  .stat-grid { animation: fadeUp 0.5s 0.08s ease-out both; }
+  .card { animation: fadeUp 0.4s ease-out both; }
+  .brief-box { animation: fadeUp 0.4s ease-out both; }
+  .callout { animation: fadeUp 0.4s 0.05s ease-out both; }
+
+/* ═══════════════════════════════════════════════════════════
+   CODE BLOCKS
+   ═══════════════════════════════════════════════════════════ */
+  code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    color: var(--accent-lavender);
+    background: rgba(93, 95, 239, 0.08);
+    padding: 0.15em 0.4em;
+    border-radius: 4px;
+    border: 1px solid rgba(93, 95, 239, 0.15);
+  }
+
+/* ═══════════════════════════════════════════════════════════
+   FOOTER
+   ═══════════════════════════════════════════════════════════ */
+  .report-footer {
+    margin-top: 4rem;
+    padding-top: 1.75rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 2rem;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+
+  .footer-info {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    line-height: 1.7;
+  }
+
+  .footer-info strong { color: var(--text-secondary); font-weight: 500; }
+
+  .footer-warn {
+    color: #FF7C3A;
+    font-size: 0.78rem;
+    display: block;
+    margin-top: 0.3rem;
+  }
+
+  .footer-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .footer-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.15s;
+    cursor: pointer;
+    border: 1px solid var(--border-bright);
+    color: var(--text-secondary);
+    background: rgba(255, 255, 255, 0.025);
+    font-family: var(--font-sans);
+  }
+
+  .footer-btn:hover {
+    border-color: var(--accent-lavender);
+    color: var(--accent-lavender);
+    background: rgba(93, 95, 239, 0.06);
+  }
+
+  .footer-btn.primary {
+    background: linear-gradient(135deg, rgba(93, 95, 239, 0.2), rgba(123, 92, 255, 0.12));
+    border-color: rgba(93, 95, 239, 0.4);
+    color: var(--accent-lavender);
+  }
+
+  .footer-btn.primary:hover {
+    background: linear-gradient(135deg, rgba(93, 95, 239, 0.3), rgba(123, 92, 255, 0.2));
+    box-shadow: 0 0 20px rgba(93, 95, 239, 0.2);
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- ═══════════════════════════════════════════════════════
+     REPORT HEADER
+     ═══════════════════════════════════════════════════════ -->
+<header class="report-header">
+  <div class="report-label">Keyword Research Report — SEO Intelligence</div>
+  <h1>Concurso <em>INSS 2026</em></h1>
+  <p class="header-subtitle">
+    Brief SEO completo com dados reais do SERP. Vagas, salários, cronograma,
+    cluster de keywords, análise de concorrentes e estratégia de conteúdo.
+  </p>
+  <div class="header-meta">
+    <div class="meta-item">15 de Abril, 2026</div>
+    <div class="meta-item">Skills: seo-keyword-researcher + web-browsing + frontend-design-3</div>
+    <div class="meta-item">Dados: DuckDuckGo SERP ao vivo</div>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════════════════════
+     DADOS CONFIRMADOS
+     ═══════════════════════════════════════════════════════ -->
+<h2>Dados Confirmados do SERP</h2>
+
+<div class="stat-grid">
+  <div class="stat-box">
+    <div class="number">8.500</div>
+    <div class="label">Vagas solicitadas ao Ministério da Gestão e Inovação (MGI)</div>
+  </div>
+  <div class="stat-box">
+    <div class="number">7.000</div>
+    <div class="label">Vagas para Técnico do Seguro Social — nível médio</div>
+  </div>
+  <div class="stat-box">
+    <div class="number">1.500</div>
+    <div class="label">Vagas para Analista do Seguro Social — nível superior</div>
+  </div>
+</div>
+
+<div class="card" style="animation: fadeUp 0.4s 0.1s ease-out both;">
+  <h3>💰 Remuneração — Estrutura Salarial 2025</h3>
+  <table>
+    <thead><tr><th>Cargo</th><th>Remuneração Bruta</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>Analista do Seguro Social</td>
+        <td><span class="salary-cell">Até R$ 10.546,31</span></td>
+      </tr>
+      <tr>
+        <td>Técnico do Seguro Social</td>
+        <td><span class="salary-cell">Até R$ 7.217,96</span></td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.75rem;">
+    Composição: Vencimento Básico + GAE (Gratificação de Atividade Executiva) +
+    GDASS (Gratificação de Desempenho) + Auxílio Alimentação R$ 1.175,00
+  </p>
+</div>
+
+<div class="card">
+  <h3>📅 Cronograma</h3>
+  <table>
+    <thead><tr><th>Evento</th><th>Data</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>Pedido de autorização ao MGI</td>
+        <td>Maio 2025</td>
+        <td><span class="status-dot green">Enviado</span></td>
+      </tr>
+      <tr>
+        <td>Reunião CNPS — Conselho Nacional de Previdência Social</td>
+        <td>31/03/2026</td>
+        <td><span class="status-dot green">Realizada</span></td>
+      </tr>
+      <tr>
+        <td>Decisão do MGI sobre vagas</td>
+        <td>Até Abril 2026</td>
+        <td><span class="status-dot yellow">Pendente</span></td>
+      </tr>
+      <tr>
+        <td>Publicação do Edital</td>
+        <td>2º semestre 2026</td>
+        <td><span class="status-dot orange">Provável</span></td>
+      </tr>
+      <tr>
+        <td>Banca Organizadora</td>
+        <td>CEBRASPE</td>
+        <td><span class="status-dot orange">Provável</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="callout">
+  <strong>Contexto — por que este concurso é urgente:</strong>
+  O INSS tem mais de <strong>23 mil cargos vagos</strong>. A crescente onda de aposentadorias agravou o déficit,
+  pressionando o governo a autorizar um novo certame. O último concurso foi em 2022.
+</div>
+
+<div class="section-divider"></div>
+
+<!-- ═══════════════════════════════════════════════════════
+     KEYWORD CLUSTER
+     ═══════════════════════════════════════════════════════ -->
+<h2>🔑 Keyword Cluster</h2>
+
+<div class="card">
+  <h3>🔴 Primary Keyword</h3>
+  <p style="font-size: 1rem; color: var(--text-primary); margin-top: 0.5rem;">
+    <strong>concurso INSS 2026</strong>
+  </p>
+  <p style="color: var(--text-body); font-size: 0.88rem; margin-top: 0.4rem;">
+    Alta intenção informativa e transacional. Milhares de candidatos buscam editais,
+    provas e inscrições todos os anos.
+  </p>
+</div>
+
+<h3>🏷️ Secondary Keywords</h3>
+<div class="kw-cloud">
+  <span class="kw-tag">edital concurso INSS 2026</span>
+  <span class="kw-tag">concurso público INSS</span>
+  <span class="kw-tag">salário INSS 2026</span>
+  <span class="kw-tag">prova INSS 2026</span>
+  <span class="kw-tag">inscrição concurso INSS</span>
+  <span class="kw-tag">cargo concurso INSS</span>
+  <span class="kw-tag">técnico do seguro social INSS</span>
+  <span class="kw-tag">analista do seguro social INSS</span>
+  <span class="kw-tag">banca organizadora INSS</span>
+  <span class="kw-tag">gabarito INSS 2026</span>
+  <span class="kw-tag">resultado concurso INSS</span>
+</div>
+
+<h3>🔵 Question Keywords — People Also Ask</h3>
+<div class="kw-cloud">
+  <span class="kw-tag cyan">Quando sai o edital do concurso INSS 2026?</span>
+  <span class="kw-tag cyan">Quanto ganha um servidor do INSS?</span>
+  <span class="kw-tag cyan">Como fazer inscrição no concurso INSS?</span>
+  <span class="kw-tag cyan">Qual a banca do concurso INSS?</span>
+  <span class="kw-tag cyan">O que estudar para a prova do INSS?</span>
+  <span class="kw-tag cyan">Quantas vagas tem o concurso INSS?</span>
+  <span class="kw-tag cyan">Qual o prazo de validade do concurso INSS?</span>
+  <span class="kw-tag cyan">Vale a pena fazer concurso INSS?</span>
+</div>
+
+<h3>🟢 Long-tail Keywords — Alta Conversão</h3>
+<div class="kw-cloud">
+  <span class="kw-tag green">como passar no concurso INSS na primeira tentativa</span>
+  <span class="kw-tag green">melhor curso para concurso INSS 2026</span>
+  <span class="kw-tag green">simulado INSS grátis</span>
+  <span class="kw-tag green">editais anteriores concurso INSS download</span>
+  <span class="kw-tag green">concurso INSS nível médio vale a pena?</span>
+  <span class="kw-tag green">plano de estudos concurso INSS 2026</span>
+</div>
+
+<div class="section-divider"></div>
+
+<!-- ═══════════════════════════════════════════════════════
+     COMPETITOR ANALYSIS
+     ═══════════════════════════════════════════════════════ -->
+<h2>🏆 Análise de Concorrentes</h2>
+
+<div class="card">
+  <table>
+    <thead><tr><th>Concorrente</th><th>Tipo</th><th>Força</th><th>Gap de Oportunidade</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>Gran Cursos Online</td>
+        <td>Portal especializado</td>
+        <td>Volume massivo de conteúdo + vídeo, alta autoridade</td>
+        <td>Artigos técnicos desiguais, profundidade variável</td>
+      </tr>
+      <tr>
+        <td>Estratégia Concursos</td>
+        <td>Cursos + blog editorial</td>
+        <td>Estrutura sólida, dados salariais detalhados</td>
+        <td>SEO técnico fraco em algumas páginas</td>
+      </tr>
+      <tr>
+        <td>Aprovados.org</td>
+        <td>Notícias + editais</td>
+        <td>Dados atualizados, estrutura limpa</td>
+        <td>Pouco conteúdo evergreen</td>
+      </tr>
+      <tr>
+        <td>Notícias Concursos</td>
+        <td>Aggregator</td>
+        <td>Atualizações frequentes, listagens completas</td>
+        <td>Profundidade editorial limitada</td>
+      </tr>
+      <tr>
+        <td>Gov.br / INSS oficial</td>
+        <td>Fonte oficial</td>
+        <td>Autoridade de domínio (.gov), dados autênticos</td>
+        <td>UX precária, navegação difícil</td>
+      </tr>
+      <tr>
+        <td>Nova Concursos</td>
+        <td>Portal genérico</td>
+        <td>Boa indexação em buscadores</td>
+        <td>Conteúdo shallow, baixa profundidade</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="callout">
+  <strong>Gap principal:</strong> Poucos concorrentes produzem artigos
+  <em>atualizados com dados reais do SERP 2026</em> e estrutura SEO moderna (featured snippets + FAQ schema + People Also Ask).
+  A janela de oportunidade está entre a <strong>decisão do MGI</strong> e a <strong>publicação do edital</strong>.
+</div>
+
+<div class="section-divider"></div>
+
+<!-- ═══════════════════════════════════════════════════════
+     ARTICLE BRIEF
+     ═══════════════════════════════════════════════════════ -->
+<h2>📋 Article Brief — Proposta de Artigo</h2>
+
+<div class="brief-box">
+  <div class="brief-header">
+    <h3>📌 Título Recomendado (H1)</h3>
+  </div>
+  <div class="brief-body">
+    <p class="brief-title">Concurso INSS 2026: <span class="highlight">Edital, Vagas de até R$ 10,5 mil</span> e Como Passar na Prova</p>
+    <p class="brief-note">Primary keyword no título + diferencial salarial + intenção de "como passar" = alto CTR</p>
+  </div>
+</div>
+
+<div class="brief-box">
+  <div class="brief-header">
+    <h3>📝 Meta Description</h3>
+  </div>
+  <div class="brief-body">
+    <span class="mono-block">Concurso INSS 2026: 8.500 vagas solicitadas. Salários de até R$ 10.546. Edital previsto para 2026. Veja como se preparar para a prova.</span>
+  </div>
+</div>
+
+<div class="brief-box">
+  <div class="brief-header">
+    <h3>🎯 Estrutura do Artigo — 10 H2s</h3>
+  </div>
+  <div class="brief-body">
+    <ol class="h2-list">
+      <li>
+        <div>
+          <strong>O que é o Concurso INSS? — O Déficit de 23 Mil Servidores</strong>
+          <span>Contexto institucional. Por que o concurso é urgente agora.</span>
+        </div>
+      </li>
+      <li>
+        <div>
+          <strong>Vagas Confirmadas: 8.500 Oportunidades</strong>
+          <span>7.000 para Técnico (nível médio) + 1.500 para Analista (nível superior).</span>
+        </div>
+      </li>
+      <li>
+        <div>
+          <strong>Salários e Benefícios — Até R$ 10.546,31</strong>
+          <span>Quebra completa: VB + GAE + GDASS + Auxílio Alimentação.</span>
+        </div>
+      </li>
+      <li>
+        <div>
+          <strong>Requisitos para Cada Cargo</strong>
+          <span>Nível médio vs. superior — documentos, prazos, condições.</span>
+        </div>
+      </li>
+      <li>
+        <div>
+          <strong>Banca Organizadora: CEBRASPE</strong>
+          <span>Formato da prova, características da banca, estratégia.</span>
+        </div>
+      </li>
+      <li>
+        <div>
+          <strong>Como Funciona a Inscrição — Passo a Passo</strong>
+          <span>Link gov.br, taxa, isenções, cronograma esperado.</span>
+        </div>
+      </li>
+      <li>
+        <div>
+          <strong>Prova: Disciplinas, Questões e Estrutura</strong>
+          <span>120 questões certo/errado. Direito Previ., Português, Informática, RL.</span>
+        </div>
+      </li>
+      <li>
+        <div>
+          <strong>O que Estudar — Plano por Disciplina</strong>
+          <span>Prioridade: Direito Previ., Português, Informática. Recursos e simulados.</span>
+        </div>
+      </li>
+      <li>
+        <div>
+          <strong>10 Dicas para Passar no Concurso INSS 2026</strong>
+          <span>Lista acionável — plano de estudo, revisão, simulados, saúde mental.</span>
+        </div>
+      </li>
+      <li>
+        <div>
+          <strong>Perguntas Frequentes (FAQ)</strong>
+          <span>FAQ Schema com as 8 question keywords. Captura People Also Ask.</span>
+        </div>
+      </li>
+    </ol>
+  </div>
+</div>
+
+<div class="card">
+  <h3>📏 Word Count Target</h3>
+  <p style="font-size: 1.15rem; color: var(--text-primary); margin-top: 0.5rem;">
+    <strong>3.500 — 4.500 palavras</strong>
+    <span style="color: var(--text-body); font-size: 0.88rem; display: block; margin-top: 0.4rem;">
+      Concorrentes top possuem 2.000-3.500 palavras. Superar em profundidade é diferencial de ranking.
+    </span>
+  </p>
+</div>
+
+<div class="card">
+  <h3>🔗 Recomendações SEO On-Page</h3>
+  <ul class="seo-list">
+    <li><strong>FAQ Schema:</strong> JSON-LD com 8 perguntas — captura People Also Ask</li>
+    <li><strong>Table Schema:</strong> Tabelas salarial e de disciplinas com markup estruturado</li>
+    <li><strong>Internal Links:</strong> Link para "concurso público federal", "cargo público Brasil"</li>
+    <li><strong>CTAs:</strong> "Veja o edital completo", "Baixe o cronograma", "Simule sua nota"</li>
+    <li><strong>URL amigável:</strong> <code>/concurso-inss-2026-edital-vagas-salario/</code></li>
+    <li><strong>Canonical:</strong> self-referencing</li>
+    <li><strong>Imagens:</strong> Infográfico salarial + quadro de matérias com alt-text otimizado</li>
+  </ul>
+</div>
+
+<div class="section-divider"></div>
+
+<!-- ═══════════════════════════════════════════════════════
+     CONTENT CALENDAR
+     ═══════════════════════════════════════════════════════ -->
+<h2>📅 Calendário de Conteúdo — Timing é Tudo</h2>
+
+<div class="card">
+  <table>
+    <thead><tr><th>Momento</th><th>Ação de Conteúdo</th><th>Prioridade</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>Agora — pré-edital</td>
+        <td>Artigo-guia geral "Tudo sobre o concurso INSS 2026"</td>
+        <td><span class="priority-high">🔴 Alta</span></td>
+      </tr>
+      <tr>
+        <td>Quando sair decisão MGI</td>
+        <td>Artigo "MGI aprova X vagas — o que muda para candidatos"</td>
+        <td><span class="priority-high">🔴 Crítica</span></td>
+      </tr>
+      <tr>
+        <td>Dia da publicação do edital</td>
+        <td>Atualizar com dados reais + "Tudo sobre o-edital INSS 2026"</td>
+        <td><span class="priority-high">🔴 Crítica</span></td>
+      </tr>
+      <tr>
+        <td>1 semana após edital</td>
+        <td>Post por disciplina + "O que mais cai na prova do INSS"</td>
+        <td><span class="priority-med">🟡 Média</span></td>
+      </tr>
+      <tr>
+        <td>1 mês antes da prova</td>
+        <td>Simulado gratuito + "Prova anterior comentada"</td>
+        <td><span class="priority-med">🟡 Média</span></td>
+      </tr>
+      <tr>
+        <td>Após prova</td>
+        <td>Gabarito extraoficial + "Como recorrer da nota"</td>
+        <td><span class="priority-low">🟢 Oportunidade</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="callout warning">
+  <strong>⚠️ Velocidade é crucial:</strong> O pico de busca é nos <strong>7 dias após a publicação do edital</strong>.
+  Tenha o artigo pronto ANTES do edital sair. Artigos publicados antes ou no dia da publicação têm vantagem competitiva enorme.
+</div>
+
+<div class="section-divider"></div>
+
+<!-- ═══════════════════════════════════════════════════════
+     KEYWORD MAP
+     ═══════════════════════════════════════════════════════ -->
+<h2>🗺️ Keyword Map — Distribuição por Seção</h2>
+
+<div class="card">
+  <table>
+    <thead><tr><th>Keyword</th><th>Onde usar</th></tr></thead>
+    <tbody>
+      <tr><td><code>concurso INSS 2026</code></td><td>H1, URL, primeiro parágrafo, title tag, meta description</td></tr>
+      <tr><td><code>edital concurso INSS 2026</code></td><td>H2 "Edital", meta description</td></tr>
+      <tr><td><code>salário INSS 2026</code></td><td>H2 "Salário", tabela salarial, FAQ</td></tr>
+      <tr><td><code>prova INSS 2026</code></td><td>H2 "Prova", H2 "O que Estudar"</td></tr>
+      <tr><td><code>inscrição concurso INSS</code></td><td>H2 "Como se Inscrever", botões CTA</td></tr>
+      <tr><td><code>técnico do seguro social INSS</code></td><td>Tabela de vagas, H2 "Vagas", requisitos</td></tr>
+      <tr><td><code>concurso INSS como passar</code></td><td>H2 "10 Dicas", título alternativo H1</td></tr>
+      <tr><td><code>8.500 vagas INSS</code></td><td>H2 "Vagas", stat boxes, meta description</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="section-divider"></div>
+
+<!-- ═══════════════════════════════════════════════════════
+     FONTES
+     ═══════════════════════════════════════════════════════ -->
+<h2>📚 Fontes e Referências</h2>
+<div class="source-cloud">
+  <span class="source-tag">aprovados.org — vagas, salários, dados do edital</span>
+  <span class="source-tag">estratégiaconcursos.com.br — estrutura salarial detalhada</span>
+  <span class="source-tag">noticiasconcursos.com.br — atualizações do certame</span>
+  <span class="source-tag">DuckDuckGo SERP — keywords e snippets concorrentes</span>
+  <span class="source-tag">mdcconcursos.com.br — dicas de estudo e editais</span>
+  <span class="source-tag">educabrasil.blog.br — contexto e déficit de pessoal</span>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     FOOTER
+     ═══════════════════════════════════════════════════════ -->
+<footer class="report-footer">
+  <div class="footer-info">
+    <strong>Gerado por:</strong> Clara — Agente de Operações<br>
+    <strong>Skills:</strong> seo-keyword-researcher + web-browsing + frontend-design-3<br>
+    <strong>Data:</strong> 15/04/2026 &nbsp;|&nbsp; <strong>Primary keyword:</strong> concurso inss 2026<br>
+    <span class="footer-warn">⚠️ Vol巴克 e concurrency scores: verificar com Ubersuggest / SEMrush / Ahrefs antes da publicação.</span>
+  </div>
+  <div class="footer-actions">
+    <button class="footer-btn primary" onclick="window.print()">Imprimir / PDF</button>
+  </div>
+</footer>
+
+</div>
+</body>
+</html>

@@ -14,7 +14,7 @@
 
 | Erro | O que aconteceu | O que aprender | Data |
 |------|----------------|----------------|------|
-| - | - | - | - |
+| Chinese chars em HTML | Termos em chinês residual no insight do relatório Santtas + frase incompleta ("omentum") | Sempre revisar conteúdo final de relatórios antes de entregar — conferir caracteres, concordância e completude de frases | 2026-04-16 |
 
 ---
 

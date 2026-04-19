@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Santtas — Relatório de Tráfego Orgânico</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root{--bg-deep:#05050C;--bg-card:rgba(255,255,255,0.03);--bg-card-hover:rgba(255,255,255,0.06);--border:rgba(255,255,255,0.07);--border-bright:rgba(255,255,255,0.12);--indigo:#5D5FEF;--indigo-light:#818CF8;--violet:#A78BFA;--violet-dim:rgba(167,139,250,0.15);--pink:#F472B6;--emerald:#34D399;--emerald-dim:rgba(52,211,153,0.15);--amber:#FBBF24;--amber-dim:rgba(251,191,36,0.15);--text-primary:#F1F5F9;--text-secondary:#94A3B8;--text-muted:#475569;--font-display:'Playfair Display',Georgia,serif;--font-body:'Inter',system-ui,sans-serif;--font-mono:'JetBrains Mono',monospace;--radius:16px;}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font-body);background:var(--bg-deep);color:var(--text-primary);min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:1000;opacity:0.4}
+.mesh-bg{position:fixed;top:0;left:0;right:0;height:65vh;background:radial-gradient(ellipse 80% 50% at 15% -5%,rgba(93,95,239,0.28) 0%,transparent 60%),radial-gradient(ellipse 60% 40% at 85% 0%,rgba(167,139,250,0.2) 0%,transparent 55%),radial-gradient(ellipse 50% 30% at 50% 15%,rgba(93,95,239,0.1) 0%,transparent 70%);z-index:-1}
+.container{max-width:1400px;margin:0 auto;padding:0 24px}
+header{padding:64px 0 48px;text-align:center}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;background:var(--violet-dim);border:1px solid rgba(167,139,250,0.2);border-radius:100px;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--violet);margin-bottom:20px}
+.badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--emerald);box-shadow:0 0 8px var(--emerald);animation:pulse-dot 2s ease-in-out infinite}
+@keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:0.4}}
+h1{font-family:var(--font-display);font-size:clamp(36px,5vw,64px);font-weight:700;line-height:1.1;background:linear-gradient(135deg,#F1F5F9 0%,#A78BFA 50%,#818CF8 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:12px}
+.subtitle{font-size:16px;color:var(--text-secondary);font-weight:400}
+.period-badge{display:inline-flex;align-items:center;gap:8px;margin-top:16px;padding:8px 18px;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);font-size:13px;color:var(--text-secondary)}
+.period-badge span{color:var(--text-primary);font-family:var(--font-mono)}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:40px}
+@media(max-width:900px){.kpi-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:500px){.kpi-grid{grid-template-columns:1fr}}
+.kpi-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;position:relative;overflow:hidden;transition:all 0.3s ease}
+.kpi-card:hover{background:var(--bg-card-hover);border-color:var(--border-bright);transform:translateY(-2px)}
+.kpi-label{font-size:11px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:12px}
+.kpi-value{font-family:var(--font-display);font-size:32px;font-weight:700;color:var(--text-primary);line-height:1;margin-bottom:6px}
+.kpi-sub{font-size:12px;color:var(--text-muted)}
+.kpi-trend{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:600;padding:3px 8px;border-radius:100px;margin-top:8px}
+.kpi-trend.up{background:var(--emerald-dim);color:var(--emerald)}
+.kpi-trend.neutral{background:var(--amber-dim);color:var(--amber)}
+.section{margin-bottom:64px}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+.section-title{font-family:var(--font-display);font-size:24px;font-weight:600;color:var(--text-primary)}
+.section-title span{color:var(--indigo-light)}
+.section-badge{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);background:var(--bg-card);border:1px solid var(--border);padding:4px 12px;border-radius:100px}
+.glass-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.data-table{width:100%;border-collapse:collapse}
+.data-table th{padding:14px 20px;text-align:left;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);background:rgba(255,255,255,0.02);border-bottom:1px solid var(--border)}
+.data-table th:last-child,.data-table td:last-child{text-align:right}
+.data-table td{padding:13px 20px;font-size:13px;border-bottom:1px solid var(--border);vertical-align:middle}
+.data-table tr:last-child td{border-bottom:none}
+.data-table tbody tr{transition:background 0.2s}
+.data-table tbody tr:hover{background:rgba(255,255,255,0.02)}
+.rank{font-family:var(--font-mono);font-size:11px;font-weight:600;color:var(--text-muted);width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.04);border-radius:6px}
+.rank.top3{background:linear-gradient(135deg,rgba(93,95,239,0.3),rgba(167,139,250,0.2));color:var(--violet);border:1px solid rgba(167,139,250,0.2)}
+.keyword-cell{font-weight:500;color:var(--text-primary)}
+.url-cell{font-family:var(--font-mono);font-size:11px;color:var(--text-muted);max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.num{font-family:var(--font-mono);font-size:12px;font-weight:500;color:var(--text-secondary)}
+.ctr-bar-wrap{display:flex;align-items:center;gap:8px}
+.ctr-bar{width:60px;height:4px;background:rgba(255,255,255,0.08);border-radius:2px;overflow:hidden}
+.ctr-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--indigo),var(--violet))}
+.ctr-val{font-family:var(--font-mono);font-size:11px;color:var(--indigo-light);min-width:36px}
+.pos-badge{display:inline-flex;align-items:center;justify-content:center;width:28px;height:22px;border-radius:4px;font-family:var(--font-mono);font-size:11px;font-weight:600}
+.pos-1{background:rgba(251,191,36,0.2);color:#FBBF24}
+.pos-2-3{background:rgba(167,139,250,0.2);color:#A78BFA}
+.pos-4-5{background:rgba(52,211,153,0.15);color:#34D399}
+.pos-6plus{background:rgba(255,255,255,0.06);color:var(--text-muted)}
+.charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:40px}
+@media(max-width:900px){.charts-grid{grid-template-columns:1fr}}
+.chart-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:28px}
+.chart-title{font-family:var(--font-display);font-size:17px;font-weight:600;margin-bottom:4px}
+.chart-sub{font-size:12px;color:var(--text-muted);margin-bottom:24px}
+.chart-wrap{position:relative;height:260px}
+.chart-full{grid-column:1/-1}
+.chart-full .chart-wrap{height:300px}
+.insights-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media(max-width:900px){.insights-grid{grid-template-columns:1fr}}
+.insight-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:22px;transition:all 0.3s}
+.insight-card:hover{border-color:var(--border-bright);transform:translateY(-2px)}
+.insight-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;margin-bottom:12px}
+.icon-green{background:var(--emerald-dim)}
+.icon-violet{background:var(--violet-dim)}
+.icon-pink{background:rgba(244,114,182,0.15)}
+.icon-amber{background:var(--amber-dim)}
+.insight-title{font-size:13px;font-weight:600;color:var(--text-primary);margin-bottom:6px}
+.insight-text{font-size:12px;color:var(--text-secondary);line-height:1.6}
+.divider{height:1px;background:var(--border);margin:48px 0}
+footer{text-align:center;padding:40px 0 60px;color:var(--text-muted);font-size:12px}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:3px}
+.data-note{font-size:11px;color:var(--text-muted);margin-bottom:32px;display:flex;align-items:center;gap:6px}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.fade-up{animation:fadeUp 0.7s ease forwards;opacity:0}
+.delay-1{animation-delay:0.05s}
+.delay-2{animation-delay:0.1s}
+.delay-3{animation-delay:0.15s}
+.delay-4{animation-delay:0.2s}
+</style>
+</head>
+<body>
+<div class="mesh-bg"></div>
+<div class="container">
+<header class="fade-up">
+  <div class="badge">Relatório de Tráfego Orgânico</div>
+  <h1>Santtas</h1>
+  <p class="subtitle">Análise de Desempenho SEO — Google Search Console</p>
+  <div class="period-badge">Período: <span>2025</span> &rarr; <span>Abr 2026</span> &nbsp;&middot;&nbsp; Ano cheio + comparativo 2026</div>
+</header>
+
+<div class="kpi-grid">
+  <div class="kpi-card fade-up delay-1">
+    <div class="kpi-label">Cliques em 2025</div>
+    <div class="kpi-value">15.2M</div>
+    <div class="kpi-sub">Google Search &middot; ano cheio</div>
+    <div class="kpi-trend up">&#8593; +30.2% vs mesmo período 2026</div>
+  </div>
+  <div class="kpi-card fade-up delay-2">
+    <div class="kpi-label">Impressões 2025</div>
+    <div class="kpi-value">169.5M</div>
+    <div class="kpi-sub">Exposições no search &middot; ano cheio</div>
+    <div class="kpi-trend up">&#8593; crescimento consistente</div>
+  </div>
+  <div class="kpi-card fade-up delay-3">
+    <div class="kpi-label">CTR Médio 2025</div>
+    <div class="kpi-value">8.96%</div>
+    <div class="kpi-sub">Click-through rate médio global</div>
+    <div class="kpi-trend neutral">&#8594; estável no período</div>
+  </div>
+  <div class="kpi-card fade-up delay-4">
+    <div class="kpi-label">Posição Média 2025</div>
+    <div class="kpi-value">6.73</div>
+    <div class="kpi-sub">Ranking médio no Google</div>
+    <div class="kpi-trend up">&#8593; melhorou vs 2024</div>
+  </div>
+</div>
+
+<div class="data-note">&#128203; Dados exportados diretamente do painel GSC &middot; sc-domain:br.santtas.com &middot; CSV 2025 completo (Jan&mdash;Dez) + CSV 2026 parcial (Jan&mdash;Abr 14) &middot; 16/abr/2026</div>
+
+<div class="charts-grid">
+  <div class="chart-card fade-up">
+    <div class="chart-title">Cliques por Mês &mdash; 2025 Completo</div>
+    <div class="chart-sub">janeiro &mdash; dezembro 2025</div>
+    <div class="chart-wrap"><canvas id="clicksChart"></canvas></div>
+  </div>
+  <div class="chart-card fade-up">
+    <div class="chart-title">Impressões por Mês &mdash; 2025 Completo</div>
+    <div class="chart-sub">mesmo período &middot; volume de exposição</div>
+    <div class="chart-wrap"><canvas id="imprChart"></canvas></div>
+  </div>
+  <div class="chart-card chart-full fade-up">
+    <div class="chart-title">Visão Anual &mdash; Cliques 2025 vs 2026 (Jan&mdash;Abr)</div>
+    <div class="chart-sub">comparativo ano a ano &middot; 2026 Jan&mdash;Abr em destaque</div>
+    <div class="chart-wrap"><canvas id="overviewChart"></canvas></div>
+  </div>
+</div>
+
+<div class="section fade-up">
+  <div class="section-header">
+    <h2 class="section-title">Resumo <span>Mensal</span> 2025</h2>
+    <span class="section-badge">ano completo</span>
+  </div>
+  <div class="glass-card">
+    <table class="data-table">
+      <thead><tr><th>Mês</th><th>Dias</th><th>Cliques</th><th>Impressões</th><th>CTR</th><th>Pos.</th></tr></thead>
+      <tbody>
+        <tr><td class="keyword-cell">Jan 2025</td><td class="num">31</td><td class="num">1.181.207</td><td class="num">12.303.520</td><td class="num">9.59%</td><td><span class="pos-badge pos-6plus">7.16</span></td></tr>
+        <tr><td class="keyword-cell">Fev 2025</td><td class="num">28</td><td class="num">1.077.594</td><td class="num">11.399.997</td><td class="num">9.45%</td><td><span class="pos-badge pos-6plus">7.01</span></td></tr>
+        <tr><td class="keyword-cell">Mar 2025</td><td class="num">31</td><td class="num">1.198.944</td><td class="num">12.780.000</td><td class="num">9.37%</td><td><span class="pos-badge pos-6plus">6.87</span></td></tr>
+        <tr><td class="keyword-cell">Abr 2025</td><td class="num">30</td><td class="num">1.123.269</td><td class="num">12.574.000</td><td class="num">8.93%</td><td><span class="pos-badge pos-6plus">6.87</span></td></tr>
+        <tr><td class="keyword-cell">Mai 2025</td><td class="num">31</td><td class="num">1.173.091</td><td class="num">13.318.093</td><td class="num">8.81%</td><td><span class="pos-badge pos-6plus">6.92</span></td></tr>
+        <tr><td class="keyword-cell">Jun 2025</td><td class="num">30</td><td class="num">1.154.575</td><td class="num">13.098.518</td><td class="num">8.81%</td><td><span class="pos-badge pos-6plus">6.93</span></td></tr>
+        <tr><td class="keyword-cell">Jul 2025</td><td class="num">31</td><td class="num">1.354.239</td><td class="num">14.808.982</td><td class="num">9.14%</td><td><span class="pos-badge pos-6plus">6.80</span></td></tr>
+        <tr><td class="keyword-cell">Ago 2025</td><td class="num">31</td><td class="num">1.390.812</td><td class="num">15.507.439</td><td class="num">8.97%</td><td><span class="pos-badge pos-6plus">6.76</span></td></tr>
+        <tr><td class="keyword-cell">Set 2025</td><td class="num">30</td><td class="num">1.302.907</td><td class="num">14.723.488</td><td class="num">8.85%</td><td><span class="pos-badge pos-4-5">6.51</span></td></tr>
+        <tr><td class="keyword-cell">Out 2025</td><td class="num">31</td><td class="num">1.353.272</td><td class="num">15.336.901</td><td class="num">8.82%</td><td><span class="pos-badge pos-4-5">6.28</span></td></tr>
+        <tr><td class="keyword-cell">Nov 2025</td><td class="num">30</td><td class="num">1.365.033</td><td class="num">15.743.805</td><td class="num">8.67%</td><td><span class="pos-badge pos-4-5">6.29</span></td></tr>
+        <tr style="background:rgba(251,191,36,0.06)">
+          <td class="keyword-cell">Dez 2025</td><td class="num">31</td><td class="num" style="color:var(--amber)">1.514.747</td><td class="num">17.826.067</td><td class="num">8.50%</td><td><span class="pos-badge pos-6plus">6.38</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="section fade-up">
+  <div class="section-header">
+    <h2 class="section-title">Comparativo <span>2025 vs 2026</span></h2>
+    <span class="section-badge">mesmo período &middot; jan&mdash;abr</span>
+  </div>
+  <div class="glass-card" style="margin-bottom:16px">
+    <table class="data-table">
+      <thead><tr><th>Período</th><th>Cliques</th><th>Impressões</th><th>CTR</th><th>Pos. Média</th><th>Crescimento</th></tr></thead>
+      <tbody>
+        <tr><td class="keyword-cell">Jan&mdash;Abr 2025</td><td class="num">4.581.014</td><td class="num">49.057.517</td><td class="num">9.34%</td><td><span class="pos-badge pos-6plus">6.98</span></td><td class="num">&mdash;</td></tr>
+        <tr style="background:rgba(52,211,153,0.06)">
+          <td class="keyword-cell" style="color:var(--emerald)">Jan&mdash;Abr 2026</td><td class="num" style="color:var(--emerald)">5.965.177</td><td class="num">70.829.589</td><td class="num">8.42%</td><td><span class="pos-badge pos-6plus">6.23</span></td><td class="num" style="color:var(--emerald)">+30.2%</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="font-size:12px;color:var(--text-muted)">* 2026 dados parciais de 1/jan a 14/abr. Média diária 2026: ~60K cliques/dia. Projeção abril completo: ~1.8M cliques.</p>
+</div>
+
+<div class="divider"></div>
+
+<div class="section fade-up">
+  <div class="section-header">
+    <h2 class="section-title">Top <span>20</span> Páginas</h2>
+    <span class="section-badge">GSC &middot; 12 meses</span>
+  </div>
+  <div class="glass-card">
+    <table class="data-table">
+      <thead><tr><th>#</th><th>Página</th><th>Cliques</th><th>Impressões</th><th>CTR</th><th>Pos.</th></tr></thead>
+      <tbody>
+        <tr><td><span class="rank top3">1</span></td><td class="url-cell">/acompanhantes/pr/londrina</td><td class="num">517.416</td><td class="num">4.434.541</td><td><div class="ctr-bar-wrap"><div class="ctr-bar"><div class="ctr-fill" style="width:11.7%"></div></div><span class="ctr-val">11.7%</span></div></td><td><span class="pos-badge pos-4-5">6.0</span></td></tr>
+        <tr><td><span class="rank top3">2</span></td><td class="url-cell">/acompanhantes/rs/caxias-do-sul</td><td class="num">428.446</td><td class="num">3.215.931</td><td><div class="ctr-bar-wrap"><div class="ctr-bar"><div class="ctr-fill" style="width:13.3%"></div></div><span class="ctr-val">13.3%</span></div></td><td><span class="pos-badge pos-4-5">6.6</span></td></tr>
+        <tr><td><span class="rank top3">3</span></td><td class="url-cell">/acompanhantes/rs/erechim</td><td class="num">401.166</td><td class="num">1.737.587</td><td><div class="ctr-bar-wrap"><div class="ctr-bar"><div class="ctr-fill" style="width:23.1%"></div></div><span class="ctr-val">23.1%</span></div></td><td><span class="pos-badge pos-6plus">7.2</span></td></tr>
+        <tr><td><span class="rank">4</span></td><td class="url-cell">/acompanhantes/am/manaus</td><td class="num">355.130</td><td class="num">6.298.027</td><td><div class="ctr-bar-wrap"><div class="ctr-bar"><div class="ctr-fill" style="width:5.6%"></div></div><span class="ctr-val">5.6%</span></div></td><td><span class="pos-badge pos-4-5">5.8</span></td></tr>
+        <tr><td><span class="rank">5</span></td><td class="url-cell">/acompanhantes/rs/passo-fundo</td><td class="num">352.019</td><td class="num">2.860.464</td><td><div class="ctr-bar-wrap"><div class="ctr-bar"><div class="ctr-fill" style="width:12.3%"></div></div><span class="ctr-val">12.3%</span></div></td><td><span class="pos-badge pos-6plus">8.5</span></td></tr>
+        <tr><td><span class="rank">6</span></td><td class="url-cell">/acompanhantes/ce/fortaleza</td><td class="num">351.442</td><td class="num">6.912.927</td><td><div class="ctr-bar-wrap"><div class="ctr-bar"><div class="ctr-fill" style="width:5.1%"></div></div><span class="ctr-val">5.1%</span></div></td><td><span class="pos-badge pos-6plus">7.7</span></td></tr>
+        <tr><td><span class="rank">7</span></td><td class="url-cell">/acompanhantes/sc/joinville</td><td class="num">347.491</td><td class="num">4.639.556</td><td><div class="ctr-bar-wrap"><div class="ctr-bar"><div class="ctr-fill" style="width:7.5%"></div></div><span class="ctr-val">7.5%</span></div></td><td><span class="pos-badge pos-4-5">6.5</span></td></tr>
+        <tr><td><span class="rank">8</span></td><td class="url-cell">/acompanhantes/pr/ponta-grossa</td><td class="num">343.942</td><td class="num">2.789.701</td><td><div class="ctr-bar-wrap"><div class="ctr-bar"><div class="ctr-fill" style="width:12.3%"></div></div><span class="ctr-val">12.3%</span></div></td><td><span class="pos-badge pos-4-5">6.1</span></td></tr>
+        <tr><td><span class="rank">9</span></td><td class="url-cell">/acompanhantes/pr/maringa</td><td class="num">314.478</td><td class="num">3.335.698</td><td><div class="ctr-bar-wrap"><div class="ctr-bar"><div class="ctr-fill" style="width:9.4%"></div></div><span class="ctr-val">9.4%</span></div></td><td><span class="pos-badge pos-4-5">6.7</span></td></tr>
+        <tr><td><span class="rank">10</span></td><td class="url-cell">/acompanhantes/ba/salvador</td><td class="num">300.241</td><td class="num">5.239.496</td><td><div class="ctr-bar-wrap"><div class="ctr-bar"><div class="ctr-fill" style="width:5.7%"></div></div><span class="ctr-val">5.7%</span></div></td><td><span class="pos-badge pos-6plus">7.7</span></td></tr>
+        <tr><td><span class="rank">11</span></td><td class="url-cell">/acompanhantes/pa/belem</td><td class="num">296.791</td><td class="num">3.923.617</td><td><div class="ctr-bar-wrap"><div class="ctr-bar"><div class="ctr-fill" style="width:7.6%"></div></div><span class="ctr-val">7.6%</span></div></td><td><span class="pos-badge pos-4-5">6.6</span></td></tr>
+        <tr><td><span class="rank">12</span></td><td class="url-cell">/</td><td class="num">283.741</td><td class="num">1.398.158</td><td><div class="ctr-bar-wrap"><div class="ctr-bar"><div class="ctr-fill" style="width:20.3%"></div></div><span class="ctr-val">20.3%</span></div></td><td><span class="pos-badge pos-6plus">8.7</span></td></tr>
+        <tr><td><span class="rank">13</span></td><td class="url-cell">/acompanhantes/mg/governador-valadares</td><td class="num">281.727</td><td class="num">1.628.570</td><td><div class="ctr-bar-wrap"><div class="ctr-bar"><div class="ctr-fill" style="width:17.3%"></div></div><span class="ctr-val">17.3%</span></div></td><td><span class="pos-badge pos-6plus">8.0</span></td></tr>
+        <tr><td><span class="rank">14</span></td><td class="url-cell">/acompanhantes/mg/belo-horizonte</td><td class="num">256.802</td><td class="num">5.327.398</td><td><div class="ctr-bar-wrap"><div class="ctr-bar"><div class="ctr-fill" style="width:4.8%"></div></div><span class="ctr-val">4.8%</span></div></td><td><span class="pos-badge pos-6plus">9.4</span></td></tr>
+        <tr><td><span class="rank">15</span></td><td class="url-cell">/acompanhantes/pi/teresina</td><td class="num">254.655</td><td class="num">3.407.234</td><td><div class="ctr-bar-wrap"><div class="ctr-bar"><div class="ctr-fill" style="width:7.5%"></div></div><span class="ctr-val">7.5%</span></div></td><td><span class="pos-badge pos-6plus">7.9</span></td></tr>
+        <tr><td><span class="rank">16</span></td><td class="url-cell">/acompanhantes/sc/blumenau</td><td class="num">252.777</td><td class="num">2.844.748</td><td><div class="ctr-bar-wrap"><div class="ctr-bar"><div class="ctr-fill" style="width:8.9%"></div></div><span class="ctr-val">8.9%</span></div></td><td><span class="pos-badge pos-6plus">9.9</span></td></tr>
+        <tr><td><span class="rank">17</span></td><td class="url-cell">/acompanhantes/rs/santa-maria</td><td class="num">219.336</td><td class="num">1.710.210</td><td><div class="ctr-bar-wrap"><div class="ctr-bar"><div class="ctr-fill" style="width:12.8%"></div></div><span class="ctr-val">12.8%</span></div></td><td><span class="pos-badge pos-4-5">5.6</span></td></tr>
+        <tr><td><span class="rank">18</span></td><td class="url-cell">/acompanhantes/mg/ipatinga</td><td class="num">215.292</td><td class="num">1.579.179</td><td><div class="ctr-bar-wrap"><div class="ctr-bar"><div class="ctr-fill" style="width:13.6%"></div></div><span class="ctr-val">13.6%</span></div></td><td><span class="pos-badge pos-4-5">6.4</span></td></tr>
+        <tr><td><span class="rank">19</span></td><td class="url-cell">/acompanhantes/rs/porto-alegre</td><td class="num">207.028</td><td class="num">4.178.293</td><td><div class="ctr-bar-wrap"><div class="ctr-bar"><div class="ctr-fill" style="width:5.0%"></div></div><span class="ctr-val">5.0%</span></div></td><td><span class="pos-badge pos-6plus">8.9</span></td></tr>
+        <tr><td><span class="rank">20</span></td><td class="url-cell">/acompanhantes/rs/lajeado</td><td class="num">205.803</td><td class="num">1.134.732</td><td><div class="ctr-bar-wrap"><div class="ctr-bar"><div class="ctr-fill" style="width:18.1%"></div></div><span class="ctr-val">18.1%</span></div></td><td><span class="pos-badge pos-4-5">4.7</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="charts-grid">
+  <div class="chart-card fade-up">
+    <div class="chart-title">Tráfego por Dispositivo</div>
+    <div class="chart-sub">12 meses &middot; participação em cliques</div>
+    <div class="chart-wrap"><canvas id="deviceChart"></canvas></div>
+  </div>
+  <div class="chart-card fade-up">
+    <div class="chart-title">Tráfego por País</div>
+    <div class="chart-sub">top 8 países &middot; 12 meses</div>
+    <div class="chart-wrap"><canvas id="countryChart"></canvas></div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="section fade-up">
+  <div class="section-header">
+    <h2 class="section-title">Insights</h2>
+    <span class="section-badge">Análise Estratégica</span>
+  </div>
+  <div class="insights-grid">
+    <div class="insight-card"><div class="insight-icon icon-green">&#128200;</div><div class="insight-title">+30.2% de crescimento YoY (Jan&mdash;Abr)</div><div class="insight-text">De 4.58M cliques (Jan&mdash;Abr/2025) para 5.97M no mesmo período de 2026. Média diária em 2026: ~60K cliques/dia. Trajetória sustentada de crescimento.</div></div>
+    <div class="insight-card"><div class="insight-icon icon-violet">&#127757;</div><div class="insight-title">Mobile domina com 95.5% do tráfego</div><div class="insight-text">16.3M de 17.2M cliques vieram de celular. Garantir que todas as páginas carreguem de forma otimizada em mobile é crítico para o negócio.</div></div>
+    <div class="insight-card"><div class="insight-icon icon-pink">&#127891;</div><div class="insight-title">Posição média melhorou de 6.98 para 6.23</div><div class="insight-text">Em 4 meses (Jan&mdash;Abr), a posição média caiu 0.75 posições &mdash; melhora significativa. O site mantém CTR estável em ~8.4&mdash;8.9% mesmo com mais volume.</div></div>
+    <div class="insight-card"><div class="insight-icon icon-amber">&#127973;</div><div class="insight-title">Londrina, Erechim e Caxias do Sul são o motor</div><div class="insight-text">As três cidades respondem por ~870K cliques no período de 12 meses. Erechim tem CTR de 23.1% &mdash; altíssima relevância e correspondência de intent.</div></div>
+    <div class="insight-card"><div class="insight-icon icon-green">&#128293;</div><div class="insight-title">Dezembro foi o mês recordista de 2025</div><div class="insight-text">1.51M cliques em dez/2025, puxado por sazonalidade de fim de ano. Março 2026 com 1.86M já superou esse número &mdash; novo recorde histórico.</div></div>
+    <div class="insight-card"><div class="insight-icon icon-violet">&#127760;</div><div class="insight-title">98.8% do tráfego é do Brasil</div><div class="insight-text">O mercado brasileiro é absolutamente dominante. Os outros países (Uruguai, EUA, Argentina, Portugal) somam ~1.2% e não justificam estratégias específicas.</div></div>
+  </div>
+</div>
+</div>
+<footer><div class="container"><p>Relatório gerado com dados reais dos CSVs exportados diretamente do painel GSC</p><p style="margin-top:6px">Santtas &middot; br.santtas.com &middot; 2025 completo (Jan&mdash;Dez) + 2026 parcial (Jan&mdash;Abr 14) &middot; 16/abr/2026</p></div></footer>
+<script>
+Chart.defaults.color='#64748B';Chart.defaults.borderColor='rgba(255,255,255,0.06)';Chart.defaults.font.family="'Inter',system-ui,sans-serif";
+function makeGrad(ctx,c1,c2){const g=ctx.createLinearGradient(0,0,0,260);g.addColorStop(0,c1);g.addColorStop(1,c2);return g}
+const months=['Jan\n2025','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+const clicksData=[1181207,1077594,1198944,1123269,1173091,1154575,1354239,1390812,1302907,1353272,1365033,1514747];
+const imprData=[12303520,11399997,12780000,12574000,13318093,13098518,14808982,15507439,14723488,15336901,15743805,17826067];
+const ctx1=document.getElementById('clicksChart').getContext('2d');
+new Chart(ctx1,{type:'bar',data:{labels:months,datasets:[{label:'Cliques 2025',data:clicksData,backgroundColor:makeGrad(ctx1,'rgba(93,95,239,0.85)','rgba(167,139,250,0.4)'),borderRadius:8,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'rgba(8,8,18,0.95)',borderColor:'rgba(167,139,250,0.3)',borderWidth:1,padding:12,callbacks:{label:c=>(c.parsed.y/1000000).toFixed(2)+'M cliques'}}},scales:{x:{grid:{display:false}},y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{callback:v=>(v/1000000).toFixed(1)+'M'}}}});
+const ctx2=document.getElementById('imprChart').getContext('2d');
+new Chart(ctx2,{type:'bar',data:{labels:months,datasets:[{label:'Impressões 2025',data:imprData,backgroundColor:makeGrad(ctx2,'rgba(52,211,153,0.65)','rgba(52,211,153,0.15)'),borderRadius:8,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'rgba(8,8,18,0.95)',borderColor:'rgba(52,211,153,0.3)',borderWidth:1,padding:12,callbacks:{label:c=>(c.parsed.y/1000000).toFixed(1)+'M impressões'}}},scales:{x:{grid:{display:false}},y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{callback:v=>(v/1000000).toFixed(0)+'M'}}}});
+const ctx3=document.getElementById('overviewChart').getContext('2d');
+new Chart(ctx3,{type:'bar',data:{labels:['Jan 2025','Fev','Mar','Abr','Jan 2026','Fev','Mar','Abr (14d)'],datasets:[{label:'2025',data:[1181207,1077594,1198944,1123269,0,0,0,0],backgroundColor:'rgba(93,95,239,0.5)',borderRadius:6,borderSkipped:false},{label:'2026',data:[0,0,0,0,1638336,1625869,1855330,844746],backgroundColor:'rgba(52,211,153,0.75)',borderRadius:6,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{boxWidth:12,padding:20,usePointStyle:true}},tooltip:{backgroundColor:'rgba(8,8,18,0.95)',borderColor:'rgba(255,255,255,0.1)',borderWidth:1,padding:12,callbacks:{label:c=>c.parsed.y>0?(c.parsed.y/1000000).toFixed(2)+'M':'—'}}},scales:{x:{grid:{display:false}},y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{callback:v=>(v/1000000).toFixed(1)+'M'}}}});
+const ctx4=document.getElementById('deviceChart').getContext('2d');
+new Chart(ctx4,{type:'doughnut',data:{labels:['Celular','Computador','Tablet'],datasets:[{data:[16339908,770038,54532],backgroundColor:['rgba(93,95,239,0.85)','rgba(167,139,250,0.7)','rgba(52,211,153,0.6)'],borderColor:'rgba(8,8,18,0.8)',borderWidth:3,hoverOffset:6}]},options:{responsive:true,maintainAspectRatio:false,cutout:'68%',plugins:{legend:{position:'bottom',labels:{padding:16,usePointStyle:true,font:{size:12}}},tooltip:{backgroundColor:'rgba(8,8,18,0.95)',padding:12,callbacks:{label:c=>{const t=c.dataset.data.reduce((a,b)=>a+b,0);return c.label+': '+c.parsed.toLocaleString('pt-BR')+' ('+((c.parsed/t)*100).toFixed(1)+'%)'}}}}});
+const ctx5=document.getElementById('countryChart').getContext('2d');
+new Chart(ctx5,{type:'bar',data:{labels:['Brasil','Uruguai','EUA','Argentina','Portugal','Paraguai','França','Itália'],datasets:[{label:'Cliques',data:[16973797,85182,21021,13754,12779,9760,4044,3935],backgroundColor:['rgba(93,95,239,0.9)','rgba(167,139,250,0.7)','rgba(167,139,250,0.5)','rgba(167,139,250,0.4)','rgba(167,139,250,0.35)','rgba(52,211,153,0.5)','rgba(52,211,153,0.4)','rgba(52,211,153,0.35)'],borderRadius:6,borderSkipped:false}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'rgba(8,8,18,0.95)',padding:12,callbacks:{label:c=>c.parsed.x.toLocaleString('pt-BR')+' cliques'}}},scales:{x:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{callback:v=>(v/1000000).toFixed(1)+'M'}},y:{grid:{display:false}}}});
+</script>
+</body>
+</html>

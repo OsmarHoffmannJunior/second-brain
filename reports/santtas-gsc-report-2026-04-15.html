@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Google Search Console — br.santtas.com | 08-14 Abr 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-deepest: #05050C;
+    --bg-deep: #08080C;
+    --bg-surface: #0A0B1E;
+    --bg-card: #11111E;
+    --bg-panel: #161730;
+    --bg-glass: rgba(30, 31, 66, 0.6);
+    --border: #2D2D44;
+    --border-bright: #3D3D5C;
+    --border-accent: rgba(93, 95, 239, 0.4);
+    --text-primary: #FFFFFF;
+    --text-secondary: #9499C3;
+    --text-body: #A1A1B5;
+    --text-muted: #4B5563;
+    --accent-primary: #3D37F1;
+    --accent-indigo: #5D5FEF;
+    --accent-lavender: #8086FF;
+    --accent-violet: #818CF8;
+    --accent-purple: #A594F9;
+    --accent-cyan: #00d4ff;
+    --accent-green: #00E57A;
+    --accent-yellow: #FFB800;
+    --accent-orange: #FF7C3A;
+    --accent-red: #FF5C5C;
+    --glow-indigo: rgba(93, 95, 239, 0.2);
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-pill: 50px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font-sans); background: var(--bg-deepest); color: var(--text-primary); line-height: 1.6; min-height: 100vh; overflow-x: hidden; }
+  body::before { content: ''; position: fixed; inset: 0; background: radial-gradient(ellipse 90% 60% at 10% -5%, rgba(93, 95, 239, 0.12) 0%, transparent 55%), radial-gradient(ellipse 70% 50% at 90% 105%, rgba(123, 92, 255, 0.1) 0%, transparent 55%), radial-gradient(ellipse 50% 40% at 50% 50%, rgba(0, 212, 255, 0.04) 0%, transparent 65%), linear-gradient(180deg, #080818 0%, #050510 100%); pointer-events: none; z-index: 0; }
+  body::after { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E"); pointer-events: none; opacity: 1; z-index: 0; }
+  .container { position: relative; z-index: 1; max-width: 940px; margin: 0 auto; padding: 3.5rem 2rem 5rem; }
+
+  /* HEADER */
+  .report-header { margin-bottom: 3rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border); position: relative; animation: fadeUp 0.5s ease-out both; }
+  .report-header::after { content: ''; position: absolute; bottom: -1px; left: 0; width: 100px; height: 1px; background: linear-gradient(90deg, var(--accent-indigo), transparent); }
+  .report-label { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent-lavender); margin-bottom: 1rem; }
+  .report-label::before { content: ''; width: 5px; height: 5px; background: var(--accent-indigo); border-radius: 50%; box-shadow: 0 0 8px var(--accent-indigo); animation: pulse-glow 2.5s ease-in-out infinite; }
+  @keyframes pulse-glow { 0%, 100% { box-shadow: 0 0 8px var(--accent-indigo); } 50% { box-shadow: 0 0 3px var(--accent-indigo); opacity: 0.6; } }
+  h1 { font-family: var(--font-display); font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 700; line-height: 1.1; letter-spacing: -0.025em; margin-bottom: 0.75rem; }
+  h1 em { font-style: italic; background: linear-gradient(135deg, var(--accent-indigo), var(--accent-violet)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .header-subtitle { font-size: 1.05rem; color: var(--text-secondary); max-width: 580px; line-height: 1.65; margin-bottom: 1.5rem; }
+  .domain-badge { display: inline-flex; align-items: center; gap: 0.4rem; background: rgba(93, 95, 239, 0.1); border: 1px solid rgba(93, 95, 239, 0.25); color: var(--accent-lavender); padding: 0.3rem 0.8rem; border-radius: var(--radius-pill); font-size: 0.8rem; font-weight: 600; font-family: var(--font-mono); margin-bottom: 1rem; }
+  .header-meta { display: flex; flex-wrap: wrap; gap: 0.75rem 1.75rem; }
+  .meta-item { display: flex; align-items: center; gap: 0.4rem; font-size: 0.8rem; color: var(--text-secondary); }
+  .meta-item::before { content: ''; width: 3px; height: 3px; background: var(--accent-violet); border-radius: 50%; flex-shrink: 0; opacity: 0.7; }
+
+  /* TYPOGRAPHY */
+  h2 { font-family: var(--font-sans); font-size: 1.35rem; font-weight: 700; color: var(--text-primary); margin: 2.5rem 0 1rem; display: flex; align-items: center; gap: 0.6rem; letter-spacing: -0.01em; }
+  h2::before { content: ''; width: 3px; height: 1.4rem; background: linear-gradient(180deg, var(--accent-indigo), var(--accent-violet)); border-radius: 2px; flex-shrink: 0; }
+  h3 { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent-violet); margin: 0 0 0.6rem; }
+  h4 { font-size: 0.95rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.35rem; }
+  p { color: var(--text-body); line-height: 1.65; }
+
+  /* CARDS */
+  .card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem; margin: 1rem 0; position: relative; overflow: hidden; transition: border-color 0.25s, background 0.25s, transform 0.25s; animation: fadeUp 0.4s ease-out both; }
+  .card:hover { border-color: var(--border-bright); background: #131326; transform: translateY(-1px); }
+  .card::before { content: ''; position: absolute; inset: 0; border-radius: var(--radius-lg); padding: 1px; background: linear-gradient(135deg, rgba(93,95,239,0.08), transparent 50%, rgba(123,92,255,0.05)); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none; }
+
+  /* STAT GRID */
+  .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin: 1.25rem 0; }
+  @media (max-width: 640px) { .stat-grid { grid-template-columns: repeat(2, 1fr); } }
+  .stat-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem 1rem; text-align: center; position: relative; overflow: hidden; transition: all 0.25s; }
+  .stat-box:hover { border-color: var(--border-accent); transform: translateY(-2px); }
+  .stat-box::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--accent-indigo), transparent); opacity: 0; transition: opacity 0.25s; }
+  .stat-box:hover::after { opacity: 1; }
+  .stat-box .number { font-family: var(--font-display); font-size: 2rem; font-weight: 700; line-height: 1; background: linear-gradient(135deg, var(--accent-indigo), var(--accent-violet)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; display: block; margin-bottom: 0.4rem; }
+  .stat-box .label { font-size: 0.75rem; color: var(--text-secondary); font-weight: 500; line-height: 1.4; }
+  .stat-box .sublabel { font-size: 0.68rem; color: var(--text-muted); margin-top: 0.2rem; }
+
+  /* TABLES */
+  table { width: 100%; border-collapse: collapse; margin: 0.5rem 0; font-size: 0.88rem; }
+  thead tr { border-bottom: 1px solid var(--border-bright); }
+  th { text-align: left; padding: 0.5rem 1rem 0.5rem 0; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); white-space: nowrap; }
+  td { padding: 0.7rem 1rem 0.7rem 0; border-bottom: 1px solid rgba(45, 45, 68, 0.5); color: var(--text-secondary); vertical-align: middle; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(93, 95, 239, 0.04); color: var(--text-primary); }
+  td:first-child { color: var(--text-primary); font-weight: 500; }
+  td:last-child { text-align: right; }
+  .num { font-family: var(--font-mono); font-size: 0.85rem; text-align: right; color: var(--text-secondary) !important; white-space: nowrap; }
+  .ctr-high { color: var(--accent-green) !important; font-weight: 600; }
+  .ctr-med { color: var(--accent-yellow) !important; }
+  .ctr-low { color: var(--accent-orange) !important; }
+  .pos-good { color: var(--accent-green) !important; }
+  .pos-med { color: var(--accent-yellow) !important; }
+  .pos-low { color: var(--accent-orange) !important; }
+  .clicks-col { color: var(--text-primary) !important; font-weight: 600; }
+
+  /* DEVICE BARS */
+  .device-row { display: flex; align-items: center; gap: 1rem; margin: 0.6rem 0; }
+  .device-label { font-size: 0.8rem; font-weight: 600; color: var(--text-secondary); width: 70px; flex-shrink: 0; }
+  .device-bar-bg { flex: 1; height: 8px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .device-bar-fill { height: 100%; border-radius: 4px; transition: width 0.6s ease-out; }
+  .device-bar-fill.mobile { background: linear-gradient(90deg, var(--accent-indigo), var(--accent-violet)); }
+  .device-bar-fill.desktop { background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple)); }
+  .device-bar-fill.tablet { background: linear-gradient(90deg, var(--accent-lavender), var(--accent-violet)); }
+  .device-stats { font-size: 0.78rem; color: var(--text-muted); font-family: var(--font-mono); white-space: nowrap; }
+
+  /* COUNTRY LIST */
+  .country-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 0.5rem; margin-top: 0.5rem; }
+  .country-item { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0.75rem; background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 0.82rem; }
+  .country-item .flag { font-size: 1rem; margin-right: 0.4rem; }
+  .country-item .name { color: var(--text-secondary); flex: 1; }
+  .country-item .clicks { font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-muted); }
+
+  /* SECTION DIVIDER */
+  .section-divider { height: 1px; background: linear-gradient(90deg, var(--border), transparent); margin: 2.5rem 0; }
+
+  /* CALLOUT */
+  .callout { background: rgba(93, 95, 239, 0.06); border: 1px solid rgba(93, 95, 239, 0.2); border-left: 3px solid var(--accent-indigo); border-radius: 0 var(--radius-md) var(--radius-md) 0; padding: 1rem 1.25rem; margin: 1.5rem 0; font-size: 0.88rem; color: var(--text-secondary); line-height: 1.65; }
+  .callout strong { color: var(--text-primary); }
+  .callout.warning { background: rgba(255, 124, 58, 0.06); border-color: rgba(255, 124, 58, 0.2); border-left-color: #FF7C3A; }
+
+  /* INSIGHT CARDS */
+  .insight-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin: 1rem 0; }
+  @media (max-width: 640px) { .insight-grid { grid-template-columns: 1fr; } }
+  .insight-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1.25rem; }
+  .insight-card h4 { display: flex; align-items: center; gap: 0.4rem; font-size: 0.88rem; }
+  .insight-card p { font-size: 0.83rem; color: var(--text-body); margin-top: 0.4rem; line-height: 1.55; }
+  .insight-icon { font-size: 1rem; }
+
+  /* PAGE URL */
+  .page-url { font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent-lavender); word-break: break-all; }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+  .report-header { animation: fadeUp 0.5s ease-out both; }
+  .stat-grid { animation: fadeUp 0.5s 0.08s ease-out both; }
+  .card { animation: fadeUp 0.4s ease-out both; }
+
+  /* FOOTER */
+  .report-footer { margin-top: 4rem; padding-top: 1.75rem; border-top: 1px solid var(--border); display: flex; flex-wrap: wrap; gap: 1rem 2rem; align-items: flex-start; justify-content: space-between; }
+  .footer-info { font-size: 0.78rem; color: var(--text-muted); line-height: 1.7; }
+  .footer-info strong { color: var(--text-secondary); font-weight: 500; }
+  .footer-actions { display: flex; gap: 0.5rem; }
+  .footer-btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.5rem 1rem; border-radius: var(--radius-sm); font-size: 0.78rem; font-weight: 600; border: 1px solid var(--border-bright); color: var(--text-secondary); background: rgba(255, 255, 255, 0.025); transition: all 0.15s; cursor: pointer; font-family: var(--font-sans); }
+  .footer-btn:hover { border-color: var(--accent-lavender); color: var(--accent-lavender); background: rgba(93, 95, 239, 0.06); }
+  .footer-btn.primary { background: linear-gradient(135deg, rgba(93, 95, 239, 0.2), rgba(123, 92, 255, 0.12)); border-color: rgba(93, 95, 239, 0.4); color: var(--accent-lavender); }
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- HEADER -->
+<header class="report-header">
+  <div class="report-label">Google Search Console — Performance Report</div>
+  <div class="domain-badge">🌐 sc-domain:br.santtas.com</div>
+  <h1>Desempenho no Google <em>08 — 14 Abr 2026</em></h1>
+  <p class="header-subtitle">
+    Dados reais do Search Console. Visão geral de cliques, impressões, CTR,
+    posição por queries, páginas, dispositivos e países.
+  </p>
+  <div class="header-meta">
+    <div class="meta-item">Período: 08/04 a 14/04/2026 (7 dias)</div>
+    <div class="meta-item">Propriedade: sc-domain:br.santtas.com</div>
+    <div class="meta-item">Source: Google Search Console via Composio</div>
+    <div class="meta-item">Gerado: 15/04/2026</div>
+  </div>
+</header>
+
+<!-- TOTALS -->
+<h2>📊 Totais — Visão Geral</h2>
+<div class="stat-grid">
+  <div class="stat-box">
+    <div class="number">363.570</div>
+    <div class="label">Total de Cliques</div>
+    <div class="sublabel">últimos 7 dias</div>
+  </div>
+  <div class="stat-box">
+    <div class="number">4.23M</div>
+    <div class="label">Impressões</div>
+    <div class="sublabel">no período</div>
+  </div>
+  <div class="stat-box">
+    <div class="number">8.59%</div>
+    <div class="label">CTR Médio</div>
+    <div class="sublabel">geral</div>
+  </div>
+  <div class="stat-box">
+    <div class="number">6.02</div>
+    <div class="label">Posição Média</div>
+    <div class="sublabel">geral</div>
+  </div>
+</div>
+
+<!-- TOP QUERIES -->
+<h2>🔍 Top 25 Queries</h2>
+<div class="card">
+  <h3>Por Cliques — Search Type: Web</h3>
+  <table>
+    <thead><tr><th>Query</th><th>Cliques</th><th>Impressões</th><th>CTR</th><th>Posição</th></tr></thead>
+    <tbody>
+      <tr><td>santtas</td><td class="clicks-col">6.319</td><td class="num">12.499</td><td class="ctr-high">50.56%</td><td class="pos-good">1.0</td></tr>
+      <tr><td>garota de programa</td><td class="clicks-col">3.530</td><td class="num">39.056</td><td class="ctr-med">9.04%</td><td class="pos-med">4.7</td></tr>
+      <tr><td>garotas de programa</td><td class="clicks-col">3.013</td><td class="num">27.575</td><td class="ctr-med">10.93%</td><td class="pos-med">5.0</td></tr>
+      <tr><td>acompanhante</td><td class="clicks-col">2.806</td><td class="num">28.654</td><td class="ctr-med">9.79%</td><td class="pos-med">4.6</td></tr>
+      <tr><td>acompanhantes</td><td class="clicks-col">2.218</td><td class="num">24.632</td><td class="ctr-med">9.00%</td><td class="pos-med">5.8</td></tr>
+      <tr><td>acompanhantes londrina</td><td class="clicks-col">1.765</td><td class="num">8.612</td><td class="ctr-high">20.49%</td><td class="pos-good">2.2</td></tr>
+      <tr><td>acompanhante londrina</td><td class="clicks-col">1.580</td><td class="num">6.072</td><td class="ctr-high">26.02%</td><td class="pos-good">1.5</td></tr>
+      <tr><td>acompanhante manaus</td><td class="clicks-col">1.185</td><td class="num">14.058</td><td class="ctr-med">8.43%</td><td class="pos-good">2.6</td></tr>
+      <tr><td>acompanhantes manaus</td><td class="clicks-col">887</td><td class="num">14.561</td><td class="ctr-low">6.09%</td><td class="pos-med">3.9</td></tr>
+      <tr><td>acompanhantes erechim</td><td class="clicks-col">822</td><td class="num">2.331</td><td class="ctr-high">35.26%</td><td class="pos-good">1.5</td></tr>
+      <tr><td>acompanhantes caxias do sul</td><td class="clicks-col">802</td><td class="num">3.632</td><td class="ctr-high">22.08%</td><td class="pos-good">1.9</td></tr>
+      <tr><td>acompanhantes pg</td><td class="clicks-col">726</td><td class="num">5.174</td><td class="ctr-med">14.03%</td><td class="pos-good">2.8</td></tr>
+      <tr><td>acompanhantes ponta grossa</td><td class="clicks-col">681</td><td class="num">3.968</td><td class="ctr-med">17.16%</td><td class="pos-good">2.1</td></tr>
+      <tr><td>acompanhante joinville</td><td class="clicks-col">668</td><td class="num">6.890</td><td class="ctr-med">9.70%</td><td class="pos-med">3.7</td></tr>
+      <tr><td>acompanhantes passo fundo</td><td class="clicks-col">662</td><td class="num">3.510</td><td class="ctr-med">18.86%</td><td class="pos-good">2.1</td></tr>
+      <tr><td>acompanhantes joinville</td><td class="clicks-col">633</td><td class="num">9.234</td><td class="ctr-low">6.86%</td><td class="pos-med">4.4</td></tr>
+      <tr><td>garotas com local</td><td class="clicks-col">612</td><td class="num">14.931</td><td class="ctr-low">4.10%</td><td class="pos-med">4.9</td></tr>
+      <tr><td>acompanhante erechim</td><td class="clicks-col">515</td><td class="num">1.381</td><td class="ctr-high">37.29%</td><td class="pos-good">1.4</td></tr>
+      <tr><td>acompanhantes lajeado</td><td class="clicks-col">509</td><td class="num">2.359</td><td class="ctr-high">21.58%</td><td class="pos-good">2.0</td></tr>
+      <tr><td>acompanhante ponta grossa</td><td class="clicks-col">492</td><td class="num">2.273</td><td class="ctr-high">21.65%</td><td class="pos-good">1.7</td></tr>
+      <tr><td>acompanhante de luxo</td><td class="clicks-col">478</td><td class="num">7.663</td><td class="ctr-low">6.24%</td><td class="pos-low">6.8</td></tr>
+      <tr><td>acompanhantes blumenau</td><td class="clicks-col">459</td><td class="num">4.457</td><td class="ctr-low">10.30%</td><td class="pos-med">3.2</td></tr>
+      <tr><td>acompanhantes porto alegre</td><td class="clicks-col">457</td><td class="num">7.671</td><td class="ctr-low">5.96%</td><td class="pos-med">4.7</td></tr>
+      <tr><td>acompanhante blumenau</td><td class="clicks-col">456</td><td class="num">3.985</td><td class="ctr-med">11.44%</td><td class="pos-good">2.9</td></tr>
+      <tr><td>acompanhante caxias do sul</td><td class="clicks-col">446</td><td class="num">2.099</td><td class="ctr-high">21.25%</td><td class="pos-good">1.9</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- TOP PAGES -->
+<h2>📄 Top 20 Páginas</h2>
+<div class="card">
+  <h3>Por Cliques — Search Type: Web</h3>
+  <table>
+    <thead><tr><th>Página</th><th>Cliques</th><th>Impressões</th><th>CTR</th><th>Posição</th></tr></thead>
+    <tbody>
+      <tr><td>/acompanhantes/pr/londrina</td><td class="clicks-col">12.435</td><td class="num">79.198</td><td class="ctr-med">15.70%</td><td class="pos-med">4.6</td></tr>
+      <tr><td>/acompanhantes/sc/joinville</td><td class="clicks-col">7.423</td><td class="num">90.680</td><td class="ctr-low">8.19%</td><td class="pos-low">6.0</td></tr>
+      <tr><td>/acompanhantes/am/manaus</td><td class="clicks-col">7.247</td><td class="num">106.436</td><td class="ctr-low">6.81%</td><td class="pos-med">4.5</td></tr>
+      <tr><td>/acompanhantes/rs/erechim</td><td class="clicks-col">7.166</td><td class="num">36.916</td><td class="ctr-med">19.41%</td><td class="pos-med">5.7</td></tr>
+      <tr><td>/acompanhantes/rs/caxias-do-sul</td><td class="clicks-col">7.150</td><td class="num">56.452</td><td class="ctr-med">12.67%</td><td class="pos-med">5.6</td></tr>
+      <tr><td>/acompanhantes/pr/ponta-grossa</td><td class="clicks-col">7.124</td><td class="num">51.952</td><td class="ctr-med">13.71%</td><td class="pos-med">4.8</td></tr>
+      <tr><td>/ (home)</td><td class="clicks-col">6.773</td><td class="num">33.827</td><td class="ctr-med">20.02%</td><td class="pos-low">5.7</td></tr>
+      <tr><td>/acompanhantes/pr/maringa</td><td class="clicks-col">6.215</td><td class="num">54.619</td><td class="ctr-med">11.38%</td><td class="pos-med">5.6</td></tr>
+      <tr><td>/acompanhantes/ce/fortaleza</td><td class="clicks-col">6.157</td><td class="num">120.061</td><td class="ctr-low">5.13%</td><td class="pos-low">6.8</td></tr>
+      <tr><td>/acompanhantes/ba/salvador</td><td class="clicks-col">5.921</td><td class="num">88.669</td><td class="ctr-low">6.68%</td><td class="pos-low">6.5</td></tr>
+      <tr><td>/acompanhantes/pa/belem</td><td class="clicks-col">5.829</td><td class="num">66.117</td><td class="ctr-low">8.82%</td><td class="pos-med">5.4</td></tr>
+      <tr><td>/acompanhantes/rs/passo-fundo</td><td class="clicks-col">5.821</td><td class="num">57.052</td><td class="ctr-med">10.20%</td><td class="pos-low">6.9</td></tr>
+      <tr><td>/acompanhantes/rs/porto-alegre</td><td class="clicks-col">5.796</td><td class="num">104.086</td><td class="ctr-low">5.57%</td><td class="pos-low">6.3</td></tr>
+      <tr><td>/acompanhantes/sc/blumenau</td><td class="clicks-col">5.302</td><td class="num">48.722</td><td class="ctr-med">10.88%</td><td class="pos-low">7.2</td></tr>
+      <tr><td>/acompanhantes/mg/belo-horizonte</td><td class="clicks-col">5.244</td><td class="num">119.523</td><td class="ctr-low">4.39%</td><td class="pos-low">8.0</td></tr>
+      <tr><td>/acompanhantes/ma/sao-luis</td><td class="clicks-col">4.572</td><td class="num">61.780</td><td class="ctr-low">7.40%</td><td class="pos-med">5.7</td></tr>
+      <tr><td>/acompanhantes/rs/santa-maria</td><td class="clicks-col">4.513</td><td class="num">28.876</td><td class="ctr-med">15.63%</td><td class="pos-low">6.4</td></tr>
+      <tr><td>/acompanhantes/mg/governador-valadares</td><td class="clicks-col">4.204</td><td class="num">29.795</td><td class="ctr-med">14.11%</td><td class="pos-low">6.3</td></tr>
+      <tr><td>/acompanhantes/pi/teresina</td><td class="clicks-col">4.195</td><td class="num">61.149</td><td class="ctr-low">6.86%</td><td class="pos-low">7.9</td></tr>
+      <tr><td>/acompanhantes/sc/chapeco</td><td class="clicks-col">3.988</td><td class="num">33.723</td><td class="ctr-med">11.83%</td><td class="pos-med">4.6</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- DEVICES + COUNTRIES SIDE BY SIDE -->
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0;">
+  <div class="card">
+    <h3>📱 Dispositivos</h3>
+    <div class="device-row">
+      <div class="device-label">Mobile</div>
+      <div class="device-bar-bg"><div class="device-bar-fill mobile" style="width: 94.5%"></div></div>
+      <div class="device-stats">346.559 <span style="color: var(--accent-indigo)">94.5%</span></div>
+    </div>
+    <div class="device-row">
+      <div class="device-label">Desktop</div>
+      <div class="device-bar-bg"><div class="device-bar-fill desktop" style="width: 4.3%"></div></div>
+      <div class="device-stats">15.838 <span style="color: var(--accent-cyan)">4.3%</span></div>
+    </div>
+    <div class="device-row">
+      <div class="device-label">Tablet</div>
+      <div class="device-bar-bg"><div class="device-bar-fill tablet" style="width: 0.3%"></div></div>
+      <div class="device-stats">1.173 <span style="color: var(--accent-lavender)">0.3%</span></div>
+    </div>
+    <p style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.75rem;">Mobile domina com 94.5% dos cliques — site com público majoritariamente em movimento.</p>
+  </div>
+
+  <div class="card">
+    <h3>🌎 Países</h3>
+    <div class="country-grid">
+      <div class="country-item"><span class="flag">🇧🇷</span><span class="name">Brasil</span><span class="clicks">359.701</span></div>
+      <div class="country-item"><span class="flag">🇺🇾</span><span class="name">Uruguai</span><span class="clicks">1.683</span></div>
+      <div class="country-item"><span class="flag">🇺🇸</span><span class="name">Estados Unidos</span><span class="clicks">490</span></div>
+      <div class="country-item"><span class="flag">🇵🇹</span><span class="name">Portugal</span><span class="clicks">269</span></div>
+      <div class="country-item"><span class="flag">🇦🇷</span><span class="name">Argentina</span><span class="clicks">224</span></div>
+      <div class="country-item"><span class="flag">🇵🇾</span><span class="name">Paraguai</span><span class="clicks">194</span></div>
+    </div>
+    <p style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.75rem;">99%+ do tráfego é do Brasil. Tráfego internacional residual.</p>
+  </div>
+</div>
+
+<!-- INSIGHTS -->
+<h2>💡 Insights Rápidos</h2>
+<div class="insight-grid">
+  <div class="insight-card">
+    <h4><span class="insight-icon">🎯</span> Brand query "santtas" domina</h4>
+    <p>Query brand tem CTR de 50.56% e posição 1.0 — todos os cliques são da primeira posição. Oportunidade: expandir para variações "santtas + cidade".</p>
+  </div>
+  <div class="insight-card">
+    <h4><span class="insight-icon">🏙️</span> Cidades menores = CTR melhor</h4>
+    <p>Erechim (CTR 35%), Ponta Grossa (21%), Santa Maria (15%) têm CTRs altos com posição entre 1.5-2.1. Cidades grandes perdem em CTR por maior concorrência.</p>
+  </div>
+  <div class="insight-card">
+    <h4><span class="insight-icon">📱</span> Mobile é 94.5% do tráfego</h4>
+    <p>Desktop representa apenas 4.3%. UX mobile é crítica — todas as páginas precisam carregarsem CLS em mobile. Priorizar AMP ou performance mobile.</p>
+  </div>
+  <div class="insight-card">
+    <h4><span class="insight-icon">📄</span> Londrina é a página mais visitada</h4>
+    <p>12.435 cliques só em /pr/londrina — 3.4x mais que a segunda (Joinville). Expandir modelo de cidade para outras cidades com alto volume de buscas locais.</p>
+  </div>
+</div>
+
+<div class="callout warning">
+  <strong>⚠️ Oportunidade detectada:</strong> Páginas como <code>/mg/belo-horizonte</code> (4.39% CTR, posição 8.0) e <code>/pi/teresina</code> (6.86% CTR, posição 7.9) têm alto volume de impressões mas baixa taxa de clique. Melhorar meta titles + descriptions dessas páginas pode duplicar cliques sem aumentar impressões.
+</div>
+
+<!-- FOOTER -->
+<footer class="report-footer">
+  <div class="footer-info">
+    <strong>Fonte:</strong> Google Search Console via Composio MCP<br>
+    <strong>Propriedade:</strong> sc-domain:br.santtas.com<br>
+    <strong>Período:</strong> 08/04/2026 a 14/04/2026 | <strong>Gerado:</strong> 15/04/2026
+  </div>
+  <div class="footer-actions">
+    <button class="footer-btn primary" onclick="window.print()">Imprimir / PDF</button>
+  </div>
+</footer>
+
+</div>
+</body>
+</html>

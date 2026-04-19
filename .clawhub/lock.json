@@ -3,11 +3,31 @@
   "skills": {
     "jx76-gog": {
       "version": "1.0.1",
-      "installedAt": 1776126692933
+      "installedAt": 1776600537729
     },
     "audio-summary": {
       "version": "1.0.0",
       "installedAt": 1776127955520
+    },
+    "seo-keyword-researcher": {
+      "version": "1.0.0",
+      "installedAt": 1776260530282
+    },
+    "web-browsing": {
+      "version": "1.0.0",
+      "installedAt": 1776261467939
+    },
+    "frontend-design-3": {
+      "version": "0.1.0",
+      "installedAt": 1776265502791
+    },
+    "self-improving-agent": {
+      "version": "3.0.13",
+      "installedAt": 1776272220649
+    },
+    "obsidian-cli": {
+      "version": "2.0.0",
+      "installedAt": 1776331367230
     }
   }
 }

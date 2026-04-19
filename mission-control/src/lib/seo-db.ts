@@ -22,6 +22,8 @@ export interface Client {
   monthly_leads_goal?: number;
   main_keywords?: string;
   competitors?: string;
+  notes?: string;
+  gsc_property_url?: string;
   created_at?: string;
   updated_at?: string;
 }
