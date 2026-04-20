@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Santtas — Diagnóstico SEO | 2026-04-19</title>
+<style>
+  :root {
+    --bg: #0c0c14;
+    --bg-card: #12121c;
+    --bg-card-hover: #181826;
+    --border: #22223a;
+    --text-primary: #e8e8f0;
+    --text-secondary: #8888aa;
+    --text-muted: #55556a;
+    --accent: #6366f1;
+    --accent-light: #818cf8;
+    --green: #22c55e;
+    --green-dim: rgba(34,197,94,0.15);
+    --amber: #f59e0b;
+    --amber-dim: rgba(245,158,11,0.15);
+    --red: #ef4444;
+    --red-dim: rgba(239,68,68,0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text-primary);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    padding: 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .header {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .header-meta {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.5rem;
+  }
+
+  h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.25rem;
+  }
+
+  .subtitle {
+    color: var(--text-secondary);
+    font-size: 13px;
+  }
+
+  /* ── Executive Summary ─────────────────────────────── */
+  .exec-summary {
+    background: linear-gradient(135deg, rgba(99,102,241,0.12) 0%, rgba(99,102,241,0.04) 100%);
+    border: 1px solid rgba(99,102,241,0.3);
+    border-radius: 12px;
+    padding: 1.5rem 1.75rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .exec-summary h2 {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--accent-light);
+    margin-bottom: 0.75rem;
+    font-weight: 600;
+  }
+
+  .exec-summary p {
+    color: var(--text-secondary);
+    font-size: 13px;
+    line-height: 1.7;
+  }
+
+  /* ── Section ──────────────────────────────────────── */
+  .section {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+  }
+
+  .section-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .section-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
+  .section-badge {
+    font-size: 10px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .section-body {
+    padding: 1.25rem 1.5rem;
+  }
+
+  /* ── KPI Grid ─────────────────────────────────────── */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 1.25rem;
+  }
+
+  .kpi {
+    background: var(--bg-card);
+    padding: 1rem 1.25rem;
+    text-align: center;
+  }
+
+  .kpi-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-primary);
+    line-height: 1.2;
+  }
+
+  .kpi-label {
+    font-size: 10px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-top: 0.25rem;
+  }
+
+  .kpi-delta {
+    font-size: 10px;
+    margin-top: 0.25rem;
+  }
+  .kpi-delta.up { color: var(--green); }
+  .kpi-delta.down { color: var(--amber); }
+
+  /* ── Tables ───────────────────────────────────────── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12.5px;
+  }
+
+  th {
+    text-align: left;
+    padding: 0.5rem 0.75rem;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+    font-weight: 500;
+  }
+
+  th.num { text-align: right; }
+
+  td {
+    padding: 0.6rem 0.75rem;
+    border-bottom: 1px solid rgba(34,34,58,0.5);
+    color: var(--text-secondary);
+  }
+
+  td.num { text-align: right; font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+
+  .mono { font-family: 'JetBrains Mono', monospace; font-size: 11.5px; }
+  .ctr-good { color: var(--green); }
+  .ctr-mid { color: var(--amber); }
+  .pos-good { color: var(--green); }
+  .pos-mid { color: #a78bfa; }
+
+  /* ── Checklist ─────────────────────────────────────── */
+  .checklist {
+    list-style: none;
+  }
+
+  .checklist li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.65rem 0;
+    border-bottom: 1px solid rgba(34,34,58,0.4);
+    color: var(--text-secondary);
+    font-size: 13px;
+  }
+
+  .checklist li:last-child { border-bottom: none; }
+
+  .check-box {
+    width: 16px;
+    height: 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    background: transparent;
+  }
+
+  .priority-tag {
+    font-size: 9px;
+    padding: 2px 7px;
+    border-radius: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  .priority-high { background: var(--red-dim); color: var(--red); }
+  .priority-med { background: var(--amber-dim); color: var(--amber); }
+  .priority-low { background: var(--green-dim); color: var(--green); }
+
+  .checklist .item-title {
+    color: var(--text-primary);
+    font-weight: 500;
+    display: block;
+    margin-bottom: 0.15rem;
+  }
+
+  .checklist .item-desc {
+    color: var(--text-muted);
+    font-size: 11.5px;
+  }
+
+  /* ── Opportunity Row ─────────────────────────────── */
+  .opp-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .opp-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+  }
+
+  .opp-card-title {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 13px;
+    margin-bottom: 0.35rem;
+  }
+
+  .opp-card-meta {
+    font-size: 11px;
+    color: var(--text-muted);
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .opp-card-meta span { color: var(--text-secondary); }
+  .opp-card-meta .pos-warn { color: var(--amber); }
+  .opp-card-meta .pos-bad { color: var(--red); }
+
+  /* ── Footer ──────────────────────────────────────── */
+  .footer {
+    text-align: center;
+    font-size: 11px;
+    color: var(--text-muted);
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    margin-top: 2rem;
+  }
+
+  @media (max-width: 640px) {
+    body { padding: 1rem; }
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="header">
+  <div class="header-meta">Diagnóstico SEO — Dados: Google Search Console</div>
+  <h1>Santtas — Análise de Performance e Oportunidades</h1>
+  <div class="subtitle">br.santtas.com &nbsp;·&nbsp; Período: Out/2025 – Mar/2026 &nbsp;·&nbsp; 19 de Abril de 2026</div>
+</div>
+
+<!-- EXECUTIVE SUMMARY -->
+<div class="exec-summary">
+  <h2>Resumo Executivo</h2>
+  <p>
+    O site apresenta crescimento consistente de tráfego orgânico, com alta de 38% em cliques de
+    outubro/2025 (1,35M) para março/2026 (1,87M). A posição média melhorou de 6,26 para 6,08 no
+    mesmo período, indicando fortalecimento do perfil de ranking. O CTR geral está em 8,86% — acima
+    da média de mercado para o nicho. Cidades menores (Erechim, Passo Fundo, Lajeado) mostram
+    domínio quase total. A principal oportunidade identificada é <strong>Curitiba</strong>, com 48 mil
+    impressões mensais e posição 14,2 — o que representa um gap de aproximadamente 3 mil cliques
+    mensais não capturados. <strong>Belo Horizonte e Fortaleza</strong> também apresentam alto volume
+    de impressões com posições fora do top 5, sugerindo potencial de crescimento rápido via
+    otimização on-page.
+  </p>
+</div>
+
+<!-- SECTION: PERFORMANCE OVERVIEW -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-title">Performance Geral — Evolução Mensal</span>
+    <span class="section-badge">Dados GSC —Últimos 6 meses</span>
+  </div>
+  <div class="section-body">
+
+    <div class="kpi-grid">
+      <div class="kpi">
+        <div class="kpi-value">1,87M</div>
+        <div class="kpi-label">Cliques (Mar/26)</div>
+        <div class="kpi-delta up">+38% vs Out/25</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-value">21,1M</div>
+        <div class="kpi-label">Impressões (Mar/26)</div>
+        <div class="kpi-delta up">+38% vs Out/25</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-value">8,86%</div>
+        <div class="kpi-label">CTR (Mar/26)</div>
+        <div class="kpi-delta up">+0,03pp vs Out/25</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-value">6,08</div>
+        <div class="kpi-label">Posição Média (Mar/26)</div>
+        <div class="kpi-delta up">6,26 → 6,08</div>
+      </div>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Mês</th>
+          <th class="num">Cliques</th>
+          <th class="num">Impressões</th>
+          <th class="num">CTR</th>
+          <th class="num">Pos. Média</th>
+          <th class="num">vs Mês Ant.</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Outubro 2025</td>
+          <td class="num mono">1.353.272</td>
+          <td class="num mono">15.338.902</td>
+          <td class="num mono ctr-good">8,83%</td>
+          <td class="num mono">6,26</td>
+          <td class="num mono">—</td>
+        </tr>
+        <tr>
+          <td>Novembro 2025</td>
+          <td class="num mono">1.365.033</td>
+          <td class="num mono">15.733.725</td>
+          <td class="num mono ctr-good">8,69%</td>
+          <td class="num mono">6,28</td>
+          <td class="num mono" style="color:var(--amber)">+0,9% cliques</td>
+        </tr>
+        <tr>
+          <td>Dezembro 2025</td>
+          <td class="num mono">1.514.747</td>
+          <td class="num mono">17.824.920</td>
+          <td class="num mono ctr-mid">8,50%</td>
+          <td class="num mono">6,37</td>
+          <td class="num mono" style="color:var(--green)">+11,0% cliques</td>
+        </tr>
+        <tr>
+          <td>Janeiro 2026</td>
+          <td class="num mono">1.638.336</td>
+          <td class="num mono">19.590.405</td>
+          <td class="num mono ctr-mid">8,37%</td>
+          <td class="num mono">6,34</td>
+          <td class="num mono" style="color:var(--green)">+8,2% cliques</td>
+        </tr>
+        <tr>
+          <td>Fevereiro 2026</td>
+          <td class="num mono">1.619.471</td>
+          <td class="num mono">19.078.611</td>
+          <td class="num mono ctr-mid">8,49%</td>
+          <td class="num mono">6,30</td>
+          <td class="num mono" style="color:var(--amber)">−1,2% cliques</td>
+        </tr>
+        <tr>
+          <td style="color:var(--text-primary);font-weight:600">Março 2026</td>
+          <td class="num mono" style="color:var(--green);font-weight:600">1.867.119</td>
+          <td class="num mono" style="color:var(--green)">21.121.882</td>
+          <td class="num mono ctr-good" style="color:var(--green)">8,86%</td>
+          <td class="num mono pos-good" style="color:var(--green)">6,08</td>
+          <td class="num mono" style="color:var(--green)">+15,3% cliques</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- SECTION: TOP QUERIES -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-title">Queries com Maior Volume de Cliques</span>
+    <span class="section-badge">Período: Jan–Abr/2026</span>
+  </div>
+  <div class="section-body">
+    <table>
+      <thead>
+        <tr>
+          <th>Query</th>
+          <th class="num">Cliques</th>
+          <th class="num">Impressões</th>
+          <th class="num">CTR</th>
+          <th class="num">Posição</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>santtas</td>
+          <td class="num mono">72.383</td>
+          <td class="num mono">94.285</td>
+          <td class="num mono ctr-good">76,77%</td>
+          <td class="num mono pos-good">1,0</td>
+        </tr>
+        <tr>
+          <td>garota de programa</td>
+          <td class="num mono">45.495</td>
+          <td class="num mono">556.724</td>
+          <td class="num mono ctr-mid">8,17%</td>
+          <td class="num mono pos-good">5,3</td>
+        </tr>
+        <tr>
+          <td>garotas de programa</td>
+          <td class="num mono">39.622</td>
+          <td class="num mono">391.584</td>
+          <td class="num mono ctr-mid">10,12%</td>
+          <td class="num mono pos-good">5,4</td>
+        </tr>
+        <tr>
+          <td>acompanhante</td>
+          <td class="num mono">34.656</td>
+          <td class="num mono">371.366</td>
+          <td class="num mono ctr-mid">9,33%</td>
+          <td class="num mono pos-mid">5,0</td>
+        </tr>
+        <tr>
+          <td>acompanhantes</td>
+          <td class="num mono">27.220</td>
+          <td class="num mono">331.437</td>
+          <td class="num mono ctr-mid">8,21%</td>
+          <td class="num mono pos-mid">6,4</td>
+        </tr>
+        <tr>
+          <td>acompanhantes londrina</td>
+          <td class="num mono">24.261</td>
+          <td class="num mono">127.862</td>
+          <td class="num mono ctr-good">18,97%</td>
+          <td class="num mono pos-good">2,4</td>
+        </tr>
+        <tr>
+          <td>acompanhante londrina</td>
+          <td class="num mono">18.136</td>
+          <td class="num mono">90.420</td>
+          <td class="num mono ctr-good">20,06%</td>
+          <td class="num mono pos-good">2,2</td>
+        </tr>
+        <tr>
+          <td>acompanhante manaus</td>
+          <td class="num mono">16.767</td>
+          <td class="num mono">214.827</td>
+          <td class="num mono ctr-mid">7,80%</td>
+          <td class="num mono pos-mid">3,0</td>
+        </tr>
+        <tr>
+          <td>acompanhantes erechim</td>
+          <td class="num mono">13.299</td>
+          <td class="num mono">34.414</td>
+          <td class="num mono ctr-good">38,64%</td>
+          <td class="num mono pos-good">1,5</td>
+        </tr>
+        <tr>
+          <td>acompanhantes caxias do sul</td>
+          <td class="num mono">12.499</td>
+          <td class="num mono">56.170</td>
+          <td class="num mono ctr-good">22,25%</td>
+          <td class="num mono pos-good">1,9</td>
+        </tr>
+        <tr>
+          <td>acompanhantes manaus</td>
+          <td class="num mono">12.246</td>
+          <td class="num mono">217.367</td>
+          <td class="num mono ctr-mid">5,63%</td>
+          <td class="num mono pos-mid">4,0</td>
+        </tr>
+        <tr>
+          <td>acompanhantes pg</td>
+          <td class="num mono">11.186</td>
+          <td class="num mono">78.646</td>
+          <td class="num mono ctr-mid">14,22%</td>
+          <td class="num mono pos-good">2,9</td>
+        </tr>
+        <tr>
+          <td>acompanhantes passo fundo</td>
+          <td class="num mono">11.019</td>
+          <td class="num mono">55.777</td>
+          <td class="num mono ctr-good">19,76%</td>
+          <td class="num mono pos-good">2,1</td>
+        </tr>
+        <tr>
+          <td>acompanhantes joinville</td>
+          <td class="num mono">9.086</td>
+          <td class="num mono">128.056</td>
+          <td class="num mono ctr-mid">7,10%</td>
+          <td class="num mono pos-mid">4,2</td>
+        </tr>
+        <tr>
+          <td>acompanhantes joinville</td>
+          <td class="num mono">8.929</td>
+          <td class="num mono">104.524</td>
+          <td class="num mono ctr-mid">8,54%</td>
+          <td class="num mono pos-mid">4,0</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- SECTION: OPPORTUNITIES -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-title">Oportunidades de Crescimento</span>
+    <span class="section-badge">Alto Volume + Posição Atual</span>
+  </div>
+  <div class="section-body">
+    <div class="opp-grid">
+
+      <div class="opp-card" style="border-color: rgba(239,68,68,0.3);">
+        <div class="opp-card-title">🔴 Curitiba</div>
+        <div class="opp-card-meta">
+          <span>Impressões: <span>48.368</span></span>
+          <span>CTR: <span style="color:var(--amber)">6,61%</span></span>
+          <span>Posição: <span class="pos-bad">14,2</span></span>
+        </div>
+        <div class="opp-card-meta" style="margin-top:0.35rem;">
+          <span style="color:var(--text-muted);font-size:10.5px;">Maior gap de cliques. Otimizar página da cidade + title/meta desc para CTR.</span>
+        </div>
+      </div>
+
+      <div class="opp-card" style="border-color: rgba(245,158,11,0.3);">
+        <div class="opp-card-title">🟡 Belo Horizonte</div>
+        <div class="opp-card-meta">
+          <span>Impressões: <span>1,7M</span></span>
+          <span>CTR: <span style="color:var(--amber)">4,12%</span></span>
+          <span>Posição: <span class="pos-mid">8,2</span></span>
+        </div>
+        <div class="opp-card-meta" style="margin-top:0.35rem;">
+          <span style="color:var(--text-muted);font-size:10.5px;">Alto volume com posição fora do top 5. Conteúdo local pode melhorar.</span>
+        </div>
+      </div>
+
+      <div class="opp-card" style="border-color: rgba(245,158,11,0.3);">
+        <div class="opp-card-title">🟡 Fortaleza</div>
+        <div class="opp-card-meta">
+          <span>Impressões: <span>1,8M</span></span>
+          <span>CTR: <span style="color:var(--amber)">4,87%</span></span>
+          <span>Posição: <span class="pos-mid">7,1</span></span>
+        </div>
+        <div class="opp-card-meta" style="margin-top:0.35rem;">
+          <span style="color:var(--text-muted);font-size:10.5px;">Mesma dinâmica de BH. Revisar title, meta e estrutura da página.</span>
+        </div>
+      </div>
+
+      <div class="opp-card">
+        <div class="opp-card-title">🟢 "garotas com local"</div>
+        <div class="opp-card-meta">
+          <span>Impressões: <span>186K</span></span>
+          <span>CTR: <span style="color:var(--amber)">4,04%</span></span>
+          <span>Posição: <span class="pos-mid">5,4</span></span>
+        </div>
+        <div class="opp-card-meta" style="margin-top:0.35rem;">
+          <span style="color:var(--text-muted);font-size:10.5px;">Termo genérico com volume alto. Title mais específico pode aumentar CTR.</span>
+        </div>
+      </div>
+
+      <div class="opp-card">
+        <div class="opp-card-title">🟢 Recife</div>
+        <div class="opp-card-meta">
+          <span>Impressões: <span>~120K</span></span>
+          <span>Posição: <span class="pos-mid">8,0</span></span>
+          <span>+1,2 posições</span>
+        </div>
+        <div class="opp-card-meta" style="margin-top:0.35rem;">
+          <span style="color:var(--text-muted);font-size:10.5px;">Tendência de alta. Continuar monitorando — posição ainda tem espaço para melhorar.</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- SECTION: QUERIES MELHORANDO -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-title">Queries com Melhoria de Posição (30d vs 60–90d)</span>
+    <span class="section-badge">Tendência Positiva</span>
+  </div>
+  <div class="section-body">
+    <table>
+      <thead>
+        <tr>
+          <th>Query</th>
+          <th class="num">Pos. Anterior</th>
+          <th class="num">Pos. Atual</th>
+          <th class="num">Melhoria</th>
+          <th class="num">Cliques</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>acompanhantes porto alegre</td>
+          <td class="num mono">9,1</td>
+          <td class="num mono pos-good">6,4</td>
+          <td class="num mono" style="color:var(--green)">+2,8 ▲</td>
+          <td class="num mono">1.814</td>
+        </tr>
+        <tr>
+          <td>acompanhante novo hamburgo</td>
+          <td class="num mono">4,7</td>
+          <td class="num mono pos-good">3,3</td>
+          <td class="num mono" style="color:var(--green)">+1,3 ▲</td>
+          <td class="num mono">1.051</td>
+        </tr>
+        <tr>
+          <td>acompanhante recife</td>
+          <td class="num mono">7,8</td>
+          <td class="num mono pos-mid">6,5</td>
+          <td class="num mono" style="color:var(--green)">+1,3 ▲</td>
+          <td class="num mono">1.416</td>
+        </tr>
+        <tr>
+          <td>acompanhantes recife</td>
+          <td class="num mono">9,2</td>
+          <td class="num mono pos-mid">8,0</td>
+          <td class="num mono" style="color:var(--green)">+1,2 ▲</td>
+          <td class="num mono">1.166</td>
+        </tr>
+        <tr>
+          <td>acompanhantes bauru</td>
+          <td class="num mono">6,3</td>
+          <td class="num mono pos-good">5,2</td>
+          <td class="num mono" style="color:var(--green)">+1,0 ▲</td>
+          <td class="num mono">1.311</td>
+        </tr>
+        <tr>
+          <td>acompanhantes de luxo</td>
+          <td class="num mono">9,0</td>
+          <td class="num mono pos-mid">8,0</td>
+          <td class="num mono" style="color:var(--green)">+1,0 ▲</td>
+          <td class="num mono">1.028</td>
+        </tr>
+        <tr>
+          <td>acompanhante em londrina</td>
+          <td class="num mono">2,6</td>
+          <td class="num mono pos-good">1,7</td>
+          <td class="num mono" style="color:var(--green)">+0,9 ▲</td>
+          <td class="num mono">1.795</td>
+        </tr>
+        <tr>
+          <td>garotas com local</td>
+          <td class="num mono">5,8</td>
+          <td class="num mono pos-mid">4,9</td>
+          <td class="num mono" style="color:var(--green)">+0,9 ▲</td>
+          <td class="num mono">2.890</td>
+        </tr>
+        <tr>
+          <td>acompanhantes curitiba</td>
+          <td class="num mono">16,2</td>
+          <td class="num mono" style="color:var(--amber)">15,3</td>
+          <td class="num mono" style="color:var(--green)">+0,9 ▲</td>
+          <td class="num mono">1.021</td>
+        </tr>
+        <tr>
+          <td>acompanhantes</td>
+          <td class="num mono">6,7</td>
+          <td class="num mono pos-mid">5,9</td>
+          <td class="num mono" style="color:var(--green)">+0,8 ▲</td>
+          <td class="num mono">10.347</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- SECTION: TOP PAGES -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-title">Páginas com Maior Tráfego</span>
+    <span class="section-badge">Período: Jan–Abr/2026</span>
+  </div>
+  <div class="section-body">
+    <table>
+      <thead>
+        <tr>
+          <th>Página</th>
+          <th class="num">Cliques</th>
+          <th class="num">Impressões</th>
+          <th class="num">CTR</th>
+          <th class="num">Posição</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>/acompanhantes/pr/londrina</td><td class="num mono">157.493</td><td class="num mono">1.089.630</td><td class="num mono ctr-good">14,45%</td><td class="num mono">5,5</td></tr>
+        <tr><td>/acompanhantes/rs/erechim</td><td class="num mono">114.635</td><td class="num mono">496.295</td><td class="num mono ctr-good">23,10%</td><td class="num mono">8,1</td></tr>
+        <tr><td>/acompanhantes/rs/caxias-do-sul</td><td class="num mono">107.468</td><td class="num mono">760.924</td><td class="num mono ctr-good">14,12%</td><td class="num mono">6,2</td></tr>
+        <tr><td>/acompanhantes/am/manaus</td><td class="num mono">101.611</td><td class="num mono">1.585.110</td><td class="num mono ctr-mid">6,41%</td><td class="num mono">4,9</td></tr>
+        <tr><td>/acompanhantes/pr/ponta-grossa</td><td class="num mono">99.696</td><td class="num mono">769.737</td><td class="num mono ctr-mid">12,95%</td><td class="num mono">6,3</td></tr>
+        <tr><td>/acompanhantes/sc/joinville</td><td class="num mono">98.644</td><td class="num mono">1.235.902</td><td class="num mono ctr-mid">7,98%</td><td class="num mono">6,3</td></tr>
+        <tr><td>/acompanhantes/rs/passo-fundo</td><td class="num mono">88.537</td><td class="num mono">738.818</td><td class="num mono ctr-mid">11,98%</td><td class="num mono">8,0</td></tr>
+        <tr><td>/acompanhantes/ba/salvador</td><td class="num mono">88.536</td><td class="num mono">1.384.556</td><td class="num mono ctr-mid">6,39%</td><td class="num mono">6,9</td></tr>
+        <tr><td>/acompanhantes/ce/fortaleza</td><td class="num mono">87.621</td><td class="num mono">1.800.250</td><td class="num mono ctr-mid">4,87%</td><td class="num mono">7,1</td></tr>
+        <tr><td>/acompanhantes/pa/belem</td><td class="num mono">84.472</td><td class="num mono">1.030.393</td><td class="num mono ctr-mid">8,20%</td><td class="num mono">6,3</td></tr>
+        <tr><td>/acompanhantes/pr/maringa</td><td class="num mono">82.267</td><td class="num mono">816.302</td><td class="num mono ctr-mid">10,08%</td><td class="num mono">6,5</td></tr>
+        <tr><td>/acompanhantes/sc/blumenau</td><td class="num mono">74.590</td><td class="num mono">743.552</td><td class="num mono ctr-mid">10,03%</td><td class="num mono">8,8</td></tr>
+        <tr><td>/ (homepage)</td><td class="num mono">72.342</td><td class="num mono">319.596</td><td class="num mono ctr-good">22,64%</td><td class="num mono">5,9</td></tr>
+        <tr><td>/acompanhantes/mg/belo-horizonte</td><td class="num mono">70.548</td><td class="num mono">1.713.830</td><td class="num mono ctr-mid">4,12%</td><td class="num mono">8,2</td></tr>
+        <tr><td>/acompanhantes/ma/sao-luis</td><td class="num mono">69.130</td><td class="num mono">1.002.360</td><td class="num mono ctr-mid">6,90%</td><td class="num mono">6,4</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- SECTION: CHECKLIST -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-title">Plano de Ação — Prioridades</span>
+    <span class="section-badge">19 de Abril de 2026</span>
+  </div>
+  <div class="section-body">
+    <ul class="checklist">
+
+      <li>
+        <div class="check-box"></div>
+        <div>
+          <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.2rem;">
+            <span class="item-title">Otimizar página de Curitiba</span>
+            <span class="priority-tag priority-high">Alta Prioridade</span>
+          </div>
+          <span class="item-desc">Revisar title tag, meta description e conteúdo da página /acompanhantes/pr/curitiba. Meta: posição 5 ou melhor. Ganho estimado: +3.000 cliques/mês.</span>
+        </div>
+      </li>
+
+      <li>
+        <div class="check-box"></div>
+        <div>
+          <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.2rem;">
+            <span class="item-title">Revisar title tags de Belo Horizonte e Fortaleza</span>
+            <span class="priority-tag priority-high">Alta Prioridade</span>
+          </div>
+          <span class="item-desc">Ambas páginas têm +1,7M de impressões combinadas com CTR abaixo de 5%. Títulos mais específicos e meta desc com call-to-action podem elevar CTR em 2–3pp.</span>
+        </div>
+      </li>
+
+      <li>
+        <div class="check-box"></div>
+        <div>
+          <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.2rem;">
+            <span class="item-title">Aprimorar conteúdo de "garotas com local"</span>
+            <span class="priority-tag priority-med">Média Prioridade</span>
+          </div>
+          <span class="item-desc">Termo genérico com 186K impressões e CTR 4,04%. Incluir mais variações de cidade nos headings da página. Considerar página dedicada.</span>
+        </div>
+      </li>
+
+      <li>
+        <div class="check-box"></div>
+        <div>
+          <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.2rem;">
+            <span class="item-title">Manter monitoramento de Porto Alegre e Recife</span>
+            <span class="priority-tag priority-med">Média Prioridade</span>
+          </div>
+          <span class="item-desc">Ambas melhoraram posição nos últimos 60 dias. Continuar acompanhando e garantir que backlinks locais não enfraqueçam.</span>
+        </div>
+      </li>
+
+      <li>
+        <div class="check-box"></div>
+        <div>
+          <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.2rem;">
+            <span class="item-title">Expandir presença em cidades com posição 6–8</span>
+            <span class="priority-tag priority-med">Média Prioridade</span>
+          </div>
+          <span class="item-desc">Caxias do Sul (pos 1,9), Ponta Grossa (pos 2,6), Blumenau (pos 8,8) — revisar backlinks e schema markup local para consolidar posições.</span>
+        </div>
+      </li>
+
+      <li>
+        <div class="check-box"></div>
+        <div>
+          <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.2rem;">
+            <span class="item-title">Aumentar backlinks de Blumenau e Passo Fundo</span>
+            <span class="priority-tag priority-low">Baixa Prioridade</span>
+          </div>
+          <span class="item-desc">Blumenau tem posição 8,8 e alto volume de impressões. Backlinks de directoris locais podem ajudar a passar para top 5.</span>
+        </div>
+      </li>
+
+      <li>
+        <div class="check-box"></div>
+        <div>
+          <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.2rem;">
+            <span class="item-title">Testar variações de title para queries genéricas</span>
+            <span class="priority-tag priority-low">Baixa Prioridade</span>
+          </div>
+          <span class="item-desc">Testar titles que incluam "São Paulo", "Rio de Janeiro" para queries sem especificação de cidade — podem abrir portas em mercados ainda não alcançados.</span>
+        </div>
+      </li>
+
+    </ul>
+  </div>
+</div>
+
+<div class="footer">
+  Hoff Consultoria &nbsp;·&nbsp; Diagnóstico SEO — br.santtas.com &nbsp;·&nbsp; Dados: Google Search Console &nbsp;·&nbsp; 19 de Abril de 2026
+</div>
+
+</body>
+</html>

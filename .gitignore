@@ -1,15 +1,88 @@
-# Credenciais
+# ============================================================
+# Hoff Consultoria — .gitignore
+# NUNCA commitar estos arquivos
+# ============================================================
+
+## Credentials & Secrets
+credentials/
+*.env
+*.pem
+*.key
+*.crt
+*.p12
+*.jks
+google_oauth.json
+google_tokens.json
+gsc_usage.json
+*.db-journal
+*.db-shm
+*.db-wal
+
+## OpenClaw & Mission Control
+node_modules/
+.next/
+out/
+build/
+dist/
 .env
 .env.local
-.env.*.local
+.env.production
+.vercel
 
-# OS
+## Logs & Debug
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.tmp
+
+## OS
 .DS_Store
 Thumbs.db
-
-# Logs
-*.log
-
-# Temporary
-*.tmp
 *.swp
+*.swo
+*~
+
+## Mission Control specific
+mission-control/data/*.db
+mission-control/data/*.json
+!mission-control/data/configured-skills.example.json
+mission-control/data/activities.db
+mission-control/logs/
+
+## Memory — dados sensíveis
+memory/sessions/
+memory/feedback/
+memory/pending.md
+memory/integrations/credentials-map.md
+
+## Temp files
+*.bak
+*.backup
+*.cache
+*.tmp
+/tmp/
+/tmp/
+
+## Mission Control build artifacts
+mission-control/.next/
+mission-control/out/
+
+## Compiled output
+*.pyc
+__pycache__/
+*.class
+*.o
+*.so
+
+## IDE
+.vscode/
+.idea/
+*.iml
+
+## Archives (don't commit large files)
+*.zip
+*.tar
+*.tar.gz
+*.rar
+*.7z

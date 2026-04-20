@@ -42,3 +42,17 @@
 ## Reversões de Decisão ( Histórico )
 
 _Nenhuma ainda._
+
+---
+
+## Task Agent — Retry em falha (2026-04-20)
+
+**Regra:** Se uma task falhar durante execução, movê-la para `backlog` e tentar pelo menos mais uma vez antes de marcar como bloqueada ou reportar erro definitivo.
+
+**Contexto:** O Task Agent (cron das 8-19h BRT) dá timeout quando muitas tasks são processadas de uma vez. A solução é processar tasks individualmente, com retry automático em caso de falha.
+
+## Skill Install — Sempre vetting antes de instalar (2026-04-20)
+- **Regra**: Antes de instalar qualquer nova skill (de ClawHub, GitHub ou outra fonte), rodar o **skill-vetter** para auditoria de segurança.
+- ** skill-vetter location**: `/root/openclaw/skills/skill-vetter/SKILL.md`
+- **Ação**: Ler o SKILL.md do skill-vetter, seguir o protocolo, gerar relatório antes de prosseguir.
+- **Exceção**: Skills já verificadas por Osmar diretamente podem ser instaladas sem vetting extra.

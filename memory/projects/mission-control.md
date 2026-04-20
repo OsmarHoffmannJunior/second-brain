@@ -72,7 +72,21 @@ Mission Control/
 
 ---
 
-## Tarefas Pendentes
+## Skills Disponíveis no Mission Control
+
+### multi-search-engine-2 (instalada 2026-04-19)
+- **Path:** `/root/.openclaw/workspace/skills/multi-search-engine-2/SKILL.md`
+- **Descrição:** Busca em 17 motores (Google, Bing, DuckDuckGo, Baidu, Brave, etc.) via web_fetch, sem API keys
+- **Engines:** 8 CN (Baidu, Sogou, WeChat, etc.) + 9 globais (Google, Bing, DuckDuckGo, Startpage, Brave, Ecosia, Qwant, WolframAlpha)
+- **Utilidade para SEO:**
+  - Pesquisa de keywords (exploratória, sem API)
+  - Análise de SERP (resultados reais sem API GSC)
+  - Competitor intel: `site:concorrente.com.br` para ver indexed pages
+  - Rankings manuais em diferentes engines/regiões
+  - Filtros temporais: `tbs=qdr:w` (última semana), `tbs=qdr:m` (último mês)
+  - DuckDuckGo Bangs: `!g`, `!gh`, `!so`, `!w`, `!yt`
+- **Quando usar:** Quando Osmar solicitar "pesquisa de keywords" ou "pesquisa de concorrentes" → sugerir usar multi-search-engine primeiro
+- **Instalar via:** `openclaw skills install multi-search-engine-2`
 
 | Tarefa | Prioridade | Responsável | Deadline | Notas |
 |--------|------------|-------------|----------|-------|

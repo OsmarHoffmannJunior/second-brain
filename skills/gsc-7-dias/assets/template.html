@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Santtas — Relatório Semanal SEO | {{period_label}}</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0f1117; color: #e4e8f0; padding: 24px; }
+  .container { max-width: 1100px; margin: 0 auto; }
+  h1 { font-size: 1.5rem; color: #fff; margin-bottom: 4px; }
+  .subtitle { color: #8b92a5; font-size: 0.85rem; margin-bottom: 28px; }
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 28px; }
+  .kpi { background: #1a1d27; border: 1px solid #252a36; border-radius: 10px; padding: 16px 20px; }
+  .kpi-label { font-size: 0.72rem; color: #6b7280; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
+  .kpi-value { font-size: 1.55rem; font-weight: 700; color: #fff; }
+  .kpi-sub { font-size: 0.75rem; color: #6b7280; margin-top: 2px; }
+  .kpi.neutral .kpi-value { color: #60a5fa; }
+  .section-title { font-size: 0.78rem; color: #6b7280; text-transform: uppercase; letter-spacing: 0.08em; margin: 28px 0 12px; border-bottom: 1px solid #252a36; padding-bottom: 6px; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  th { text-align: left; color: #6b7280; font-weight: 500; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; padding: 8px 12px; border-bottom: 1px solid #252a36; }
+  td { padding: 10px 12px; border-bottom: 1px solid #1e2230; color: #c9d1dc; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #1a1d27; }
+  .num { text-align: right; font-variant-numeric: tabular-nums; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 0.7rem; font-weight: 600; }
+  .badge-up { background: rgba(52,211,153,0.12); color: #34d399; }
+  .badge-down { background: rgba(248,113,113,0.12); color: #f87171; }
+  .badge-brand { background: rgba(96,165,250,0.12); color: #60a5fa; }
+  .trend-bar { flex: 1; height: 6px; background: #1e2230; border-radius: 3px; overflow: hidden; display: inline-block; vertical-align: middle; min-width: 80px; }
+  .trend-bar-fill { height: 100%; border-radius: 3px; }
+  .trend-bar-fill.blue { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
+  .trend-bar-fill.green { background: linear-gradient(90deg, #059669, #34d399); }
+  .chart-table td:first-child { color: #8b92a5; font-size: 0.8rem; }
+  .footer { text-align: center; color: #3d4455; font-size: 0.72rem; margin-top: 40px; padding-top: 16px; border-top: 1px solid #1e2230; }
+  .info-row { display: flex; gap: 12px; margin-bottom: 28px; flex-wrap: wrap; }
+  .info-chip { background: #1a1d27; border: 1px solid #252a36; border-radius: 6px; padding: 8px 14px; font-size: 0.8rem; color: #8b92a5; }
+  .info-chip span { color: #fff; font-weight: 600; }
+  .highlight-row td { background: rgba(96,165,250,0.04); }
+  .compare-card { background: #1a1d27; border: 1px solid #252a36; border-radius: 10px; padding: 18px 20px; margin-bottom: 10px; }
+  .compare-title { font-size: 0.82rem; font-weight: 600; color: #e4e8f0; margin-bottom: 12px; }
+  .compare-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 1px solid #1e2230; font-size: 0.82rem; }
+  .compare-row:last-child { border-bottom: none; }
+  .compare-label { color: #8b92a5; }
+  .compare-val { font-weight: 600; font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; }
+  .compare-val.green { color: #34d399; }
+  .compare-val.red { color: #f87171; }
+  .compare-val.blue { color: #60a5fa; }
+  .compare-period { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+  .period-tag { background: #252a36; border-radius: 6px; padding: 4px 10px; font-size: 0.72rem; color: #8b92a5; }
+  .period-tag.active { background: rgba(96,165,250,0.15); color: #60a5fa; }
+  .pos-drop { color: #f87171; }
+  .pos-gain { color: #34d399; }
+  @media (max-width: 600px) { body { padding: 12px; } h1 { font-size: 1.2rem; } .kpi-value { font-size: 1.25rem; } table { font-size: 0.78rem; } }
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+<h1>📊 Santtas — Relatório Semanal de SEO</h1>
+<p class="subtitle">Google Search Console · Período: {{period_label}} ({{num_days}} dias)</p>
+
+<div class="info-row">
+  <div class="info-chip">📅 Período <span>{{from_to_str}}</span></div>
+  <div class="info-chip">🌐 Site <span>{{site_display}}</span></div>
+  <div class="info-chip">📌 Categoria <span>Acompanhantes de Luxo</span></div>
+  <div class="info-chip">🗓️ Gerado em <span>{{today_str}}</span></div>
+</div>
+
+<!-- KPIs -->
+<div class="kpi-grid">
+  <div class="kpi neutral"><div class="kpi-label">Cliques Totais</div><div class="kpi-value">{{curr_clicks}}</div><div class="kpi-sub">{{num_days}} dias</div></div>
+  <div class="kpi neutral"><div class="kpi-label">Impressões Totais</div><div class="kpi-value">{{curr_impr}}</div><div class="kpi-sub">no período</div></div>
+  <div class="kpi neutral"><div class="kpi-label">CTR Médio</div><div class="kpi-value">{{curr_ctr}}</div><div class="kpi-sub">cliques / impressões</div></div>
+  <div class="kpi neutral"><div class="kpi-label">Posição Média</div><div class="kpi-value">{{curr_pos}}</div><div class="kpi-sub">ranking médio</div></div>
+</div>
+
+<!-- Comparisons -->
+<div class="section-title">Comparativos de Performance</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px; margin-bottom: 8px;">
+
+  <div class="compare-card">
+    <div class="compare-title">📅 Ano a Ano (YoY)</div>
+    <div class="compare-period">
+      <span class="period-tag">{{yoy_period}}</span>
+      <span class="period-tag active">{{from_to_str}}</span>
+    </div>
+    <div class="compare-row"><span class="compare-label">Cliques</span><span class="compare-val green">{{yoy_pct}}</span></div>
+    <div class="compare-row"><span class="compare-label">  {{yoy_clicks}} → {{curr_clicks}}</span><span class="compare-val blue">{{yoy_delta}}</span></div>
+    <div class="compare-row"><span class="compare-label">CTR</span><span class="compare-val red">{{yoy_ctr_delta}}pp</span></div>
+    <div class="compare-row"><span class="compare-label">  {{yoy_ctr}} → {{curr_ctr}}</span><span class="compare-val">—</span></div>
+    <div class="compare-row"><span class="compare-label">Posição Média</span><span class="compare-val green">{{pos_dir_yoy}}</span></div>
+    <div class="compare-row"><span class="compare-label">  {{yoy_pos}} → {{curr_pos}}</span><span class="compare-val blue">{{pos_delta_yoy}}</span></div>
+    <div style="margin-top:10px;padding:8px 10px;background:rgba(52,211,153,0.08);border-radius:6px;font-size:0.75rem;color:#6b7280;">{{yoy_insight}}</div>
+  </div>
+
+  <div class="compare-card">
+    <div class="compare-title">📆 Semana a Semana (WoW)</div>
+    <div class="compare-period">
+      <span class="period-tag">{{prev_period}}</span>
+      <span class="period-tag active">{{from_to_str}}</span>
+    </div>
+    <div class="compare-row"><span class="compare-label">Cliques</span><span class="compare-val {{wow_color}}">{{wow_pct}}</span></div>
+    <div class="compare-row"><span class="compare-label">  {{prev_clicks}} → {{curr_clicks}}</span><span class="compare-val">{{wow_delta}}</span></div>
+    <div class="compare-row"><span class="compare-label">CTR</span><span class="compare-val {{wow_ctr_color}}">{{wow_ctr_delta}}pp</span></div>
+    <div class="compare-row"><span class="compare-label">  {{prev_ctr}} → {{curr_ctr}}</span><span class="compare-val">—</span></div>
+    <div class="compare-row"><span class="compare-label">Posição Média</span><span class="compare-val {{wow_pos_color}}">{{pos_dir_wow}} {{wow_pos_arrow}}</span></div>
+    <div class="compare-row"><span class="compare-label">  {{prev_pos}} → {{curr_pos}}</span><span class="compare-val blue">{{pos_delta_wow}}</span></div>
+    <div style="margin-top:10px;padding:8px 10px;background:rgba(245,158,11,0.08);border-radius:6px;font-size:0.75rem;color:#6b7280;">{{wow_insight}}</div>
+  </div>
+
+</div>
+
+<!-- Daily -->
+<div class="section-title">Evolução Diária — Cliques &amp; Impressões</div>
+<table class="chart-table">
+  <thead><tr><th>Data</th><th class="num">Cliques</th><th class="num">Impressões</th><th class="num">CTR</th><th class="num">Posição</th><th>Participação</th></tr></thead>
+  <tbody>
+{{daily_rows}}
+  </tbody>
+</table>
+
+<!-- Lost -->
+<div class="section-title">Consultas que Pioraram Posição (Últimos 30 dias vs 30–60 dias)</div>
+<div style="margin-bottom:10px;font-size:0.78rem;color:#6b7280;">Período: 21/mar–19/abr vs 19/fev–20/mar · Filtrado: &gt;50 cliques em ambos os períodos</div>
+<table>
+  <thead><tr><th>Query</th><th class="num">Pos. Anterior</th><th class="num">Pos. Atual</th><th class="num">Variação</th><th class="num">Cliques (30d)</th><th class="num">CTR</th><th>Severidade</th></tr></thead>
+  <tbody>
+{{lost_rows}}
+  </tbody>
+</table>
+<div style="margin-top:10px;padding:10px 14px;background:rgba(248,113,113,0.06);border-radius:8px;border-left:3px solid #f87171;font-size:0.78rem;color:#9ca3af;">⚠️ <strong style="color:#f87171">{{lost_count}} queries</strong> perderam posição nos últimos 30 dias. Curitiba é o caso mais urgente (drop 2,9). BH e Goiânia em declínio.</div>
+
+<!-- Improved -->
+<div class="section-title">Consultas que Melhoraram Posição (Últimos 30 dias vs 30–60 dias)</div>
+<table>
+  <thead><tr><th>Query</th><th class="num">Pos. Anterior</th><th class="num">Pos. Atual</th><th class="num">Variação</th><th class="num">Cliques (30d)</th><th class="num">CTR</th><th>Status</th></tr></thead>
+  <tbody>
+{{impr_rows}}
+  </tbody>
+</table>
+<div style="margin-top:10px;padding:10px 14px;background:rgba(52,211,153,0.06);border-radius:8px;border-left:3px solid #34d399;font-size:0.78rem;color:#9ca3af;">✅ <strong style="color:#34d399">{{impr_count}} queries</strong> melhoraram posição. Porto Alegre lidera com +1,9. SC apresenta ganhos consistentes.</div>
+
+<!-- Devices -->
+<div class="section-title">Desempenho por Dispositivo</div>
+<table>
+  <thead><tr><th>Dispositivo</th><th class="num">Cliques</th><th class="num">Impressões</th><th class="num">CTR</th><th class="num">Posição</th><th>Participação</th></tr></thead>
+  <tbody>
+{{dev_rows}}
+  </tbody>
+</table>
+
+<!-- Countries -->
+<div class="section-title">Tráfego por País</div>
+<table>
+  <thead><tr><th>País</th><th class="num">Cliques</th><th class="num">Impressões</th><th class="num">CTR</th><th class="num">Posição</th></tr></thead>
+  <tbody>
+{{ctry_rows}}
+  </tbody>
+</table>
+
+<!-- Top Pages -->
+<div class="section-title">Top Páginas por Cliques</div>
+<table>
+  <thead><tr><th>Página</th><th class="num">Cliques</th><th class="num">Impressões</th><th class="num">CTR</th><th class="num">Posição</th></tr></thead>
+  <tbody>
+{{p_rows}}
+  </tbody>
+</table>
+
+<!-- Top Queries -->
+<div class="section-title">Top Consultas por Cliques</div>
+<table>
+  <thead><tr><th>Query</th><th class="num">Cliques</th><th class="num">Impressões</th><th class="num">CTR</th><th class="num">Posição</th><th>Tipo</th></tr></thead>
+  <tbody>
+{{q_rows}}
+  </tbody>
+</table>
+
+<!-- Insights -->
+<div class="section-title">Resumo &amp; Insights</div>
+<div style="display: grid; gap: 10px;">
+  <div style="background:#1a1d27;border:1px solid #252a36;border-radius:8px;padding:14px 16px;font-size:0.82rem;color:#9ca3af;">📌 <strong style="color:#e5c07b">Volume:</strong> {{curr_clicks}} cliques e {{curr_impr}} impressões em {{num_days}} dias. Média de ~{{daily_avg}} cliques/dia.</div>
+  <div style="background:#1a1d27;border:1px solid #252a36;border-radius:8px;padding:14px 16px;font-size:0.82rem;color:#9ca3af;">📅 <strong style="color:#60a5fa">Comparativo YoY:</strong> {{yoy_pct}} em cliques vs mesmo período de 2025. Posição: {{curr_pos}} vs {{yoy_pos}}.</div>
+  <div style="background:#1a1d27;border:1px solid #252a36;border-radius:8px;padding:14px 16px;font-size:0.82rem;color:#9ca3af;">{{wow_insight}}</div>
+  <div style="background:#1a1d27;border:1px solid #252a36;border-radius:8px;padding:14px 16px;font-size:0.82rem;color:#9ca3af;">🔻 <strong style="color:#f87171">Queries em queda:</strong> {{lost_count}} queries pioraram posição. Curitiba é prioridade crítica. BH e Goiânia requerem ação imediata.</div>
+  <div style="background:#1a1d27;border:1px solid #252a36;border-radius:8px;padding:14px 16px;font-size:0.82rem;color:#9ca3af;">✅ <strong style="color:#34d399">Queries em alta:</strong> {{impr_count}} queries melhoraram. Porto Alegre e Itajaí apresentam trajetória positiva.</div>
+</div>
+
+<div class="footer">Hoff Consultoria em SEO · {{today_str}}<br>Hoff Consultoria · contato@hoffconsultoria.com.br</div>
+</div>
+</body>
+</html>

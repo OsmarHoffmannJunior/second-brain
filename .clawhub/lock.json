@@ -28,6 +28,14 @@
     "obsidian-cli": {
       "version": "2.0.0",
       "installedAt": 1776331367230
+    },
+    "multi-search-engine-2": {
+      "version": "1.0.0",
+      "installedAt": 1776616489848
+    },
+    "summarize-pro": {
+      "version": "1.0.0",
+      "installedAt": 1776621701674
     }
   }
 }
