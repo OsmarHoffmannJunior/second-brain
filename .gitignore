@@ -86,3 +86,17 @@ __pycache__/
 *.tar.gz
 *.rar
 *.7z
+
+## SESSION LOGS — NUNCA commitar
+memory/sessions/
+memory/feedback/
+memory/pending.md
+memory/integrations/credentials-map.md
+
+## Dreams / recall
+memory/.dreams/
+
+## Mission Control env
+mission-control/.env
+mission-control/.env.local
+mission-control/.env.production
