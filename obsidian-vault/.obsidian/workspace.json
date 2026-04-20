@@ -1,0 +1,206 @@
+{
+  "main": {
+    "id": "5741c80b7acbc137",
+    "type": "split",
+    "children": [
+      {
+        "id": "199a91a6fa11e3b9",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "fad2daefdf4f2a00",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "INDEX.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "INDEX"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "b962b5415bbaa294",
+    "type": "split",
+    "children": [
+      {
+        "id": "c63efe8a4b908d1b",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "17bfdc9b84af3ea0",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Explorador de arquivos"
+            }
+          },
+          {
+            "id": "a69a007c48f3f4a8",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Procurar"
+            }
+          },
+          {
+            "id": "b5c932ed802b5358",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Marcadores"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "76c2d202dd4b6b48",
+    "type": "split",
+    "children": [
+      {
+        "id": "32ec354a7811489f",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "7f93ec2dadd5ebfc",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "09-templates/Projeto.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Links inversos para Projeto"
+            }
+          },
+          {
+            "id": "89df26573993b407",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "09-templates/Projeto.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Links de saída para Projeto"
+            }
+          },
+          {
+            "id": "379bd897da06b6ab",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Etiquetas"
+            }
+          },
+          {
+            "id": "45981dedc8a63ae1",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "Todas as propriedades"
+            }
+          },
+          {
+            "id": "a84b4f134f5d289e",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "09-templates/Projeto.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Sumário de Projeto"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Abrir a troca rápida": false,
+      "graph:Abrir visualização em gráfico": false,
+      "canvas:Criar novo canvas": false,
+      "daily-notes:Abrir a nota de hoje": false,
+      "templates:Inserir modelo": false,
+      "command-palette:Abrir paleta de comandos": false,
+      "bases:Criar nova base": false
+    }
+  },
+  "active": "fad2daefdf4f2a00",
+  "lastOpenFiles": [
+    "05-memory/lessons.md",
+    "05-memory/contatos/osmar-hoffmann.md",
+    "05-memory/contatos/victor-lima.md",
+    "05-memory/contatos/odete-solange-dos-santos-hoffmann.md",
+    "05-memory/contatos/andreia-grasiele-de-oliveira-hoffmann.md",
+    "INDEX.md",
+    "05-memory/projects/swingfy.md",
+    "05-memory/people.md",
+    "09-templates/Projeto.md",
+    "02-projetos/Índice.md",
+    "00-meta/Identidade.md",
+    "00-meta/Bem-vindo.md",
+    "05-memory/projects/santtas.md",
+    "05-memory/sessions/2026-04-15.md",
+    "05-memory/sessions/2026-04-14.md",
+    "05-memory/sessions/2026-04-13.md",
+    "03-contexto/Decisões.md"
+  ]
+}
