@@ -1,17 +1,18 @@
 ---
-name: gsc-7-dias
-description: Gerador automático de relatório SEO do Google Search Console. Usa os dados do GSC para gerar um relatório completo com KPIs, comparativos YoY e WoW, queries que perderam/melhoraram posição, top pages, top queries, dispositivo e país. Salva em /root/.openclaw/workspace/mission-control/reports/ e envia pelo Telegram.
+name: relatorio-seo
+description: Gerador automático de relatório SEO do Google Search Console. Usa os dados do GSC para gerar um relatório completo com KPIs, comparativos de período, consultas que perderam/melhoraram posição, top páginas, top consultas, dispositivo e país. Salva em /root/.openclaw/workspace/mission-control/reports/ e envia pelo Telegram.
 ---
 
-# GSC 7 Dias — Skill de Relatório SEO
+# Relatório SEO — Skill de Relatório do Google Search Console
 
 ## Quando Usar
 
-- `"GSC 7 dias br.santtas.com"`
-- `"GSC 7 dias sc-domain:br.santtas.com"`
-- `"gera relatório semanal do santtas"`
-- `"relatório seo semanal"`
-- Qualquer variação que mencione GSC + 7 dias + domínio
+- `"GSC br.santtas.com"`
+- `"GSC sc-domain:br.santtas.com"`
+- `"gera relatório do santtas"`
+- `"relatório seo"`
+- `"relatório GSC"`
+- Qualquer variação que mencione GSC + relatório + domínio
 
 ## Fluxo de Execução
 
@@ -23,36 +24,36 @@ Se o domínio não for informado explicitamente, usar o padrão:
 ### Passo 2 — Buscar dados (script Python)
 
 ```bash
-python3 /root/.openclaw/workspace/skills/gsc-7-dias/scripts/gerar_relatorio.py <gsc_site_url> [output_dir]
+python3 /root/.openclaw/workspace/skills/relatorio-seo/scripts/gerar_relatorio.py <gsc_site_url> [output_dir]
 ```
 
 Exemplo:
 ```bash
-python3 /root/.openclaw/workspace/skills/gsc-7-dias/scripts/gerar_relatorio.py sc-domain:br.santtas.com
+python3 /root/.openclaw/workspace/skills/relatorio-seo/scripts/gerar_relatorio.py sc-domain:br.santtas.com
 ```
 
 O script:
-1. Busca dados do GSC via OAuth2 (gog.py) para os últimos 7 dias completos
-2. Calcula comparativos YoY (mesmo período, ano passado) e WoW (7 dias anteriores)
-3. Compara posição de queries (últimos 30d vs 30-60d)
-4. Salva os dados em `/tmp/gsc_7_dias_data.json`
+1. Busca dados do GSC via OAuth2 (gog.py)
+2. Calcula comparativos do período atual vs período anterior e YoY
+3. Compara posição de consultas (últimos 30 dias vs 30-60 dias)
+4. Salva os dados em `/tmp/gsc_data.json`
 
 ### Passo 3 — Preencher template HTML
 
-Ler `/tmp/gsc_7_dias_data.json` e o template em:
-`/root/.openclaw/workspace/skills/gsc-7-dias/assets/template.html`
+Ler `/tmp/gsc_data.json` e o template em:
+`/root/.openclaw/workspace/skills/relatorio-seo/assets/template.html`
 
 Preencher todas as variáveis `{{...}}` com os dados do JSON.
 
 ### Passo 4 — Salvar e Enviar
 
-1. Salvar HTML em `/root/.openclaw/workspace/mission-control/reports/seo-recap-{data}.html`
+1. Salvar HTML em `/root/.openclaw/workspace/mission-control/reports/seo-report-{data}.html`
 2. Enviar via Telegram com caption resumindo os números principais
 
 ## Estrutura de Arquivos
 
 ```
-gsc-7-dias/
+relatorio-seo/
 ├── SKILL.md                          ← este arquivo
 ├── scripts/
 │   └── gerar_relatorio.py            ← busca dados GSC e salva JSON
@@ -72,28 +73,24 @@ gsc-7-dias/
 | `{{yoy_pct}}` | `((curr.clicks/yoy.clicks)-1)*100` → `+X.X%` |
 | `{{wow_pct}}` | `((curr.clicks/prev.clicks)-1)*100` → `+X.X%` |
 | `{{wow_color}}` | `red` se wow_change < 0 senão `green` |
-| `{{lost_rows}}` | Loop nas 10 piores queries |
-| `{{impr_rows}}` | Loop nas 8 melhores queries |
+| `{{lost_rows}}` | Loop nas 10 piores consultas |
+| `{{impr_rows}}` | Loop nas 8 melhores consultas |
 | `{{daily_rows}}` | Loop diário com barra de participação |
-| `{{q_rows}}` | Top 15 queries do período |
+| `{{q_rows}}` | Top 15 consultas do período |
 | `{{p_rows}}` | Top 15 páginas do período |
 | `{{dev_rows}}` | Breakdown por dispositivo |
 | `{{ctry_rows}}` | Top 5 países |
 | `{{site_display}}` | Domínio formatado para exibição |
-| `{{lost_insight_text}}` | **Dinâmico** — query de maior drop do domínio, sem cidades/projetos hardcoded |
-| `{{impr_insight_text}}` | **Dinâmico** — query de maior gain do domínio, sem cidades/projetos hardcoded |
+| `{{lost_insight_text}}` | **Dinâmico** — consulta de maior drop do domínio |
+| `{{impr_insight_text}}` | **Dinâmico** — consulta de maior gain do domínio |
 | `{{yoy_insight_block}}` | **Dinâmico** — texto YoY baseado nos dados reais |
 | `{{wow_insight}}` | **Dinâmico** — texto WoW baseado nos dados reais |
-| `{{lost_count}}` | Contagem real de queries em queda |
-| `{{impr_count}}` | Contagem real de queries em alta |
+| `{{lost_count}}` | Contagem real de consultas em queda |
+| `{{impr_count}}` | Contagem real de consultas em alta |
 
 ## Regras Fixas
 
-- **Período**: sempre os últimos 7 dias COMPLETOS (ontem até 8 dias atrás)
-- **YoY**: mesmo período, 1 ano atrás
-- **WoW**: 7 dias imediatamente anteriores ao período atual
-- **Queries em queda**: filtrado com >50 cliques em ambos os períodos de 30d
-- **Texto**: 100% português do Brasil, zero caracteres de outros idiomas
+- **Texto**: 100% português do Brasil
 - **Envio**: sempre enviar via Telegram após gerar
 - **Regra crítica — dados 100% dinâmicos por domínio**: TODO o conteúdo do relatório deve ser gerado EXCLUSIVAMENTE a partir dos dados reais do GSC do domínio solicitado. Apenas informações presentes nos dados extraídos desse projeto específico podem ser incluídas — nenhuma herança de dados de outros projetos. **Exemplos proibidos**: não incluir informações de Curitiba, BH, Goiânia, Porto Alegre, SC, Santtas, MGM ou qualquer outro projeto que não seja o domínio do relatório.
 
