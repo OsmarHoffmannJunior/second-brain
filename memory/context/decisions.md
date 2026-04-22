@@ -74,3 +74,17 @@ _Nenhuma ainda._
 - O Mission Control usa este JSON para listar skills — não escaneia automaticamente
 - Ao renomear: `sed -i 's/"nome-antigo"/"nome-novo"/g' configured-skills.json` + restart PM2
 - Ao adicionar: incluir entry com `"name": "skill-name", "location": "workspace"` no JSON
+
+### Relatório SEO — Regras de Tradução (relatorio-seo)
+Todas as labels e textos do relatório devem seguir este padrão — valores obrigatórios:
+- `Query` → **Consulta**
+- `Queries` → **Consultas**
+- `Gain` → **ganho**
+- `Severidade` → **Prioridade**
+- `Status` → **Prioridade** (nas linhas de consultas que melhoraram)
+- Badge `"boa"` → **"em alta"**
+- "Top Consultas por Cliques" → **"Top Consultas"**
+- **Remover rodapé** com "Hoff Consultoria em SEO · [data]" e email
+
+Formato de data nos comparativos: `YYYY-MM-DD – YYYY-MM-DD`
+Inspires dinâmicos: sempre extraídos dos dados reais do GSC, sem herança de outros domínios.
