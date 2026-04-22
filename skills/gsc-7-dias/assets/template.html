@@ -182,10 +182,10 @@
 <div class="section-title">Resumo &amp; Insights</div>
 <div style="display: grid; gap: 10px;">
   <div style="background:#1a1d27;border:1px solid #252a36;border-radius:8px;padding:14px 16px;font-size:0.82rem;color:#9ca3af;">📌 <strong style="color:#e5c07b">Volume:</strong> {{curr_clicks}} cliques e {{curr_impr}} impressões em {{num_days}} dias. Média de ~{{daily_avg}} cliques/dia.</div>
-  <div style="background:#1a1d27;border:1px solid #252a36;border-radius:8px;padding:14px 16px;font-size:0.82rem;color:#9ca3af;">📅 <strong style="color:#60a5fa">Comparativo YoY:</strong> {{yoy_pct}} em cliques vs mesmo período de 2025. Posição: {{curr_pos}} vs {{yoy_pos}}.</div>
+  <div style="background:#1a1d27;border:1px solid #252a36;border-radius:8px;padding:14px 16px;font-size:0.82rem;color:#9ca3af;">{{yoy_insight_block}}</div>
   <div style="background:#1a1d27;border:1px solid #252a36;border-radius:8px;padding:14px 16px;font-size:0.82rem;color:#9ca3af;">{{wow_insight}}</div>
-  <div style="background:#1a1d27;border:1px solid #252a36;border-radius:8px;padding:14px 16px;font-size:0.82rem;color:#9ca3af;">🔻 <strong style="color:#f87171">Queries em queda:</strong> {{lost_count}} queries pioraram posição. Curitiba é prioridade crítica. BH e Goiânia requerem ação imediata.</div>
-  <div style="background:#1a1d27;border:1px solid #252a36;border-radius:8px;padding:14px 16px;font-size:0.82rem;color:#9ca3af;">✅ <strong style="color:#34d399">Queries em alta:</strong> {{impr_count}} queries melhoraram. Porto Alegre e Itajaí apresentam trajetória positiva.</div>
+  <div style="background:#1a1d27;border:1px solid #252a36;border-radius:8px;padding:14px 16px;font-size:0.82rem;color:#9ca3af;">🔻 <strong style="color:#f87171">Queries em queda:</strong> {{lost_count}} queries {{lost_insight_text}}</div>
+  <div style="background:#1a1d27;border:1px solid #252a36;border-radius:8px;padding:14px 16px;font-size:0.82rem;color:#9ca3af;">✅ <strong style="color:#34d399">Queries em alta:</strong> {{impr_count}} queries {{impr_insight_text}}</div>
 </div>
 
 <div class="footer">Hoff Consultoria em SEO · {{today_str}}<br>Hoff Consultoria · contato@hoffconsultoria.com.br</div>

@@ -87,6 +87,7 @@ gsc-7-dias/
 - **Queries em queda**: filtrado com >50 cliques em ambos os períodos de 30d
 - **Texto**: 100% português do Brasil, zero caracteres de outros idiomas
 - **Envio**: sempre enviar via Telegram após gerar
+- **Resumo & Insights**: TODO o conteúdo da seção "Resumo & Insights" deve ser gerado dinamicamente com base EXCLUSIVAMENTE nos dados do domínio do relatório — nenhuma menção a outros projetos, cidades ou informações não presentes nos dados extraídos
 
 ## Dependências
 
