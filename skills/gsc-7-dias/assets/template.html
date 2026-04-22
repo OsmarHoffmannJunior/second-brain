@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Santtas — Relatório Semanal SEO | {{period_label}}</title>
+<title>{{site_display}} — Relatório SEO | {{period_label}}</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0f1117; color: #e4e8f0; padding: 24px; }
@@ -58,13 +58,12 @@
 </head>
 <body>
 <div class="container">
-<h1>📊 Santtas — Relatório Semanal de SEO</h1>
+<h1>📊 {{site_display}} — Relatório SEO</h1>
 <p class="subtitle">Google Search Console · Período: {{period_label}} ({{num_days}} dias)</p>
 
 <div class="info-row">
   <div class="info-chip">📅 Período <span>{{from_to_str}}</span></div>
   <div class="info-chip">🌐 Site <span>{{site_display}}</span></div>
-  <div class="info-chip">📌 Categoria <span>Acompanhantes de Luxo</span></div>
   <div class="info-chip">🗓️ Gerado em <span>{{today_str}}</span></div>
 </div>
 

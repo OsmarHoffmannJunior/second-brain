@@ -1,9 +1,9 @@
 ---
 name: gsc-7-dias
-description: Gerador automático de relatório SEO semanal do Google Search Console. Usa os últimos 7 dias completos disponíveis no GSC. Acionado quando Osmar diz "GSC 7 dias" ou "relatório semanal" seguido de um domínio GSC (ex: "sc-domain:br.santtas.com"). Gera um HTML completo com KPIs, comparativos YoY e WoW, queries que perderam/melhoraram posição, top pages, top queries, dispositivo e país. Salva em /root/.openclaw/workspace/mission-control/reports/ e envia pelo Telegram.
+description: Gerador automático de relatório SEO do Google Search Console. Usa os dados do GSC para gerar um relatório completo com KPIs, comparativos YoY e WoW, queries que perderam/melhoraram posição, top pages, top queries, dispositivo e país. Salva em /root/.openclaw/workspace/mission-control/reports/ e envia pelo Telegram.
 ---
 
-# GSC 7 Dias — Skill de Relatório SEO Semanal
+# GSC 7 Dias — Skill de Relatório SEO
 
 ## Quando Usar
 
