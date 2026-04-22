@@ -64,11 +64,13 @@ gsc-7-dias/
 
 | Variável | Fonte |
 |---|---|
-| `{{period_label}}` | `from_dt.strftime('%d')` – `to_dt.strftime('%d %b %Y')` |
-| `{{from_dt_str}}` | `datetime.fromisoformat(data['from_date']).strftime('%d') – ' + to_dt.strftime('%d %b %Y')` |
-| `{{yoy_from_str}}` | Mesmo formato para período YoY |
+| `{{period_label}}` | `from_dt.strftime('%d') – to_dt.strftime('%d %b %Y')` |
+| `{{from_to_str}}` | Período atual formatado |
+| `{{yoy_period}}` | Período YoY |
+| `{{prev_period}}` | Período comparativo anterior |
+| `{{compare_period_label}}` | **Dinâmico** — períodos reais do relatório (não hardcoded) |
 | `{{yoy_pct}}` | `((curr.clicks/yoy.clicks)-1)*100` → `+X.X%` |
-| `{{wow_pct}}` | `((curr.clicks/prev.clicks)-1)*100` → `+X.X%` ou `-X.X%` |
+| `{{wow_pct}}` | `((curr.clicks/prev.clicks)-1)*100` → `+X.X%` |
 | `{{wow_color}}` | `red` se wow_change < 0 senão `green` |
 | `{{lost_rows}}` | Loop nas 10 piores queries |
 | `{{impr_rows}}` | Loop nas 8 melhores queries |
@@ -78,6 +80,12 @@ gsc-7-dias/
 | `{{dev_rows}}` | Breakdown por dispositivo |
 | `{{ctry_rows}}` | Top 5 países |
 | `{{site_display}}` | Domínio formatado para exibição |
+| `{{lost_insight_text}}` | **Dinâmico** — query de maior drop do domínio, sem cidades/projetos hardcoded |
+| `{{impr_insight_text}}` | **Dinâmico** — query de maior gain do domínio, sem cidades/projetos hardcoded |
+| `{{yoy_insight_block}}` | **Dinâmico** — texto YoY baseado nos dados reais |
+| `{{wow_insight}}` | **Dinâmico** — texto WoW baseado nos dados reais |
+| `{{lost_count}}` | Contagem real de queries em queda |
+| `{{impr_count}}` | Contagem real de queries em alta |
 
 ## Regras Fixas
 
@@ -87,11 +95,7 @@ gsc-7-dias/
 - **Queries em queda**: filtrado com >50 cliques em ambos os períodos de 30d
 - **Texto**: 100% português do Brasil, zero caracteres de outros idiomas
 - **Envio**: sempre enviar via Telegram após gerar
-- **Texto dinamico**: TODO o conteúdo do relatório deve ser gerado EXCLUSIVAMENTE a partir dos dados do domínio — nenhuma menção a cidades, projetos ou informações não presentes nos dados extraídos (ex: não mencionar Curitiba, BH, Goiânia, Porto Alegre, SC ou qualquer outra cidade que não seja dado real do domínio)
-- **Variáveis dinâmicas obrigatórias**:
-  - `{{lost_insight_text}}` — texto gerado dinamicamente com a query de maior drop do domínio
-  - `{{impr_insight_text}}` — texto gerado dinamicamente com a query de maior gain do domínio
-  - `{{compare_period_label}}` — períodos reais do relatório (não hardcoded)
+- **Regra crítica — dados 100% dinâmicos por domínio**: TODO o conteúdo do relatório deve ser gerado EXCLUSIVAMENTE a partir dos dados reais do domínio solicitado. Nenhuma menção a cidades, projetos ou informações não presentes nos dados extraídos. **Exemplos proibidos**: não mencionar "Curitiba", "BH", "Goiânia", "Porto Alegre", "SC", "Santtas", "MGM" ou qualquer nome que não seja dado real do projeto.
 
 ## Dependências
 
