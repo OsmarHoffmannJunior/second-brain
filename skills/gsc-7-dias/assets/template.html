@@ -80,7 +80,7 @@
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px; margin-bottom: 8px;">
 
   <div class="compare-card">
-    <div class="compare-title">📅 Ano a Ano (YoY)</div>
+    <div class="compare-title">📅 Mesmo período do ano anterior</div>
     <div class="compare-period">
       <span class="period-tag">{{yoy_period}}</span>
       <span class="period-tag active">{{from_to_str}}</span>
@@ -95,7 +95,7 @@
   </div>
 
   <div class="compare-card">
-    <div class="compare-title">📆 Semana a Semana (WoW)</div>
+    <div class="compare-title">📆 Mesmo período anterior</div>
     <div class="compare-period">
       <span class="period-tag">{{prev_period}}</span>
       <span class="period-tag active">{{from_to_str}}</span>
@@ -122,7 +122,7 @@
 
 <!-- Lost -->
 <div class="section-title">Consultas que Pioraram Posição (Últimos 30 dias vs 30–60 dias)</div>
-<div style="margin-bottom:10px;font-size:0.78rem;color:#6b7280;">Período: {{compare_period_label}} · Filtrado: &gt;50 cliques em ambos os períodos</div>
+<div style="margin-bottom:10px;font-size:0.78rem;color:#6b7280;">Período: {{compare_period_label}} · Filtrado: &gt;10 cliques em ambos os períodos</div>
 <table>
   <thead><tr><th>Query</th><th class="num">Pos. Anterior</th><th class="num">Pos. Atual</th><th class="num">Variação</th><th class="num">Cliques (30d)</th><th class="num">CTR</th><th>Severidade</th></tr></thead>
   <tbody>
