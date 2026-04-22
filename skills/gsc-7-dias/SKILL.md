@@ -95,7 +95,7 @@ gsc-7-dias/
 - **Queries em queda**: filtrado com >50 cliques em ambos os períodos de 30d
 - **Texto**: 100% português do Brasil, zero caracteres de outros idiomas
 - **Envio**: sempre enviar via Telegram após gerar
-- **Regra crítica — dados 100% dinâmicos por domínio**: TODO o conteúdo do relatório deve ser gerado EXCLUSIVAMENTE a partir dos dados reais do domínio solicitado. Nenhuma menção a cidades, projetos ou informações não presentes nos dados extraídos. **Exemplos proibidos**: não mencionar "Curitiba", "BH", "Goiânia", "Porto Alegre", "SC", "Santtas", "MGM" ou qualquer nome que não seja dado real do projeto.
+- **Regra crítica — dados 100% dinâmicos por domínio**: TODO o conteúdo do relatório deve ser gerado EXCLUSIVAMENTE a partir dos dados reais do GSC do domínio solicitado. Apenas informações presentes nos dados extraídos desse projeto específico podem ser incluídas — nenhuma herança de dados de outros projetos. **Exemplos proibidos**: não incluir informações de Curitiba, BH, Goiânia, Porto Alegre, SC, Santtas, MGM ou qualquer outro projeto que não seja o domínio do relatório.
 
 ## Dependências
 
