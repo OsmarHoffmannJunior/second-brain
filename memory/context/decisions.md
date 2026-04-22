@@ -56,3 +56,21 @@ _Nenhuma ainda._
 - ** skill-vetter location**: `/root/openclaw/skills/skill-vetter/SKILL.md`
 - **Ação**: Ler o SKILL.md do skill-vetter, seguir o protocolo, gerar relatório antes de prosseguir.
 - **Exceção**: Skills já verificadas por Osmar diretamente podem ser instaladas sem vetting extra.
+
+## SerproBot — Regra de Acesso via Skill (2026-04-20)
+- **Regra**: Quando Osmar solicitar dados de URL do SerproBot, usar SEMPRE a skill `serprobot-reports`.
+- **Não fazer**: Acessar a URL da API diretamente por `web_fetch`.
+- **Usar**: `python3 /root/.openclaw/workspace/skills/serprobot-reports/scripts/buscar_ranking.py [keyword]`
+- **Fallback**: Apenas se a skill falhar, usar `web_fetch` como exceção e reportar.
+
+## ClickUp — Regra de Operação (2026-04-21)
+- **Regra:** Clara NÃO pode deletar Spaces, Folders ou Tasks via API do ClickUp
+- **Permitido:** Apenas criar, mover, editar tasks quando Osmar solicitar explicitamente
+- **Exceção:** Limpeza de tasks de teste que Clara mesmo criou (com autorização)
+
+### Mission Control — Skills e configured-skills.json
+- Skills do workspace são configuradas em `/root/.openclaw/workspace/mission-control/data/configured-skills.json`
+- Ao adicionar/renomear uma skill no workspace, **SEMPRE** atualizar este JSON
+- O Mission Control usa este JSON para listar skills — não escaneia automaticamente
+- Ao renomear: `sed -i 's/"nome-antigo"/"nome-novo"/g' configured-skills.json` + restart PM2
+- Ao adicionar: incluir entry com `"name": "skill-name", "location": "workspace"` no JSON
