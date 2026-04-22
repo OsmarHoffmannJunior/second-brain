@@ -87,7 +87,11 @@ gsc-7-dias/
 - **Queries em queda**: filtrado com >50 cliques em ambos os períodos de 30d
 - **Texto**: 100% português do Brasil, zero caracteres de outros idiomas
 - **Envio**: sempre enviar via Telegram após gerar
-- **Resumo & Insights**: TODO o conteúdo da seção "Resumo & Insights" deve ser gerado dinamicamente com base EXCLUSIVAMENTE nos dados do domínio do relatório — nenhuma menção a outros projetos, cidades ou informações não presentes nos dados extraídos
+- **Texto dinamico**: TODO o conteúdo do relatório deve ser gerado EXCLUSIVAMENTE a partir dos dados do domínio — nenhuma menção a cidades, projetos ou informações não presentes nos dados extraídos (ex: não mencionar Curitiba, BH, Goiânia, Porto Alegre, SC ou qualquer outra cidade que não seja dado real do domínio)
+- **Variáveis dinâmicas obrigatórias**:
+  - `{{lost_insight_text}}` — texto gerado dinamicamente com a query de maior drop do domínio
+  - `{{impr_insight_text}}` — texto gerado dinamicamente com a query de maior gain do domínio
+  - `{{compare_period_label}}` — períodos reais do relatório (não hardcoded)
 
 ## Dependências
 
