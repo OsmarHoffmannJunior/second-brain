@@ -123,14 +123,14 @@
 
 <!-- Lost -->
 <div class="section-title">Consultas que Pioraram Posição (Últimos 30 dias vs 30–60 dias)</div>
-<div style="margin-bottom:10px;font-size:0.78rem;color:#6b7280;">Período: 21/mar–19/abr vs 19/fev–20/mar · Filtrado: &gt;50 cliques em ambos os períodos</div>
+<div style="margin-bottom:10px;font-size:0.78rem;color:#6b7280;">Período: {{compare_period_label}} · Filtrado: &gt;50 cliques em ambos os períodos</div>
 <table>
   <thead><tr><th>Query</th><th class="num">Pos. Anterior</th><th class="num">Pos. Atual</th><th class="num">Variação</th><th class="num">Cliques (30d)</th><th class="num">CTR</th><th>Severidade</th></tr></thead>
   <tbody>
 {{lost_rows}}
   </tbody>
 </table>
-<div style="margin-top:10px;padding:10px 14px;background:rgba(248,113,113,0.06);border-radius:8px;border-left:3px solid #f87171;font-size:0.78rem;color:#9ca3af;">⚠️ <strong style="color:#f87171">{{lost_count}} queries</strong> perderam posição nos últimos 30 dias. Curitiba é o caso mais urgente (drop 2,9). BH e Goiânia em declínio.</div>
+<div style="margin-top:10px;padding:10px 14px;background:rgba(248,113,113,0.06);border-radius:8px;border-left:3px solid #f87171;font-size:0.78rem;color:#9ca3af;">⚠️ <strong style="color:#f87171">{{lost_count}} queries</strong> perderam posição nos últimos 30 dias. {{lost_insight_text}}</div>
 
 <!-- Improved -->
 <div class="section-title">Consultas que Melhoraram Posição (Últimos 30 dias vs 30–60 dias)</div>
@@ -140,7 +140,7 @@
 {{impr_rows}}
   </tbody>
 </table>
-<div style="margin-top:10px;padding:10px 14px;background:rgba(52,211,153,0.06);border-radius:8px;border-left:3px solid #34d399;font-size:0.78rem;color:#9ca3af;">✅ <strong style="color:#34d399">{{impr_count}} queries</strong> melhoraram posição. Porto Alegre lidera com +1,9. SC apresenta ganhos consistentes.</div>
+<div style="margin-top:10px;padding:10px 14px;background:rgba(52,211,153,0.06);border-radius:8px;border-left:3px solid #34d399;font-size:0.78rem;color:#9ca3af;">✅ <strong style="color:#34d399">{{impr_count}} queries</strong> melhoraram posição. {{impr_insight_text}}</div>
 
 <!-- Devices -->
 <div class="section-title">Desempenho por Dispositivo</div>
