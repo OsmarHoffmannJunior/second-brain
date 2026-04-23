@@ -175,6 +175,81 @@ export function getCharacters(): Character[] {
   return parseCharacters(raw);
 }
 
+export function getCharacter(name: string): Character | null {
+  const decoded = decodeURIComponent(name);
+  const characters = getCharacters();
+  return (
+    characters.find(
+      (c) => c.name.toLowerCase() === decoded.toLowerCase()
+    ) || null
+  );
+}
+
+export function createCharacter(char: Character): Character {
+  const decoded = decodeURIComponent(char.name);
+  const existing = getCharacters();
+  if (existing.some((c) => c.name.toLowerCase() === decoded.toLowerCase())) {
+    throw new Error(`Personagem "${decoded}" já existe`);
+  }
+  const entry = serializeCharacter({ ...char, name: decoded });
+  const header = `# Base de Personagens — Grey\n\n---\n\n`;
+  const current = fs.existsSync(CHARACTERS_FILE)
+    ? fs.readFileSync(CHARACTERS_FILE, "utf-8")
+    : header;
+  // Avoid duplicating header if file is fresh
+  const content = current.trim() + `\n\n${entry}\n`;
+  fs.writeFileSync(CHARACTERS_FILE, content + "\n");
+  return { ...char, name: decoded };
+}
+
+export function updateCharacter(
+  name: string,
+  updates: Partial<Character>
+): Character | null {
+  const decoded = decodeURIComponent(name);
+  if (!fs.existsSync(CHARACTERS_FILE)) return null;
+  const raw = fs.readFileSync(CHARACTERS_FILE, "utf-8");
+  const characters = parseCharacters(raw);
+  const idx = characters.findIndex(
+    (c) => c.name.toLowerCase() === decoded.toLowerCase()
+  );
+  if (idx === -1) return null;
+  const updated: Character = { ...characters[idx], ...updates, name: decoded };
+  characters[idx] = updated;
+  fs.writeFileSync(CHARACTERS_FILE, serializeCharacters(characters));
+  return updated;
+}
+
+export function deleteCharacter(name: string): boolean {
+  const decoded = decodeURIComponent(name);
+  if (!fs.existsSync(CHARACTERS_FILE)) return false;
+  const raw = fs.readFileSync(CHARACTERS_FILE, "utf-8");
+  const characters = parseCharacters(raw);
+  const idx = characters.findIndex(
+    (c) => c.name.toLowerCase() === decoded.toLowerCase()
+  );
+  if (idx === -1) return false;
+  characters.splice(idx, 1);
+  fs.writeFileSync(CHARACTERS_FILE, serializeCharacters(characters));
+  return true;
+}
+
+function serializeCharacter(char: Character): string {
+  return `### ${char.name}
+- **Idade:** ${char.age}
+- **Estado civil:** ${char.estado_civil}
+- **Físico:** ${char.fisico}
+- **Personalidade:** ${char.personalidade}
+- **Preferências sexuais:** ${char.preferencias}
+- **Traços psicológicos:** ${char.traços}
+- **Como referenciar:** ${char.como_referenciar}`;
+}
+
+function serializeCharacters(characters: Character[]): string {
+  const body = characters.map(serializeCharacter).join("\n\n");
+  return `# Base de Personagens — Grey\n\n---\n\n${body}\n`;
+}
+
 function parseCharacters(content: string): Character[] {
   const characters: Character[] = [];
   const sections = content.split(/^##?\s+\[?[🔴🟡🟢]?\s*(.+)/m).filter(Boolean);
