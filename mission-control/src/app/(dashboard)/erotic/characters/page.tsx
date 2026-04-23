@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Users, Plus, Trash2, ChevronDown, ChevronUp } from "lucide-react";
+import { Users, Plus, Trash2, ChevronDown, ChevronUp, ArrowLeft } from "lucide-react";
 
 interface Character {
   name: string;
@@ -103,7 +103,14 @@ export default function CharactersPage() {
   return (
     <div className="p-4 md:p-8">
       <div className="flex items-center gap-3 mb-6">
-        <Users className="w-6 h-6" style={{ color: "#e879f9" }} />
+        <button
+        onClick={() => router.push("/erotic")}
+        className="p-2 rounded-lg"
+        style={{ color: "var(--text-secondary)" }}
+      >
+        <ArrowLeft className="w-5 h-5" />
+      </button>
+      <Users className="w-6 h-6" style={{ color: "#e879f9" }} />
         <h1 className="text-2xl font-bold" style={{ fontFamily: "var(--font-heading)", color: "var(--text-primary)" }}>
           Personagens
         </h1>
