@@ -155,7 +155,7 @@ export default function CharactersPage() {
         <div className="grid gap-3">
           {characters.map((char) => (
             <div key={char.name} className="rounded-xl overflow-hidden" style={{ backgroundColor: "var(--card)", border: "1px solid var(--border)" }}>
-              <div className="px-5 py-4 flex items-center justify-between cursor-pointer" onClick={() => setEditing(editing === char.name ? null : char.name)}>
+              <div className="px-5 py-4 flex items-center justify-between cursor-pointer" onClick={() => { if (editing === char.name) { setEditing(null); } else { startEdit(char); setEditing(char.name); } }}>
                 <div>
                   <span className="font-semibold" style={{ color: "var(--text-primary)" }}>{char.name}</span>
                   <span className="text-sm ml-2" style={{ color: "var(--text-muted)" }}>{char.estado_civil} • {char.age}</span>
