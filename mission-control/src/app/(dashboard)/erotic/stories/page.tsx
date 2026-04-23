@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { BookOpen, Plus, Eye, Edit3, Trash2, Send } from "lucide-react";
+import { BookOpen, Plus, Eye, Edit3, Trash2, Send, ArrowLeft } from "lucide-react";
 
 interface StoryMeta {
   title: string;
@@ -103,6 +103,13 @@ export default function StoriesPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
+          <button
+            onClick={() => router.push("/erotic")}
+            className="p-2 rounded-lg mb-2"
+            style={{ color: "var(--text-secondary)" }}
+          >
+            <ArrowLeft className="w-5 h-5" />
+          </button>
           <h1
             className="text-3xl font-bold"
             style={{ fontFamily: "var(--font-heading)", color: "var(--text-primary)", letterSpacing: "-1.5px" }}
