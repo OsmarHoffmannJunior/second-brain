@@ -260,7 +260,7 @@ function parseCharacters(content: string): Character[] {
     const name = lines[0]?.trim() || "";
     if (!name) continue;
     const get = (key: string) =>
-      lines.find((l) => l.startsWith(key))?.replace(key, "").replace(/^:\s*/, "").trim() || "";
+      lines.find((l) => l.includes(key))?.split(key)[1]?.replace(/^:\s*/, "").trim() || "";
     characters.push({
       name,
       age: get("**Idade:**"),
