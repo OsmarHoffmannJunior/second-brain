@@ -258,7 +258,7 @@ function parseCharacters(content: string): Character[] {
   for (const block of blocks) {
     const lines = block.trim().split("\n");
     const name = lines[0]?.trim() || "";
-    if (!name) continue;
+    if (!name || name.startsWith("#")) continue;
     const get = (key: string) =>
       lines.find((l) => l.includes(key))?.split(key)[1]?.replace(/^:\s*/, "").trim() || "";
     characters.push({
