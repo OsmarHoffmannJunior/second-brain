@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Users, Plus, Edit3, Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Users, Plus, Trash2, ChevronDown, ChevronUp } from "lucide-react";
 
 interface Character {
   name: string;
@@ -15,146 +16,177 @@ interface Character {
 }
 
 export default function CharactersPage() {
+  const router = useRouter();
   const [characters, setCharacters] = useState<Character[]>([]);
   const [loading, setLoading] = useState(true);
-  const [expanded, setExpanded] = useState<string | null>(null);
+  const [showForm, setShowForm] = useState(false);
+  const [editing, setEditing] = useState<string | null>(null);
+  const [newChar, setNewChar] = useState({
+    name: "", age: "", estado_civil: "", fisico: "",
+    personalidade: "", preferencias: "", traços: "", como_referenciar: "",
+  });
+  const [editChar, setEditChar] = useState<Partial<Character>>({});
 
-  useEffect(() => {
-    fetchCharacters();
-  }, []);
+  const loadCharacters = () => {
+    fetch("/api/erotic/characters")
+      .then((r) => r.json())
+      .then((d) => setCharacters(d.characters || []))
+      .finally(() => setLoading(false));
+  };
 
-  const fetchCharacters = async () => {
+  useEffect(() => { loadCharacters(); }, []);
+
+  const createCharacter = async () => {
+    if (!newChar.name.trim()) return;
     try {
-      const res = await fetch("/api/erotic/characters");
-      const data = await res.json();
-      setCharacters(data.characters || []);
+      const res = await fetch("/api/erotic/characters", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newChar),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setCharacters((prev) => [...prev, data.character]);
+        setShowForm(false);
+        setNewChar({ name: "", age: "", estado_civil: "", fisico: "", personalidade: "", preferencias: "", traços: "", como_referenciar: "" });
+      }
     } catch (error) {
-      console.error("Error fetching characters:", error);
-    } finally {
-      setLoading(false);
+      console.error("Error creating character:", error);
     }
   };
 
-  if (loading) {
-    return (
-      <div className="p-8 flex items-center justify-center min-h-[400px]">
-        <div className="animate-pulse" style={{ color: "var(--text-muted)" }}>Carregando...</div>
-      </div>
-    );
-  }
+  const updateCharacter = async (name: string) => {
+    try {
+      const res = await fetch(`/api/erotic/characters/${encodeURIComponent(name)}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(editChar),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setCharacters((prev) => prev.map((c) => c.name === name ? data.character : c));
+        setEditing(null);
+        setEditChar({});
+      }
+    } catch (error) {
+      console.error("Error updating character:", error);
+    }
+  };
+
+  const deleteCharacter = async (name: string) => {
+    if (!confirm(`Apagar personagem "${name}"?`)) return;
+    try {
+      const res = await fetch(`/api/erotic/characters/${encodeURIComponent(name)}`, { method: "DELETE" });
+      if (res.ok) {
+        setCharacters((prev) => prev.filter((c) => c.name !== name));
+      }
+    } catch (error) {
+      console.error("Error deleting character:", error);
+    }
+  };
+
+  const startEdit = (char: Character) => {
+    setEditing(char.name);
+    setEditChar({ ...char });
+  };
+
+  const fields: { key: keyof Character; label: string; multiline?: boolean }[] = [
+    { key: "age", label: "Idade" },
+    { key: "estado_civil", label: "Estado civil" },
+    { key: "fisico", label: "Físico", multiline: true },
+    { key: "personalidade", label: "Personalidade", multiline: true },
+    { key: "preferencias", label: "Preferências sexuais", multiline: true },
+    { key: "traços", label: "Traços psicológicos", multiline: true },
+    { key: "como_referenciar", label: "Como referenciar", multiline: true },
+  ];
 
   return (
     <div className="p-4 md:p-8">
-      {/* Header */}
-      <div className="mb-6">
-        <h1
-          className="text-3xl font-bold"
-          style={{ fontFamily: "var(--font-heading)", color: "var(--text-primary)", letterSpacing: "-1.5px" }}
-        >
-          <Users className="inline-block w-8 h-8 mr-2 mb-1" style={{ color: "#e879f9" }} />
-          Characters
+      <div className="flex items-center gap-3 mb-6">
+        <Users className="w-6 h-6" style={{ color: "#e879f9" }} />
+        <h1 className="text-2xl font-bold" style={{ fontFamily: "var(--font-heading)", color: "var(--text-primary)" }}>
+          Personagens
         </h1>
-        <p style={{ color: "var(--text-secondary)", fontSize: "14px", marginTop: "4px" }}>
-          {characters.length} personagens • Sincronizado com CHARACTERS.md do Grey
-        </p>
       </div>
 
-      {/* Characters list */}
-      {characters.length === 0 ? (
-        <div
-          className="rounded-xl p-8 text-center"
-          style={{ backgroundColor: "var(--card)", border: "1px solid var(--border)" }}
+      <div className="flex gap-3 mb-6">
+        <button
+          onClick={() => setShowForm(true)}
+          className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all hover:scale-105"
+          style={{ backgroundColor: "#e879f9", color: "var(--bg)" }}
         >
+          <Plus className="w-4 h-4" />
+          Novo Personagem
+        </button>
+      </div>
+
+      {showForm && (
+        <div className="rounded-xl p-6 mb-6" style={{ backgroundColor: "var(--card)", border: "1px solid var(--border)" }}>
+          <h3 className="text-lg font-semibold mb-4" style={{ color: "var(--text-primary)" }}>Novo Personagem</h3>
+          <div className="space-y-3">
+            <input value={newChar.name} onChange={(e) => setNewChar({ ...newChar, name: e.target.value })} placeholder="Nome" className="w-full px-3 py-2 rounded-lg outline-none" style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)", color: "var(--text-primary)" }} />
+            <div className="grid grid-cols-2 gap-3">
+              <input value={newChar.age} onChange={(e) => setNewChar({ ...newChar, age: e.target.value })} placeholder="Idade" className="px-3 py-2 rounded-lg outline-none" style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)", color: "var(--text-primary)" }} />
+              <input value={newChar.estado_civil} onChange={(e) => setNewChar({ ...newChar, estado_civil: e.target.value })} placeholder="Estado civil" className="px-3 py-2 rounded-lg outline-none" style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)", color: "var(--text-primary)" }} />
+            </div>
+            {fields.slice(2).map(({ key, label, multiline }) => (
+              multiline ? (
+                <textarea value={newChar[key]} onChange={(e) => setNewChar({ ...newChar, [key]: e.target.value })} placeholder={label} className="w-full px-3 py-2 rounded-lg outline-none resize-none" style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)", color: "var(--text-primary)", minHeight: "60px" }} />
+              ) : (
+                <input value={newChar[key]} onChange={(e) => setNewChar({ ...newChar, [key]: e.target.value })} placeholder={label} className="w-full px-3 py-2 rounded-lg outline-none" style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)", color: "var(--text-primary)" }} />
+              )
+            ))}
+            <div className="flex gap-2">
+              <button onClick={createCharacter} className="px-4 py-2 rounded-lg font-medium" style={{ backgroundColor: "var(--accent)", color: "var(--bg)" }}>Criar</button>
+              <button onClick={() => setShowForm(false)} className="px-4 py-2 rounded-lg font-medium" style={{ border: "1px solid var(--border)", color: "var(--text-secondary)" }}>Cancelar</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {loading ? (
+        <div className="text-center py-8" style={{ color: "var(--text-muted)" }}>Carregando...</div>
+      ) : characters.length === 0 ? (
+        <div className="rounded-xl p-8 text-center" style={{ backgroundColor: "var(--card)", border: "1px solid var(--border)" }}>
           <Users className="w-12 h-12 mx-auto mb-4" style={{ color: "var(--text-muted)" }} />
-          <p style={{ color: "var(--text-muted)" }}>Nenhum personagem encontrado.</p>
+          <p style={{ color: "var(--text-muted)" }}>Nenhum personagem ainda.</p>
         </div>
       ) : (
-        <div className="grid gap-4">
-          {characters.map((char) => {
-            const isExpanded = expanded === char.name;
-            return (
-              <div
-                key={char.name}
-                className="rounded-xl overflow-hidden transition-all"
-                style={{
-                  backgroundColor: "var(--card)",
-                  border: "1px solid var(--border)",
-                }}
-              >
-                {/* Header - always visible */}
-                <div
-                  className="px-5 py-4 flex items-center justify-between cursor-pointer"
-                  onClick={() => setExpanded(isExpanded ? null : char.name)}
-                >
-                  <div>
-                    <h3
-                      className="text-lg font-semibold"
-                      style={{ fontFamily: "var(--font-heading)", color: "var(--text-primary)" }}
-                    >
-                      {char.name}
-                    </h3>
-                    <div className="flex items-center gap-3 text-sm mt-1" style={{ color: "var(--text-muted)" }}>
-                      {char.age && <span>{char.age}</span>}
-                      {char.estado_civil && <span>{char.estado_civil}</span>}
+        <div className="grid gap-3">
+          {characters.map((char) => (
+            <div key={char.name} className="rounded-xl overflow-hidden" style={{ backgroundColor: "var(--card)", border: "1px solid var(--border)" }}>
+              <div className="px-5 py-4 flex items-center justify-between cursor-pointer" onClick={() => setEditing(editing === char.name ? null : char.name)}>
+                <div>
+                  <span className="font-semibold" style={{ color: "var(--text-primary)" }}>{char.name}</span>
+                  <span className="text-sm ml-2" style={{ color: "var(--text-muted)" }}>{char.estado_civil} • {char.age}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button onClick={(e) => { e.stopPropagation(); deleteCharacter(char.name); }} className="p-1.5 rounded-lg hover:bg-red-500/10" style={{ color: "#ef4444" }}>
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                  {editing === char.name ? <ChevronUp className="w-4 h-4" style={{ color: "var(--text-muted)" }} /> : <ChevronDown className="w-4 h-4" style={{ color: "var(--text-muted)" }} />}
+                </div>
+              </div>
+              {editing === char.name && (
+                <div className="px-5 pb-4 space-y-3" style={{ borderTop: "1px solid var(--border)" }}>
+                  {fields.map(({ key, label, multiline }) => (
+                    <div key={key}>
+                      <label className="block text-xs font-medium mb-1" style={{ color: "var(--text-muted)" }}>{label}</label>
+                      {multiline ? (
+                        <textarea value={editChar[key] || ""} onChange={(e) => setEditChar({ ...editChar, [key]: e.target.value })} className="w-full px-3 py-2 rounded-lg outline-none resize-none text-sm" style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)", color: "var(--text-primary)", minHeight: "60px" }} />
+                      ) : (
+                        <input value={editChar[key] || ""} onChange={(e) => setEditChar({ ...editChar, [key]: e.target.value })} className="w-full px-3 py-2 rounded-lg outline-none text-sm" style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)", color: "var(--text-primary)" }} />
+                      )}
                     </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    {char.preferencias && (
-                      <span className="text-xs px-2 py-1 rounded" style={{ backgroundColor: "var(--surface)", color: "var(--text-muted)" }}>
-                        {char.preferencias.split(",")[0]}
-                      </span>
-                    )}
-                    <button
-                      className="p-2 rounded-lg transition-all hover:scale-110"
-                      style={{ color: "var(--text-secondary)" }}
-                      onClick={(e) => { e.stopPropagation(); setExpanded(isExpanded ? null : char.name); }}
-                    >
-                      <Edit3 className="w-4 h-4" />
-                    </button>
+                  ))}
+                  <div className="flex gap-2">
+                    <button onClick={() => updateCharacter(char.name)} className="px-4 py-2 rounded-lg font-medium text-sm" style={{ backgroundColor: "var(--accent)", color: "var(--bg)" }}>Salvar</button>
+                    <button onClick={() => setEditing(null)} className="px-4 py-2 rounded-lg font-medium text-sm" style={{ border: "1px solid var(--border)", color: "var(--text-secondary)" }}>Cancelar</button>
                   </div>
                 </div>
-
-                {/* Expanded content */}
-                {isExpanded && (
-                  <div
-                    className="px-5 pb-5 space-y-3"
-                    style={{ borderTop: "1px solid var(--border)" }}
-                  >
-                    {char.fisico && (
-                      <div>
-                        <span className="text-xs font-medium" style={{ color: "var(--text-muted)" }}>Físico</span>
-                        <p className="text-sm" style={{ color: "var(--text-primary)" }}>{char.fisico}</p>
-                      </div>
-                    )}
-                    {char.personalidade && (
-                      <div>
-                        <span className="text-xs font-medium" style={{ color: "var(--text-muted)" }}>Personalidade</span>
-                        <p className="text-sm" style={{ color: "var(--text-primary)" }}>{char.personalidade}</p>
-                      </div>
-                    )}
-                    {char.preferencias && (
-                      <div>
-                        <span className="text-xs font-medium" style={{ color: "var(--text-muted)" }}>Preferências sexuais</span>
-                        <p className="text-sm" style={{ color: "var(--text-primary)" }}>{char.preferencias}</p>
-                      </div>
-                    )}
-                    {char.traços && (
-                      <div>
-                        <span className="text-xs font-medium" style={{ color: "var(--text-muted)" }}>Traços psicológicos</span>
-                        <p className="text-sm" style={{ color: "var(--text-primary)" }}>{char.traços}</p>
-                      </div>
-                    )}
-                    {char.como_referenciar && (
-                      <div>
-                        <span className="text-xs font-medium" style={{ color: "var(--text-muted)" }}>Como referenciar</span>
-                        <p className="text-sm" style={{ color: "var(--text-primary)" }}>{char.como_referenciar}</p>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            );
-          })}
+              )}
+            </div>
+          ))}
         </div>
       )}
     </div>
