@@ -30,6 +30,8 @@ export default function StoriesPage() {
   const [stories, setStories] = useState<StoryMeta[]>([]);
   const [loading, setLoading] = useState(true);
   const [showNewForm, setShowNewForm] = useState(false);
+  const [filterStatus, setFilterStatus] = useState<string>("all");
+  const [filterStyle, setFilterStyle] = useState<string>("all");
   const [newStory, setNewStory] = useState({
     title: "",
     theme: "",
@@ -80,6 +82,13 @@ export default function StoriesPage() {
       console.error("Error deleting story:", error);
     }
   };
+
+  const filtered = stories.filter((s) => {
+    if (filterStatus !== "all" && s.status !== filterStatus) return false;
+    if (filterStyle !== "all" && s.style !== filterStyle) return false;
+    return true;
+  });
+
 
   if (loading) {
     return (
@@ -220,8 +229,25 @@ export default function StoriesPage() {
         </div>
       )}
 
+      {/* Filters */}
+      <div className="flex gap-2 mb-4">
+        <select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)} className="px-3 py-1.5 rounded-lg text-sm" style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)", color: "var(--text-primary)" }}>
+          <option value="all">Todos status</option>
+          <option value="draft">Rascunho</option>
+          <option value="sent">Enviados</option>
+          <option value="developed">Desenvolvidos</option>
+        </select>
+        <select value={filterStyle} onChange={(e) => setFilterStyle(e.target.value)} className="px-3 py-1.5 rounded-lg text-sm" style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)", color: "var(--text-primary)" }}>
+          <option value="all">Todos os tons</option>
+          <option value="light">Light</option>
+          <option value="sensual">Sensual</option>
+          <option value="heavy">Heavy</option>
+          <option value="hardcore">Hardcore</option>
+        </select>
+      </div>
+
       {/* Stories list */}
-      {stories.length === 0 ? (
+      {filtered.length === 0 ? (
         <div
           className="rounded-xl p-8 text-center"
           style={{ backgroundColor: "var(--card)", border: "1px solid var(--border)" }}
@@ -231,7 +257,7 @@ export default function StoriesPage() {
         </div>
       ) : (
         <div className="grid gap-4">
-          {stories.map((story) => (
+          {filtered.map((story) => (
             <div
               key={story.slug}
               className="rounded-xl p-5 transition-all hover:scale-[1.01]"
