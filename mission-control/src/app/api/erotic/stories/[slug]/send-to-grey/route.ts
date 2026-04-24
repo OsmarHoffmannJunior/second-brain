@@ -26,6 +26,20 @@ export async function POST(
     const extension = (story as unknown as Record<string, unknown>).extension as string | undefined || "média";
     const context = (story as unknown as Record<string, unknown>).context as string | undefined || "A definir pelo escritor.";
 
+    const styleMapping: Record<string, string> = {
+      light: "sutil/poético (eufemismos, metáforas, tom lírico)",
+      sensual: "sensual/realista (descrições directas, sensações físicas)",
+      heavy: "literário/artístico (pros rico, ritmo trabalhado, profundidade)",
+      hardcore: "sensual/realista intenso (descrições directas sem gore)",
+    };
+    const mappedStyle = styleMapping[story.style] || "sensual/realista";
+
+    const extensionLabel =
+      extension.includes("800") ? "~1.000 palavras (Curto)" :
+      extension.includes("2000") ? "~2.000 palavras (Médio)" :
+      extension.includes("3000") ? "~3.000 palavras (Longo)" :
+      "~1.500 palavras (Médio)";
+
     const content = `---
 title: "${story.title}"
 slug: ${slug}
@@ -34,39 +48,59 @@ action: write-story
 source: mission-control
 ---
 
-# Briefing: ${story.title}
+# Conto Erótico: ${story.title}
 
-## Dados do Conto
-- **Tom:** ${story.style}
+## SKILL INVOKE: erotic-writer
+
+Use a skill **erotic-writer** para escrever este conto.
+
+## Parâmetros do Conto
+- **Estilo de escrita:** ${mappedStyle}
 - **Tema:** ${story.theme}
 - **Narrativa:** ${narrativeLabel}
-- **Extensão:** ${extension}
+- **Extensão:** ${extensionLabel}
 - **Personagens:** ${(story.characters || []).join(", ") || "a definir"}
 
-## Synopsis / Context
+## Context / Synopsis
 ${context}
 
-## Vocabulário
-Use o vocabulário explícito em português brasileiro. Arquivo de referência:
+## Personagens Disponíveis
+Ler o perfil dos personagens em:
+/root/.openclaw/workspace/grey/erotic-stories/CHARACTERS.md
+
+## Vocabulário Explícito
+Referência de vocabulário:
 /root/.openclaw/workspace/grey/memory/explicit-vocabulary.md
 
-## Template
-Use o template:
-/root/.openclaw/workspace/grey/erotic-stories/STORY-TEMPLATE.md
+## Regras de Escrita (skill erotic-writer)
+1. **Tensão gradual** — construa atmosfera antes de chegar na cena
+2. **Detalhe sensorial** — tato, olfato, visão, som, paladar
+3. **Sugestão artística** — menos é mais. Descreva sem ser explícito
+4. **Profundidade emocional** — o corpo é contexto, a emoção é o ponto
+5. **Ritmo e pacing** — frases curtas para tensão, parágrafos longos para entrega
+6. **Português BR** — todo conteúdo em português brasileiro
+7. **Sem gore/violência sexual** — foco em conexão e consentimento
 
-## Saída
-Salve o resultado final em:
-/root/.openclaw/workspace/grey/erotic-stories/${slug}.md
+## Output
+Salvar em: /root/.openclaw/workspace/grey/erotic-stories/${slug}.md
 
-Após salvar, actualize o frontmatter do arquivo com:
-- status: "developed"
-- word_count: [número real de palavras]
-
+Formato frontmatter:
+\`\`\`yaml
 ---
+title: "${story.title}"
+date: ${new Date().toISOString().split("T")[0]}
+style: ${story.style}
+theme: "${story.theme}"
+narrative: ${story.narrative}
+word_count: <N>
+status: developed
+characters:
+${(story.characters || []).map((c: string) => `  - ${c}`).join("\n")}
+---
+\`\`\`
 
-## Início da História
-
-${story.content || "(sem conteúdo prévio)"}
+## Início da História (se houver conteúdo prévio)
+${story.content || "(escrever do zero)"}
 `;
 
     fs.writeFileSync(inboxFile, content);
