@@ -89,6 +89,29 @@ Integra estes termos de forma orgânica na narrativa — não enumerar, usar com
 5. **Ritmo e pacing** — frases curtas para tensão, parágrafos longos para entrega
 6. **Português BR** — todo conteúdo em português brasileiro
 
+## O Clímax — A Parte Mais Importante (OBRIGATÓRIO)
+
+O clímax NUNCA deve ser apressado. Elementos obrigatórios:
+
+### Desejo Acumulado
+- Começar com olhares, aproximações lentas, gestos que aumentam a tensão
+- Narrar cada gesto: mão no joelho, dedos a subir pela coxa, o calor a aumentar
+- Transmitir o desejo crescente antes de qualquer contacto físico
+
+### Durante o Clímax
+- **Múltiplas posições** — mínimo 2-3 posições durante o mesmo encontro. Não termine na primeira
+- **Transições lentas** — tempo de reposicionar, o olhar trocado, a respiração pesada
+- **Detalhe físico por gesto** — cada toque, cada movimento, cada reacção
+- **Gemidos e sons** — gemidos, suspiros, nomes ditos em prazer
+- **Esforço físico** — suor, pele húmida, respirações ofegantes, músculos tensos
+- **Prazer prolongado** — o clímax é um arco, não um momento. Descreva a subida, o platô, os picos de prazer
+
+### Marcas de Intensidade
+- Mãos a apertar, unhas a marcar, cabelos puxados
+- Mordidas no pescoço ou ombro
+- Ritmo: lento e profundo vs rápido e feroz
+- Posições: missionário, cowgirl, doggy, reverse cowgirl, lotus, 69, etc.
+
 ## Output
 Salvar em: /root/.openclaw/workspace/grey/erotic-stories/${slug}.md
 
