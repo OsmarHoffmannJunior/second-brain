@@ -84,7 +84,7 @@ Integra estes termos de forma orgânica na narrativa — não enumerar, usar com
 ## Regras de Escrita (skill erotic-writer)
 1. **Tensão gradual** — construa atmosfera antes de chegar na cena
 2. **Detalhe sensorial** — tato, olfato, visão, som, paladar
-3. **Sugestão artística** — menos é mais. Descreva sem ser explícito
+3. **Explicitamente detalhado** — seja explícito, use vocabulário adequado, posições detalhadas, detalhes e ações
 4. **Profundidade emocional** — o corpo é contexto, a emoção é o ponto
 5. **Ritmo e pacing** — frases curtas para tensão, parágrafos longos para entrega
 6. **Português BR** — todo conteúdo em português brasileiro
