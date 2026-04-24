@@ -68,9 +68,18 @@ ${context}
 Ler o perfil dos personagens em:
 /root/.openclaw/workspace/grey/erotic-stories/CHARACTERS.md
 
-## Vocabulário Explícito
-Referência de vocabulário:
+## Vocabulário Explícito (OBRIGATÓRIO)
+Ler e interiorizar o ficheiro:
 /root/.openclaw/workspace/grey/memory/explicit-vocabulary.md
+
+Este ficheiro contém termos explícitos recolhidos de contos reais em português brasileiro. USA estes termos自然なmente na narrativa para dar autenticidade:
+- Partes do corpo: rola, pau, cacete, caralho, cuzinho, xota, alcinhas, seios, clitóris, ânus, buraquinho, bunda, rabão, quadril
+- Acções: foder, meter, comer, gozar, goza gostoso, lamber, sugar, enfiar, meter, ensopada, lambuzar, rebolar, rebolando, revesar, punhetar, boquete, currada, enfiada
+- Descrições: avantajada, bombando, cachoeira, babado, putaria, safadinha, putinha, madrinha, patricinha, diarista
+- Fluidos: sêmen, esperma, jatos quentes, leite, leitinho
+- Pussy talk: fodendo, fodida, putaria, delícias, guerreira
+
+Integra estes termos de forma orgânica na narrativa — não enumerar, usar como 자연스러운 descrições.
 
 ## Regras de Escrita (skill erotic-writer)
 1. **Tensão gradual** — construa atmosfera antes de chegar na cena
