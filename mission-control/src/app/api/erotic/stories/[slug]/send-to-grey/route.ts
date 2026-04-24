@@ -88,7 +88,6 @@ Integra estes termos de forma orgânica na narrativa — não enumerar, usar com
 4. **Profundidade emocional** — o corpo é contexto, a emoção é o ponto
 5. **Ritmo e pacing** — frases curtas para tensão, parágrafos longos para entrega
 6. **Português BR** — todo conteúdo em português brasileiro
-7. **Sem gore/violência sexual** — foco em conexão e consentimento
 
 ## Output
 Salvar em: /root/.openclaw/workspace/grey/erotic-stories/${slug}.md
