@@ -31,6 +31,7 @@ export async function POST(
       sensual: "sensual/realista (descrições directas, sensações físicas)",
       heavy: "literário/artístico (pros rico, ritmo trabalhado, profundidade)",
       hardcore: "sensual/realista intenso (descrições directas sem gore)",
+      completo: "MÁXIMA EXPLICAÇÃO — estilo completo hardcore conforme system prompt COMPLETO.md",
     };
     const mappedStyle = styleMapping[story.style] || "sensual/realista";
 
@@ -59,7 +60,7 @@ Use a skill **erotic-writer** para escrever este conto.
 - **Tema:** ${story.theme}
 - **Narrativa:** ${narrativeLabel}
 - **Extensão:** ${extensionLabel}
-- **Personagens:** ${(story.characters || []).join(", ") || "a definir"}
+- **Personagens:** ${(story.characters || []).join(", ") || "a definir"}${(story.style as string) === "completo" ? "\n\n⚠️ ESTILO COMPLETO — Ler COMPLETO.md:\n/root/.openclaw/workspace/grey/erotic-stories/styles/COMPLETO.md" : ""}
 
 ## Context / Synopsis
 ${context}

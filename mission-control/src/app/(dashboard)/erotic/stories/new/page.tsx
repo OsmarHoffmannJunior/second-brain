@@ -120,6 +120,7 @@ export default function NewStoryPage() {
               <option value="sensual">Sensual</option>
               <option value="heavy">Heavy</option>
               <option value="hardcore">Hardcore</option>
+              <option value="completo">Completo</option>
             </select>
           </div>
           <div>

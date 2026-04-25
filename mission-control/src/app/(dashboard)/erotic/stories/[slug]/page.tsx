@@ -18,7 +18,7 @@ interface Character {
 }
 
 const styleColors: Record<string, string> = {
-  light: "#4ade80", sensual: "#facc15", heavy: "#f97316", hardcore: "#ef4444",
+  light: "#4ade80", sensual: "#facc15", heavy: "#f97316", hardcore: "#ef4444", completo: "#a855f7",
 };
 
 const statusBadge: Record<string, { label: string; color: string; bg: string }> = {
@@ -219,7 +219,7 @@ export default function StoryEditorPage() {
               <div>
                 <label className="block text-sm font-medium mb-1" style={{ color: "var(--text-secondary)" }}>Tom</label>
                 <select value={editMeta.style} onChange={(e) => setEditMeta({ ...editMeta, style: e.target.value })} className="w-full px-3 py-2 rounded-lg outline-none" style={{ backgroundColor: "var(--surface)", border: "1px solid var(--border)", color: "var(--text-primary)" }}>
-                  <option value="light">Light</option><option value="sensual">Sensual</option><option value="heavy">Heavy</option><option value="hardcore">Hardcore</option>
+                  <option value="light">Light</option><option value="sensual">Sensual</option><option value="heavy">Heavy</option><option value="hardcore">Hardcore</option><option value="completo">Completo</option>
                 </select>
               </div>
               <div>
