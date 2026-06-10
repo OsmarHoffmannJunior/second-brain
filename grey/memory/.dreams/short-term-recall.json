@@ -1,0 +1,230 @@
+{
+  "version": 1,
+  "updatedAt": "2026-04-26T22:44:27.837Z",
+  "entries": {
+    "memory:memory/2026-04-23.md:4:7": {
+      "key": "memory:memory/2026-04-23.md:4:7",
+      "path": "memory/2026-04-23.md",
+      "startLine": 4,
+      "endLine": 7,
+      "source": "memory",
+      "snippet": "@@ -4,4 @@ (3 before, 64 after) ### 22:45 UTC — Inbox Poller - Checked inbox: **vazia** - Nenhuma story pendente para processar",
+      "recallCount": 2000,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1766.8000000000272,
+      "maxScore": 0.96,
+      "firstRecalledAt": "2026-04-23T22:44:22.719Z",
+      "lastRecalledAt": "2026-04-26T22:43:23.575Z",
+      "queryHashes": [
+        "3ef787c38eb6",
+        "630a4ad455d3",
+        "8cdd0bc1fdb2",
+        "8107dfbd23d7",
+        "7762f21d2e6a",
+        "09cb8125292e",
+        "999396005298",
+        "6585f793d967",
+        "47d235c1083e",
+        "5dde14774273",
+        "313250d8b706",
+        "427f7b953195",
+        "c7539c000aed",
+        "c5dbf8e15103",
+        "3a4e98e967c0",
+        "2f2a05302844",
+        "aa13ed116380",
+        "2ebe09446d28",
+        "ffa6923c0cb6",
+        "40d33ea0b58c",
+        "f5bb7798cfe1",
+        "946c4b669dbf",
+        "c3215a8358cf",
+        "f70842e5bf37",
+        "6898daee37cc",
+        "3a1aa5096dd0",
+        "ff3732066623",
+        "d93d3b6e873c",
+        "9adbe782eafe",
+        "970ced254dac",
+        "fbb8b1bd81b5",
+        "aa865558cdcd"
+      ],
+      "recallDays": [
+        "2026-04-23",
+        "2026-04-24",
+        "2026-04-25",
+        "2026-04-26"
+      ],
+      "conceptTags": [
+        "4,4",
+        "utc",
+        "inbox",
+        "poller",
+        "checked",
+        "vazia",
+        "nenhuma",
+        "story"
+      ]
+    },
+    "memory:memory/2026-04-23.md:10:13": {
+      "key": "memory:memory/2026-04-23.md:10:13",
+      "path": "memory/2026-04-23.md",
+      "startLine": 10,
+      "endLine": 13,
+      "source": "memory",
+      "snippet": "@@ -10,4 @@ (9 before, 58 after) ## Stories em produção - amiga-da-faculdade-e-sua-curiosidade-sobre-sexo-anal (inbox → processed @ 20:05) - Stories no diretório erotic-stories: 9 arquivos",
+      "recallCount": 46,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 40.27000000000002,
+      "maxScore": 0.92,
+      "firstRecalledAt": "2026-04-23T23:26:22.429Z",
+      "lastRecalledAt": "2026-04-26T22:26:16.954Z",
+      "queryHashes": [
+        "c06cefe45947",
+        "46b66e179fa4",
+        "48d81b9d6c0b",
+        "2e7132f74d49",
+        "6e3dceaf4120",
+        "9f20d76067bc",
+        "783d2a1e89b0"
+      ],
+      "recallDays": [
+        "2026-04-23",
+        "2026-04-24",
+        "2026-04-25",
+        "2026-04-26"
+      ],
+      "conceptTags": [
+        "erotic-stories",
+        "10,4",
+        "stories",
+        "produção",
+        "amiga",
+        "faculdade",
+        "sua",
+        "curiosidade"
+      ]
+    },
+    "memory:memory/2026-04-23.md:11:14": {
+      "key": "memory:memory/2026-04-23.md:11:14",
+      "path": "memory/2026-04-23.md",
+      "startLine": 11,
+      "endLine": 14,
+      "source": "memory",
+      "snippet": "@@ -11,4 @@ (10 before, 57 after) ## Stories em produção - amiga-da-faculdade-e-sua-curiosidade-sobre-sexo-anal (inbox → processed @ 20:05) - Stories no diretório erotic-stories: 9 arquivos",
+      "recallCount": 182,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 161.59999999999968,
+      "maxScore": 0.91,
+      "firstRecalledAt": "2026-04-23T23:52:24.457Z",
+      "lastRecalledAt": "2026-04-26T22:44:27.837Z",
+      "queryHashes": [
+        "fd44a4ee1a0e",
+        "9790a8fc7a25",
+        "dac323ee0b5f",
+        "6d959fcc2816",
+        "eaf32b0f76d0",
+        "111a0647a5dc"
+      ],
+      "recallDays": [
+        "2026-04-23",
+        "2026-04-24",
+        "2026-04-25",
+        "2026-04-26"
+      ],
+      "conceptTags": [
+        "erotic-stories",
+        "11,4",
+        "stories",
+        "produção",
+        "amiga",
+        "faculdade",
+        "sua",
+        "curiosidade"
+      ]
+    },
+    "memory:memory/2026-04-23.md:1:61": {
+      "key": "memory:memory/2026-04-23.md:1:61",
+      "path": "memory/2026-04-23.md",
+      "startLine": 1,
+      "endLine": 61,
+      "source": "memory",
+      "snippet": "# 2026-04-23 — Daily Log ## Cron Runs ### 22:45 UTC — Inbox Poller - Checked inbox: **vazia** - Nenhuma story pendente para processar - Última processada: amiga-da-faculdade-e-sua-curiosidade-sobre-sexo-anal (20:05) - Status: OK ## Stories em produção - amiga-da-faculdade-e-sua-curiosidade-sobre-sexo-anal (inbox → processed @ 20:05) - Stories no diretório erotic-stories: 9 arquivos ### 22:52 UTC — Inbox Poller - Checked inbox: **vazia** - Nenhuma story pendente para processar ### 22:55 UTC — Inbox Poller - Checked inbox: **vazia** - Nenhuma story pendente para processar ### 22:56 UTC — Inbox Poller - Checked inbox: **vazia** - Nenhuma story pendente para processar - Status: OK ### 23:0",
+      "recallCount": 1,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 1,
+      "maxScore": 1,
+      "firstRecalledAt": "2026-04-24T02:01:22.875Z",
+      "lastRecalledAt": "2026-04-24T02:01:22.875Z",
+      "queryHashes": [
+        "dac323ee0b5f"
+      ],
+      "recallDays": [
+        "2026-04-24"
+      ],
+      "conceptTags": [
+        "erotic-stories",
+        "log",
+        "cron",
+        "runs",
+        "utc",
+        "inbox",
+        "poller",
+        "checked"
+      ]
+    },
+    "memory:memory/2026-04-23.md:36:39": {
+      "key": "memory:memory/2026-04-23.md:36:39",
+      "path": "memory/2026-04-23.md",
+      "startLine": 36,
+      "endLine": 39,
+      "source": "memory",
+      "snippet": "@@ -36,4 @@ (35 before, 32 after) ### 23:06 UTC — Inbox Poller (cron) - Checked inbox: **vazia** - Nenhuma story pendente para processar",
+      "recallCount": 21,
+      "dailyCount": 0,
+      "groundedCount": 0,
+      "totalScore": 19.409999999999997,
+      "maxScore": 0.94,
+      "firstRecalledAt": "2026-04-24T02:38:33.838Z",
+      "lastRecalledAt": "2026-04-26T22:38:25.451Z",
+      "queryHashes": [
+        "a5c2b5dcabee",
+        "1eb4c0fa59e2",
+        "41d26736c701",
+        "d3f78112c92b",
+        "cfe9fe923b29",
+        "0b418cf09cc7",
+        "1edec35393d8",
+        "59983e960239",
+        "ec7f5fd312d9",
+        "c4cb9ac133d9",
+        "3ac7f0307f12",
+        "ca35a58adaf2",
+        "d499b1fabb4c",
+        "4d88c69c77f4",
+        "c89827dc0ea4",
+        "b4d0c8390d76",
+        "de4c77b79494"
+      ],
+      "recallDays": [
+        "2026-04-24",
+        "2026-04-25",
+        "2026-04-26"
+      ],
+      "conceptTags": [
+        "36,4",
+        "utc",
+        "inbox",
+        "poller",
+        "cron",
+        "checked",
+        "vazia",
+        "nenhuma"
+      ]
+    }
+  }
+}

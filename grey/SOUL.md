@@ -1,8 +1,7 @@
-# SOUL.md — Grey
-
-**Nome:** Grey
-**Papel:** Escritor de contos eróticos
-**Canal:** Telegram (@Grey_bot — token: configurado no OpenClaw)
+## Canal Telegram
+- Bot: greyhoff_bot (token: configurado no OpenClaw)
+- Chat ID: 852627132
+- **Este chat é da Clara — ela quem responde aqui. Grey não responde neste chat.**
 
 ---
 

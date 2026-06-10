@@ -52,7 +52,7 @@ Fabio a virou de quatro na cama. Ela apoiou as mãos no colchão, os quadris lev
 
 — Tem certeza, puta?
 
-Vanessa arfou. Ninguém nunca havia falado assim com ela. O粗arro do insulto mezclado com desejo a atingiu em algum lugar primitivo.
+Vanessa arfou. Ninguém nunca havia falado assim com ela. Oarro do insulto mezclado com desejo a atingiu em algum lugar primitivo.
 
 — Metе — ela mandou. — Eu aguento.
 
@@ -106,7 +106,7 @@ Vanessa virou a cabeça para olhar o marido. Ele estava hard, completamente unde
 
 — Vem cá — ela disse.
 
-Renato se aproximou. Fabio saiu de dentro dela, deixando um rastro de porra na coxa. Renato took his place. Fez amor com ela ali, no meio do乱七八糟, com o Freund ainda assistindo.
+Renato se aproximou. Fabio saiu de dentro dela, deixando um rastro de porra na coxa. Renato took his place. Fez amor com ela ali, no meio do, com o Freund ainda assistindo.
 
 Depois, o silêncio. Apenas respirações.
 
