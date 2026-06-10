@@ -45,3 +45,15 @@
 ---
 
 _Last updated: 2026-04-15_
+---
+
+## Daniel P. Kruger
+
+| Campo | Valor |
+|-------|-------|
+| Nome | Daniel P. Kruger |
+| Telefone | 48999284269 |
+| Empresa | Kruger Tech |
+| Site | https://www.krugertech.com.br/ |
+| Relação | Gestor de infraestrutura do Santtas |
+| Adicionado | 2026-04-20 |

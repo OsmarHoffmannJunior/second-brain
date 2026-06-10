@@ -19,7 +19,18 @@
 | GA Measurement ID | G-MPRZ7ZTT48 |
 | Última atualização | 2026-04-15 |
 
+
 ---
+
+## Infraestrutura (2026-04-20)
+
+| Campo | Valor |
+|-------|-------|
+| Gestor | Daniel P. Kruger |
+| Telefone | 48999284269 |
+| Empresa | Kruger Tech |
+| Domínio | https://www.krugertech.com.br/ |
+| Status | Ativo |
 
 ## Nova Versão (lançamento 01/05/2026)
 
@@ -245,3 +256,13 @@
 ---
 
 _Last updated: 2026-04-15_
+
+---
+
+## Backblaze Backup (2026-04-20)
+
+- **Serviço:** Backblaze (B2 Cloud Storage)
+- **Email:** santtas@santtas.com
+- **Status:** Decisão tomada — a implementar
+- **Valores:** Pendente — Osmar ainda precisa obter os valores corretos
+- **Próximo passo:** Obter credenciais de acesso e valores da assinatura
