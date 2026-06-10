@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Report ClickUp — santtas 21/04/2026</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0f0f1a; color: #e0e0e0; padding: 40px; }
+  h1 { color: #8b5cf6; font-size: 24px; margin-bottom: 8px; }
+  .period { color: #94a3b8; font-size: 14px; margin-bottom: 32px; }
+  .stats { display: flex; gap: 16px; margin-bottom: 40px; flex-wrap: wrap; }
+  .stat { background: #1a1a2e; border: 1px solid #2d2d4a; border-radius: 12px; padding: 20px 28px; flex: 1; min-width: 140px; }
+  .stat-num { font-size: 32px; font-weight: 700; }
+  .stat-label { font-size: 12px; color: #94a3b8; margin-top: 4px; }
+  .stat.finished .stat-num { color: #4ade80; }
+  .stat.blocked .stat-num { color: #f87171; }
+  .stat.overdue .stat-num { color: #fbbf24; }
+  .stat.upcoming .stat-num { color: #60a5fa; }
+  .stat.in-progress .stat-num { color: #a78bfa; }
+  h2 { color: #c4b5fd; font-size: 18px; margin: 32px 0 16px; border-bottom: 1px solid #2d2d4a; padding-bottom: 8px; }
+  .person-card { background: #1a1a2e; border: 1px solid #2d2d4a; border-radius: 12px; padding: 24px; margin-bottom: 16px; }
+  .person-card h3 { color: #fbbf24; font-size: 16px; margin-bottom: 16px; }
+  .cat-section { margin: 16px 0; }
+  .cat-section h4 { font-size: 13px; color: #94a3b8; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .cat-section ul { list-style: none; }
+  .cat-section li { padding: 6px 0; border-bottom: 1px solid #1f1f35; font-size: 14px; }
+  .cat-section li a { color: #a78bfa; text-decoration: none; }
+  .cat-section li a:hover { color: #c4b5fd; }
+  .meta { color: #64748b; font-size: 12px; }
+  .upcoming-list { background: #1a1a2e; border: 1px solid #2d2d4a; border-radius: 12px; padding: 24px; }
+  .upcoming-list table { width: 100%; border-collapse: collapse; }
+  .upcoming-list th { text-align: left; color: #94a3b8; font-size: 11px; text-transform: uppercase; padding: 8px 12px; border-bottom: 1px solid #2d2d4a; }
+  .upcoming-list td { padding: 10px 12px; border-bottom: 1px solid #1f1f35; font-size: 14px; }
+  .upcoming-list tr:last-child td { border-bottom: none; }
+  .upcoming-list td a { color: #a78bfa; text-decoration: none; }
+  .footer { margin-top: 48px; text-align: center; color: #475569; font-size: 12px; }
+</style>
+</head>
+<body>
+<h1>📋 Report ClickUp — SANTTAS</h1>
+<p class="period">🗓 Período: 14/04/2026 a 28/04/2026 &nbsp;|&nbsp; Gerado em: 21/04/2026 às 21:10</p>
+
+<div class="stats">
+  <div class="stat finished">
+    <div class="stat-num">1</div>
+    <div class="stat-label">✅ Finalizadas</div>
+  </div>
+  <div class="stat blocked">
+    <div class="stat-num">0</div>
+    <div class="stat-label">🔴 Bloqueadas</div>
+  </div>
+  <div class="stat overdue">
+    <div class="stat-num">0</div>
+    <div class="stat-label">⚠️ Atrasadas</div>
+  </div>
+  <div class="stat in-progress">
+    <div class="stat-num">0</div>
+    <div class="stat-label">🔵 Em Progresso</div>
+  </div>
+  <div class="stat upcoming">
+    <div class="stat-num">3</div>
+    <div class="stat-label">📌 Próximas (7d)</div>
+  </div>
+</div>
+
+<h2>👥 Por Pessoa</h2>
+
+        <div class='person-card'>
+            <h3>👤 Osmar Hoffmann Jr</h3>
+            
+        <div class='cat-section'>
+          <h4>✅ Finalizadas (1)</h4>
+          <ul><li><a href='https://app.clickup.com/t/86e10p0cz' target='_blank'>Pagamento do servidor EVEO</a> <span class='meta'>due: 20/04/2026</span> <span class='meta'>closed: 21/04/2026</span></li></ul>
+        </div>
+    
+        <div class='cat-section'>
+          <h4>📌 Próximas (2)</h4>
+          <ul><li><a href='https://app.clickup.com/t/86e10p05d' target='_blank'>Recuperar acesso cloudflare</a> <span class='meta'>due: 22/04/2026</span></li><li><a href='https://app.clickup.com/t/86e10p13b' target='_blank'>Revisar documentação de estrutura Santtas</a> <span class='meta'>due: 24/04/2026</span></li></ul>
+        </div>
+    
+        </div>
+    
+
+<h2>📌 Próximas Tarefas</h2>
+<div class="upcoming-list">
+<table>
+  <thead>
+    <tr>
+      <th>Due</th>
+      <th>Status</th>
+      <th>Tarefa</th>
+      <th>Responsável</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>22/04/2026</td><td>in progress</td><td><a href='https://app.clickup.com/t/86e10p05d' target='_blank'>Recuperar acesso cloudflare</a></td><td>Osmar Hoffmann Jr</td></tr><tr><td>22/04/2026</td><td>backlog</td><td><a href='https://app.clickup.com/t/86e10nwzv' target='_blank'>Gerar relatório de faturamento</a></td><td>—</td></tr><tr><td>24/04/2026</td><td>revisão</td><td><a href='https://app.clickup.com/t/86e10p13b' target='_blank'>Revisar documentação de estrutura Santtas</a></td><td>Osmar Hoffmann Jr</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="footer">
+Gerado automaticamente via Clara (OpenClaw) — Hoff Consultoria
+</div>
+</body>
+</html>
